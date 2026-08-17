@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiComp+ | Tienda</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Estilos globales -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Estilos específicos de la tienda -->
+    <style>
+        /* ================================================================
+           ESTILOS EXCLUSIVOS DE TIENDA (se integran con style.css)
+           ================================================================ */
+
+        /* ===== HEADER DE LA TIENDA (dentro del contenido) ===== */
+        .store-header {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(232,234,237,0.3);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .dark-mode .store-header {
+            background: rgba(22,27,34,0.85);
+            border-color: rgba(48,54,61,0.3);
+        }
+
+        /* ===== PRODUCT GRID CARDS ===== */
+        .product-grid-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid rgba(0,0,0,0.06);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .product-grid-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+            border-color: rgba(37,99,235,0.2);
+        }
+        .dark-mode .product-grid-card {
+            background: #161b22;
+            border-color: rgba(48,54,61,0.4);
+        }
+        .dark-mode .product-grid-card:hover {
+            border-color: rgba(88,166,255,0.3);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .product-grid-card.featured {
+            border-color: rgba(251,191,36,0.3);
+            background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+        }
+        .dark-mode .product-grid-card.featured {
+            background: linear-gradient(180deg, #161b22 0%, #1c2333 100%);
+            border-color: rgba(251,191,36,0.2);
+        }
+
+        /* ===== IMAGEN WRAPPER ===== */
+        .product-grid-card .img-wrapper {
+            background: #fafbfc;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1/1;
+            padding: 12px;
+        }
+        .dark-mode .product-grid-card .img-wrapper {
+            background: #0d1117;
+        }
+
+        .product-grid-card .img-wrapper .placeholder-icon {
+            position: absolute;
+            z-index: 0;
+            color: #e5e7eb;
+            font-size: 2rem;
+            transition: all 0.5s ease;
+        }
+        .dark-mode .product-grid-card .img-wrapper .placeholder-icon {
+            color: #30363d;
+        }
+
+        .product-grid-card .product-img {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+        }
+        .product-grid-card .product-img.loaded { opacity: 1; }
+        .product-grid-card:hover .product-img { transform: scale(1.04); }
+
+        /* ===== VIEW LABEL ===== */
+        .product-grid-card .view-label {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            color: #2563eb;
+            font-size: 7px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            z-index: 20;
+            border: 1px solid rgba(37,99,235,0.08);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+        .dark-mode .product-grid-card .view-label {
+            background: rgba(22,27,34,0.92);
+            color: #58a6ff;
+            border-color: rgba(48,54,61,0.3);
+        }
+
+        /* ===== BADGES ===== */
+        .badge-featured {
+            background: #fef3c7;
+            color: #b45309;
+            font-weight: 700;
+            font-size: 7px;
+            letter-spacing: 0.06em;
+            padding: 2px 10px;
+            border-radius: 100px;
+            border: 1px solid rgba(251,191,36,0.15);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+        }
+        .dark-mode .badge-featured {
+            background: #2d2416;
+            color: #d29922;
+            border-color: rgba(251,191,36,0.15);
+        }
+
+        .badge-brand {
+            background: #f0f4ff;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 8px;
+            letter-spacing: 0.04em;
+            padding: 2px 10px;
+            border-radius: 100px;
+            border: 1px solid rgba(37,99,235,0.06);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dark-mode .badge-brand {
+            background: #1c2333;
+            color: #58a6ff;
+            border-color: rgba(48,54,61,0.3);
+        }
+
+        .badge-mini {
+            background: #f3f4f6;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 8px;
+            letter-spacing: 0.04em;
+            padding: 2px 10px;
+            border-radius: 100px;
+            border: 1px solid #e5e7eb;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .badge-mini:hover {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        .dark-mode .badge-mini {
+            background: #0d1117;
+            color: #8b949e;
+            border-color: #30363d;
+        }
+        .dark-mode .badge-mini:hover {
+            background: #58a6ff;
+            color: #0d1117;
+            border-color: #58a6ff;
+        }
+
+        .badge-specs {
+            background: #f0fdf4;
+            color: #059669;
+            font-weight: 600;
+            font-size: 7px;
+            letter-spacing: 0.04em;
+            padding: 2px 10px;
+            border-radius: 100px;
+            border: 1px solid rgba(5,150,105,0.12);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .badge-specs:hover {
+            background: #059669;
+            color: white;
+            border-color: #059669;
+            transform: scale(1.02);
+        }
+        .dark-mode .badge-specs {
+            background: #1a2d2a;
+            color: #3fb950;
+            border-color: rgba(63,185,80,0.15);
+        }
+        .dark-mode .badge-specs:hover {
+            background: #3fb950;
+            color: #0d1117;
+            border-color: #3fb950;
+        }
+
+        .badge-add {
+            background: #2563eb;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.12);
+        }
+        .badge-add:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+            background: #1d4ed8;
+        }
+        .dark-mode .badge-add {
+            background: #58a6ff;
+            box-shadow: 0 2px 8px rgba(88,166,255,0.2);
+        }
+        .dark-mode .badge-add:hover {
+            background: #1f6feb;
+            box-shadow: 0 4px 16px rgba(88,166,255,0.3);
+        }
+
+        /* ===== STOCK STATUS ===== */
+        .stock-status {
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            padding: 2px 10px;
+            border-radius: 100px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .stock-available {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid rgba(5,150,105,0.08);
+        }
+        .stock-low {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid rgba(217,119,6,0.08);
+        }
+        .stock-critical {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid rgba(220,38,38,0.08);
+        }
+        .dark-mode .stock-available {
+            background: #1a2d2a;
+            color: #3fb950;
+            border-color: rgba(63,185,80,0.15);
+        }
+        .dark-mode .stock-low {
+            background: #2d2416;
+            color: #d29922;
+            border-color: rgba(210,153,34,0.15);
+        }
+        .dark-mode .stock-critical {
+            background: #2d1b1e;
+            color: #f85149;
+            border-color: rgba(248,81,73,0.15);
+        }
+
+        /* ===== PRICE TAG ===== */
+        .price-tag {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #2563eb;
+        }
+        .dark-mode .price-tag {
+            color: #58a6ff;
+        }
+
+        .price-label {
+            font-size: 9px;
+            font-weight: 500;
+            color: #9ca3af;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .dark-mode .price-label {
+            color: #8b949e;
+        }
+
+        /* ===== BADGE ACTIONS ===== */
+        .badge-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== FAVORITE BUTTON ===== */
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 15;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+        .favorite-btn:hover {
+            transform: scale(1.1);
+            background: white;
+            border-color: #ef4444;
+        }
+        .favorite-btn.active {
+            color: #ef4444;
+            background: #fef2f2;
+            border-color: rgba(239,68,68,0.2);
+        }
+        .dark-mode .favorite-btn {
+            background: rgba(22,27,34,0.85);
+            border-color: rgba(48,54,61,0.3);
+            color: #8b949e;
+        }
+        .dark-mode .favorite-btn:hover {
+            background: #161b22;
+            border-color: #f85149;
+        }
+        .dark-mode .favorite-btn.active {
+            color: #f85149;
+            background: #2d1b1e;
+            border-color: rgba(248,81,73,0.2);
+        }
+
+        /* ===== FEATURED SECTION TITLE ===== */
+        .featured-section-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #b45309;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dark-mode .featured-section-title {
+            color: #d29922;
+        }
+        .featured-section-title .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(251,191,36,0.2), transparent);
+        }
+
+        /* ===== FILTROS ===== */
+        .input-premium {
+            background: #ffffff;
+            border: 1.5px solid #eef0f2;
+            color: #111;
+            transition: all 0.2s ease;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 13px;
+            width: 100%;
+        }
+        .input-premium:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.06);
+        }
+        .dark-mode .input-premium {
+            background: #0d1117;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        .dark-mode .input-premium:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88,166,255,0.1);
+        }
+
+        .select-premium {
+            background: #ffffff;
+            border: 1.5px solid #eef0f2;
+            color: #111;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.8rem center;
+            background-repeat: no-repeat;
+            background-size: 1.2em 1.2em;
+            transition: all 0.2s ease;
+            border-radius: 12px;
+            padding: 10px 36px 10px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+        }
+        .select-premium:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.06);
+        }
+        .dark-mode .select-premium {
+            background: #0d1117;
+            border-color: #30363d;
+            color: #c9d1d9;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b949e' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        }
+        .dark-mode .select-premium:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88,166,255,0.1);
+        }
+
+        /* ===== PANEL CARRITO ===== */
+        .panel-premium {
+            background: #ffffff;
+            border-left: 1px solid rgba(0,0,0,0.04);
+        }
+        .dark-mode .panel-premium {
+            background: #161b22;
+            border-left-color: rgba(48,54,61,0.3);
+        }
+
+        .panel-header-premium {
+            background: #fafbfc;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .dark-mode .panel-header-premium {
+            background: #0d1117;
+            border-bottom-color: rgba(48,54,61,0.3);
+        }
+
+        .qt-row {
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.2s ease;
+        }
+        .qt-row:hover {
+            background: #fafbfc;
+        }
+        .dark-mode .qt-row {
+            border-bottom-color: rgba(48,54,61,0.2);
+        }
+        .dark-mode .qt-row:hover {
+            background: #0d1117;
+        }
+
+        /* ===== BOTÓN FLOTANTE CARRITO ===== */
+        .float-cart {
+            background: #2563eb;
+            box-shadow: 0 8px 32px rgba(37,99,235,0.25);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .float-cart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(37,99,235,0.35);
+        }
+        .dark-mode .float-cart {
+            background: #58a6ff;
+            box-shadow: 0 8px 32px rgba(88,166,255,0.2);
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: none;
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.2);
+        }
+        .dark-mode .btn-primary {
+            background: #58a6ff;
+            color: #0d1117;
+        }
+        .dark-mode .btn-primary:hover {
+            box-shadow: 0 8px 30px rgba(88,166,255,0.25);
+        }
+
+        .btn-primary-outline {
+            background: transparent;
+            border: 1px solid rgba(37,99,235,0.15);
+            color: #2563eb;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-primary-outline:hover {
+            background: #f0f4ff;
+            border-color: #2563eb;
+        }
+        .dark-mode .btn-primary-outline {
+            border-color: rgba(88,166,255,0.2);
+            color: #58a6ff;
+        }
+        .dark-mode .btn-primary-outline:hover {
+            background: rgba(88,166,255,0.1);
+            border-color: #58a6ff;
+        }
+
+        /* ===== COPY TOOLTIP ===== */
+        .copy-tooltip {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.4s ease, bottom 0.4s ease;
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+        .copy-tooltip.show { opacity: 1; bottom: 40px; }
+        .dark-mode .copy-tooltip {
+            background: #0d1117;
+            border-color: rgba(48,54,61,0.3);
+        }
+
+        /* ===== LINE CLAMP ===== */
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== LOAD MORE ===== */
+        .load-more-trigger {
+            text-align: center;
+            padding: 20px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+        .dark-mode .load-more-trigger {
+            color: #8b949e;
+        }
+
+        /* ===== SCROLLBAR PERSONALIZADA ===== */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 20px; }
+        .dark-mode .custom-scroll::-webkit-scrollbar-thumb { background: #30363d; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .price-tag { font-size: 18px; }
+            .product-grid-card .img-wrapper { padding: 8px; }
+            .store-header { padding: 12px 16px; }
+        }
+        @media (max-width: 480px) {
+            .price-tag { font-size: 16px; }
+            .badge-actions { gap: 2px; }
+            .badge-brand, .badge-mini, .badge-specs { font-size: 7px; padding: 1px 6px; }
+            .badge-add { width: 22px; height: 22px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== COPY TOOLTIP ===== -->
+    <div id="copyFeedback" class="copy-tooltip"><i class="fa-solid fa-check-circle mr-2"></i> Copiado</div>
+
+    <!-- ===== HEADER GLOBAL ===== -->
+    <div id="header-placeholder"></div>
+
+    <!-- ================================================================ -->
+    <!-- CONTENIDO PRINCIPAL - TIENDA                                    -->
+    <!-- ================================================================ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-28">
+        
+        <!-- ===== HEADER DE TIENDA ===== -->
+        <div class="store-header">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+                        <i class="fa-solid fa-bag-shopping text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-extrabold text-gray-900 tracking-tight dark:text-white">
+                            Catálogo <span class="text-blue-600 dark:text-blue-400">Premium</span>
+                        </h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                            <i class="fa-regular fa-circle-check text-green-500 mr-1"></i>
+                            Inventario en tiempo real
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div id="resultCount" class="text-2xl font-extrabold text-gray-900 leading-none tracking-tight dark:text-white">0</div>
+                        <div class="text-[8px] font-medium text-gray-400 tracking-[0.15em] uppercase dark:text-gray-500">Productos</div>
+                    </div>
+                    <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
+                    <div>
+                        <div id="exchangeRate" class="text-xs font-semibold text-blue-600 bg-blue-50/80 px-3 py-1.5 rounded-full border border-blue-100/50 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/30">
+                            TC: —
+                        </div>
+                        <div id="dateDisplay" class="text-[9px] text-gray-400 mt-0.5 dark:text-gray-500">
+                            <i class="fa-regular fa-clock mr-1"></i> ...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== FILTROS ===== -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                <div>
+                    <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest dark:text-gray-400 block mb-1">
+                        <i class="fa-solid fa-tag mr-1"></i> Marca
+                    </label>
+                    <select id="brandSelect" class="select-premium">
+                        <option value="">Todas las Marcas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest dark:text-gray-400 block mb-1">
+                        <i class="fa-solid fa-location-dot mr-1"></i> Sede
+                    </label>
+                    <select id="sedeSelect" class="select-premium">
+                        <option value="">Todas las Sedes</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest dark:text-gray-400 block mb-1">
+                        <i class="fa-solid fa-magnifying-glass mr-1"></i> Búsqueda
+                    </label>
+                    <input type="text" id="searchInput" class="input-premium" placeholder="Buscar productos..." />
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== LISTA DE PRODUCTOS ===== -->
+        <div id="productsList">
+            <div class="flex flex-col items-center justify-center h-64 text-gray-300 dark:text-gray-600">
+                <div class="w-8 h-8 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin mb-3 dark:border-blue-800 dark:border-t-blue-400"></div>
+                <p class="text-[10px] font-medium tracking-[0.2em] uppercase animate-pulse dark:text-gray-500">Cargando Inventario...</p>
+            </div>
+        </div>
+        <div id="loadMoreTrigger" class="load-more-trigger hidden">Cargando más productos...</div>
+    </main>
+
+    <!-- ================================================================ -->
+    <!-- PANEL CARRITO LATERAL                                           -->
+    <!-- ================================================================ -->
+    <div id="quotationPanel" class="fixed inset-y-0 right-0 w-full md:w-[480px] panel-premium z-50 transform translate-x-full transition-transform duration-300 ease-out flex flex-col shadow-2xl">
+        
+        <!-- HEADER PANEL -->
+        <div class="panel-header-premium p-4 flex justify-between items-center sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-sm dark:bg-blue-500">
+                    <i class="fa-solid fa-bag-shopping text-white text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-900 tracking-tight dark:text-white">Mi Carrito</h2>
+                    <p class="text-[8px] text-gray-400 tracking-widest uppercase font-medium dark:text-gray-500">Selección de productos</p>
+                </div>
+            </div>
+            <button id="closePanelBtn" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-400">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- CUERPO PANEL -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll">
+            
+            <!-- AGREGAR POR CÓDIGO -->
+            <div class="rounded-xl p-3 bg-gradient-to-br from-blue-50/60 to-rose-50/60 border border-blue-100/30 dark:from-blue-900/20 dark:to-rose-900/20 dark:border-blue-800/20">
+                <label class="text-[9px] font-bold uppercase text-gray-600 flex items-center gap-2 mb-1.5 tracking-[0.08em] dark:text-gray-400">
+                    <i class="fa-solid fa-keyboard text-blue-500"></i> Agregar por código
+                </label>
+                <div class="flex gap-2">
+                    <input type="text" id="quickCodeInput" class="input-premium flex-1 rounded-xl px-3 py-2 text-xs font-mono" placeholder="Ej: MINI001, MINI003">
+                    <button id="addQuickCodeBtn" class="btn-primary px-4 rounded-xl text-xs font-semibold"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <p class="text-[8px] text-gray-400 mt-1.5 dark:text-gray-500"><i class="fa-regular fa-circle-info mr-1"></i> Separa con comas o espacios</p>
+            </div>
+
+            <!-- LISTA DE PRODUCTOS -->
+            <div>
+                <div class="flex justify-between items-center mb-2 px-1">
+                    <h3 class="font-bold text-gray-600 text-[10px] tracking-widest uppercase dark:text-gray-400">
+                        <i class="fa-solid fa-list mr-2 text-blue-500"></i> Productos
+                    </h3>
+                    <button id="clearQuotationBtn" class="text-[9px] text-gray-400 hover:text-red-500 transition font-medium dark:hover:text-red-400">
+                        <i class="fa-regular fa-trash-can mr-1"></i> Limpiar
+                    </button>
+                </div>
+                <div id="quotationItemsContainer" class="rounded-xl border border-gray-100/80 bg-gray-50/50 min-h-[150px] max-h-[300px] overflow-y-auto custom-scroll dark:border-gray-800/50 dark:bg-gray-900/30">
+                    <div class="p-6 text-center text-gray-400 text-xs font-light dark:text-gray-500">🛒 Agrega productos desde el catálogo</div>
+                </div>
+            </div>
+
+            <!-- RESUMEN -->
+            <div class="rounded-xl p-3 bg-gray-50/50 border border-gray-100/80 space-y-2 dark:bg-gray-900/30 dark:border-gray-800/50">
+                <div class="flex justify-between text-xs py-0.5">
+                    <span class="text-gray-500 font-light dark:text-gray-400">Productos</span>
+                    <span id="summaryDistinct" class="font-bold text-gray-900 dark:text-white">0</span>
+                </div>
+                <div class="flex justify-between text-xs">
+                    <span class="text-gray-500 font-light dark:text-gray-400">Unidades</span>
+                    <span id="summaryUnits" class="font-bold text-gray-900 dark:text-white">0</span>
+                </div>
+                <div class="flex justify-between text-xs border-t border-gray-200/60 pt-2 dark:border-gray-800/50">
+                    <span class="text-gray-500 font-light dark:text-gray-400">Subtotal</span>
+                    <span id="summarySubtotal" class="font-bold text-blue-600 text-base dark:text-blue-400">S/ 0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 text-xs font-light flex items-center gap-2 dark:text-gray-400"><i class="fa-solid fa-truck"></i> Envío</span>
+                    <div class="flex items-center gap-2 bg-white rounded-xl px-2 py-1.5 border border-gray-200/60 dark:bg-gray-800 dark:border-gray-700">
+                        <span class="text-gray-400 text-[10px] dark:text-gray-500">S/</span>
+                        <input type="number" id="shippingCost" value="19" step="5" class="w-20 text-right border-0 focus:ring-0 text-xs font-mono font-semibold text-gray-900 bg-transparent dark:text-white">
+                    </div>
+                </div>
+                <div class="flex justify-between text-lg font-extrabold pt-2 border-t-2 border-gray-200/60 dark:border-gray-800/50">
+                    <span class="text-gray-600 dark:text-gray-400">TOTAL</span>
+                    <span id="summaryTotal" class="text-blue-600 text-xl dark:text-blue-400">S/ 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCIONES -->
+        <div class="p-4 border-t border-gray-100/80 grid grid-cols-2 gap-2 bg-gray-50/50 dark:bg-gray-900/30 dark:border-gray-800/50">
+            <button id="genWhatsappBtn" class="btn-primary py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp
+            </button>
+            <button id="genPDFBtn" class="btn-primary-outline py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
+                <i class="fa-regular fa-file-pdf"></i> PDF
+            </button>
+            <button id="printBtn" class="bg-gray-200/80 hover:bg-gray-300/80 text-gray-700 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 col-span-2 border border-gray-200/60 transition dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700">
+                <i class="fa-regular fa-print"></i> Imprimir
+            </button>
+        </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- BOTÓN FLOTANTE CARRITO                                          -->
+    <!-- ================================================================ -->
+    <button id="floatingCartBtn" class="fixed bottom-28 right-6 z-40 w-12 h-12 rounded-full float-cart flex items-center justify-center transition-all shadow-lg">
+        <i class="fa-solid fa-bag-shopping text-xl text-white"></i>
+        <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg hidden">0</span>
+    </button>
+
+    <!-- ===== FOOTER GLOBAL ===== -->
+    <div id="footer-placeholder"></div>
+
+    <!-- ===== WHATSAPP FLOTANTE ===== -->
+    <div id="whatsapp-placeholder"></div>
+
+    <!-- ================================================================ -->
+    <!-- SCRIPTS                                                         -->
+    <!-- ================================================================ -->
+
+    <!-- jQuery (para loadComponent) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- JS Global -->
+    <script src="js/main.js"></script>
+
+    <!-- JS de la Tienda -->
+    <script src="js/tienda.js"></script>
+
+</body>
+</html>

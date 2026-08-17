@@ -1,0 +1,27 @@
+ServiComp+/
+│
+├── components/
+│   ├── header.html          (✅ COMPLETO - Global)
+│   ├── footer.html          (✅ COMPLETO - Global)
+│   └── whatsapp-float.html  (✅ COMPLETO - Global)
+│
+├── js/
+│   └── main.js              (✅ COMPLETO - Funcionalidades globales)
+│
+├── css/
+│   └── style.css            (✅ COMPLETO - Estilos globales)
+│
+├── img/
+│   └── logo.png             (✅ COMPLETO )
+│
+├── index.html               (✅ COMPLETO - Página principal)
+├── servicios.html           (✅ COMPLETO - Catálogo de servicios)
+├── cotizacion.html          (✅ COMPLETO - Formulario con pestañas)
+├── software.html            (⏳ PENDIENTE - Página de software)
+├── asesor.html              (⏳ PENDIENTE - Asesoría)
+├── tienda.html              (⏳ PENDIENTE - Tienda)
+│
+├── seguimiento.html         (🟡 MEDIANO PLAZO - Sistema de tickets)
+├── promociones.html         (🟡 MEDIANO PLAZO - Ofertas)
+├── contacto.html            (🟡 MEDIANO PLAZO - Contacto completo)
+└── blog.html                (🟡 MEDIANO PLAZO - Artículos)

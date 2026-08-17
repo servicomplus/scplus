@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización | ServiComp+ - Solicita tu presupuesto personalizado</title>
+    <meta name="description" content="Solicita una cotización personalizada para servicios de soporte TI, automatización, IA o productos tecnológicos. Respuesta en menos de 24 horas.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Cotización | ServiComp+">
+    <meta property="og:description" content="Solicita tu presupuesto personalizado para servicios o productos tecnológicos.">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/1a3a5c/dc3545?text=ServiComp%2B">
+    <meta property="og:url" content="https://servicomp-plus.com/cotizacion.html">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: '#1a3a5c',
+                        'navy-light': '#2c5282',
+                        'red-custom': '#dc3545',
+                        'gray-custom': '#f0f2f5',
+                        'gray-border': '#e8eaed',
+                        'gray-text': '#6c757d',
+                        'dark-bg': '#0d1117',
+                        'dark-card': '#161b22',
+                        'dark-border': '#30363d',
+                        'dark-text': '#c9d1d9',
+                        'dark-muted': '#8b949e',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* ===== ESTILOS BASE ===== */
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* ===== MODO OSCURO CLASES ===== */
+        .dark-mode {
+            background: #0d1117 !important;
+            color: #c9d1d9 !important;
+        }
+        .dark-mode .bg-white { background: #161b22 !important; }
+        .dark-mode .bg-gray-custom { background: #0d1117 !important; }
+        .dark-mode .border-gray-border { border-color: #30363d !important; }
+        .dark-mode .text-gray-text { color: #8b949e !important; }
+        .dark-mode .text-navy { color: #58a6ff !important; }
+        .dark-mode .text-red-custom { color: #f85149 !important; }
+        .dark-mode .bg-navy { background: #58a6ff !important; }
+        .dark-mode .bg-navy-light { background: #1f6feb !important; }
+        .dark-mode .bg-blue-50 { background: #1c2333 !important; }
+        .dark-mode .border-blue-100 { border-color: #30363d !important; }
+        .dark-mode .glass-card { background: #161b22 !important; border-color: #30363d !important; }
+        .dark-mode .bg-gray-50 { background: #0d1117 !important; }
+        .dark-mode .border-gray-border { border-color: #30363d !important; }
+        .dark-mode input, .dark-mode select, .dark-mode textarea {
+            background: #0d1117 !important;
+            border-color: #30363d !important;
+            color: #c9d1d9 !important;
+        }
+        .dark-mode input::placeholder, .dark-mode textarea::placeholder {
+            color: #8b949e !important;
+        }
+
+        /* ===== BADGE EN VIVO ===== */
+        .live-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 18px 4px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+        }
+        .pulse-icon {
+            font-size: 8px;
+            color: #fff;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.6); }
+        }
+
+        /* ===== SHINE EN BOTONES ===== */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+        .btn-shine:hover::after {
+            left: 100%;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f0f2f5; }
+        ::-webkit-scrollbar-thumb { background: #1a3a5c; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2c5282; }
+        .dark-mode ::-webkit-scrollbar-track { background: #0d1117; }
+        .dark-mode ::-webkit-scrollbar-thumb { background: #58a6ff; }
+
+        /* ===== ESTILOS ADICIONALES PARA COTIZACION ===== */
+        
+        .hero-inner {
+            background: #f8f9fa;
+            padding: 32px 0 16px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dark-mode .hero-inner {
+            background: #0d1117;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            color: #1a3a5c;
+        }
+
+        .tab-btn.active {
+            color: #1a3a5c;
+            border-bottom-color: #1a3a5c;
+            background: rgba(26, 58, 92, 0.04);
+        }
+
+        .dark-mode .tab-btn {
+            color: #8b949e;
+        }
+
+        .dark-mode .tab-btn:hover {
+            color: #58a6ff;
+        }
+
+        .dark-mode .tab-btn.active {
+            color: #58a6ff;
+            border-bottom-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.08);
+        }
+
+        .tab-btn i {
+            font-size: 16px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        /* ===== CORRECCIÓN: Labels visibles en modo oscuro ===== */
+        .dark-mode .form-group label {
+            color: #c9d1d9 !important;
+        }
+
+        .form-group .required {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .form-group .help-text {
+            display: block;
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+            color: #1a1a1a;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1a3a5c;
+            box-shadow: 0 0 0 3px rgba(26, 58, 92, 0.1);
+        }
+
+        .dark-mode .form-group input,
+        .dark-mode .form-group select,
+        .dark-mode .form-group textarea {
+            background: #0d1117;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+
+        .dark-mode .form-group input:focus,
+        .dark-mode .form-group select:focus,
+        .dark-mode .form-group textarea:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #1a3a5c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-submit:hover {
+            background: #2c5282;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(26, 58, 92, 0.2);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .dark-mode .btn-submit {
+            background: #58a6ff;
+            color: #0d1117;
+        }
+
+        .dark-mode .btn-submit:hover {
+            background: #79c0ff;
+        }
+
+        .btn-submit i {
+            font-size: 16px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .dark-mode .modal-content {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .modal-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a3a5c;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dark-mode .modal-content h3 {
+            color: #58a6ff;
+        }
+
+        .modal-content p {
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .dark-mode .modal-content p {
+            color: #8b949e;
+        }
+
+        .modal-content ul {
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.8;
+            padding-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .dark-mode .modal-content ul {
+            color: #8b949e;
+        }
+
+        .modal-close-btn {
+            padding: 8px 24px;
+            background: #1a3a5c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: #2c5282;
+        }
+
+        .dark-mode .modal-close-btn {
+            background: #58a6ff;
+            color: #0d1117;
+        }
+
+        .dark-mode .modal-close-btn:hover {
+            background: #79c0ff;
+        }
+
+        .link-privacidad {
+            color: #1a3a5c;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dark-mode .link-privacidad {
+            color: #58a6ff;
+        }
+
+        .link-privacidad:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .modal-content {
+                padding: 24px 20px;
+                margin: 10px;
+            }
+            .tab-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+            .tab-btn i {
+                font-size: 14px;
+            }
+            .hero-inner {
+                padding: 20px 0 12px 0;
+            }
+            .hero-inner h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER GLOBAL ===== -->
+    <div id="header-placeholder"></div>
+
+    <!-- ===== WHATSAPP FLOTANTE ===== -->
+    <div id="whatsapp-placeholder"></div>
+
+    <!-- ============================================================ -->
+    <!-- HERO INTERNO - FONDO SIMPLE, PADDING REDUCIDO              -->
+    <!-- ============================================================ -->
+    <section class="hero-inner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <div class="flex items-center justify-center gap-3 mb-3">
+                    <span class="live-badge">
+                        <i class="fa-solid fa-circle pulse-icon"></i> EN VIVO
+                    </span>
+                    <span class="text-xs font-medium text-gray-text bg-white px-3 py-1 rounded-full border border-gray-border dark:bg-dark-card dark:border-dark-border">
+                        <i class="fa-regular fa-clock mr-1"></i> Soporte 24/7
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-navy tracking-tight leading-[1.1]">
+                    Solicita tu <span class="text-red-custom">Cotización</span>
+                </h1>
+                <p class="text-sm text-gray-text mt-2 max-w-2xl mx-auto leading-relaxed">
+                    Elige el tipo de cotización que necesitas y completa el formulario. Te responderemos en menos de 24 horas.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FORMULARIO CON PESTAÑAS                                     -->
+    <!-- ============================================================ -->
+    <section class="py-6 bg-gray-custom transition-all duration-300">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-border dark:bg-dark-card">
+                <div class="form-container">
+                    
+                    <!-- ===== TABS ===== -->
+                    <div class="tabs-container no-print">
+                        <button class="tab-btn active" data-tab="productos">
+                            <i class="fa-solid fa-box"></i> Productos
+                        </button>
+                        <button class="tab-btn" data-tab="servicios">
+                            <i class="fa-solid fa-wrench"></i> Servicios
+                        </button>
+                    </div>
+
+                    <!-- ========================================================== -->
+                    <!-- TAB: PRODUCTOS                                             -->
+                    <!-- ========================================================== -->
+                    <div id="tab-productos" class="tab-content active">
+                        <form id="formProductos" action="https://formspree.io/f/xaewpkoo" method="POST">
+                            
+                            <input type="hidden" name="tipo_cotizacion" value="producto">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_next" value="https://servicomp-plus.com/gracias.html">
+
+                            <!-- ===== CAMPO 1: Tipo de equipo ===== -->
+                            <div class="form-group">
+                                <label>
+                                    1. ¿Qué tipo de equipo estás buscando? <span class="required">*</span>
+                                </label>
+                                <select name="tipo_equipo" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="laptop">Laptop</option>
+                                    <option value="pc-escritorio">PC de Escritorio</option>
+                                    <option value="servidor">Servidor</option>
+                                    <option value="tablet">Tablet</option>
+                                    <option value="celular">Celular</option>
+                                    <option value="impresora">Impresora</option>
+                                    <option value="periferico">Periférico (mouse, teclado, monitor)</option>
+                                    <option value="componente">Componente (RAM, SSD, GPU)</option>
+                                    <option value="accesorio">Accesorio</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 2: Marca y modelo ===== -->
+                            <div class="form-group">
+                                <label>
+                                    2. Marca y modelo (opcional)
+                                </label>
+                                <input type="text" name="marca_modelo" placeholder="Ej. HP Pavilion x360, Dell Inspiron 15, etc.">
+                                <span class="help-text">Si conoces el modelo exacto, escríbelo para una cotización más precisa.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 3: Presupuesto ===== -->
+                            <div class="form-group">
+                                <label>
+                                    3. ¿Cuál es tu presupuesto estimado? <span class="required">*</span>
+                                </label>
+                                <select name="presupuesto" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="menos-500">Menos de S/ 500</option>
+                                    <option value="500-1000">S/ 500 - S/ 1,000</option>
+                                    <option value="1000-2000">S/ 1,000 - S/ 2,000</option>
+                                    <option value="2000-3500">S/ 2,000 - S/ 3,500</option>
+                                    <option value="3500-5000">S/ 3,500 - S/ 5,000</option>
+                                    <option value="5000-10000">S/ 5,000 - S/ 10,000</option>
+                                    <option value="mas-10000">Más de S/ 10,000</option>
+                                    <option value="no-definido">No tengo un presupuesto definido</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 4: ¿Para qué lo usarás? ===== -->
+                            <div class="form-group">
+                                <label>
+                                    4. ¿Para qué usarás el equipo? <span class="required">*</span>
+                                </label>
+                                <select name="uso_principal" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="oficina">Oficina / Trabajo</option>
+                                    <option value="estudio">Estudio / Educación</option>
+                                    <option value="diseño">Diseño gráfico / Arquitectura</option>
+                                    <option value="gaming">Gaming / Juegos</option>
+                                    <option value="programacion">Programación / Desarrollo</option>
+                                    <option value="edicion">Edición de video / Audio</option>
+                                    <option value="servidor">Servidor / Hosting</option>
+                                    <option value="hogar">Uso doméstico / Familiar</option>
+                                    <option value="empresa">Uso empresarial / Corporativo</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 5: Características especiales ===== -->
+                            <div class="form-group">
+                                <label>
+                                    5. ¿Tienes alguna característica especial? (opcional)
+                                </label>
+                                <textarea name="caracteristicas" placeholder="Ej. Puerto USB-C, pantalla táctil, teclado retroiluminado, batería de larga duración, GPU dedicada, etc."></textarea>
+                            </div>
+
+                            <!-- ===== CAMPO 6: Plazo ===== -->
+                            <div class="form-group">
+                                <label>
+                                    6. ¿Cuándo necesitas el equipo? <span class="required">*</span>
+                                </label>
+                                <select name="plazo" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="inmediato">Inmediato (esta semana)</option>
+                                    <option value="corto">Corto plazo (1-2 semanas)</option>
+                                    <option value="medio">Mediano plazo (3-4 semanas)</option>
+                                    <option value="largo">Largo plazo (más de 1 mes)</option>
+                                    <option value="sin-urgencia">Sin urgencia, solo cotización</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 7: Contacto ===== -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        Nombre completo <span class="required">*</span>
+                                    </label>
+                                    <input type="text" name="nombre" required placeholder="Ej. Carlos Mendoza">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Correo electrónico (opcional)
+                                    </label>
+                                    <input type="email" name="email" placeholder="tucorreo@ejemplo.com">
+                                    <span class="help-text">Si prefieres, podemos contactarte por WhatsApp.</span>
+                                </div>
+                            </div>
+
+                            <!-- ===== CAMPO 8: Teléfono / WhatsApp ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Teléfono / WhatsApp <span class="required">*</span>
+                                </label>
+                                <input type="tel" name="telefono" required placeholder="Ej. 973952322">
+                                <span class="help-text">Te contactaremos por este número para coordinar tu cotización.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 9: Mensaje adicional ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Mensaje adicional (opcional)
+                                </label>
+                                <textarea name="mensaje" placeholder="Cuéntanos más sobre tu necesidad, plazos o requerimientos especiales..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit submit-productos">
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de producto
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ========================================================== -->
+                    <!-- TAB: SERVICIOS                                             -->
+                    <!-- ========================================================== -->
+                    <div id="tab-servicios" class="tab-content">
+                        <form id="formServicios" action="https://formspree.io/f/xaewpkoo" method="POST">
+                            
+                            <input type="hidden" name="tipo_cotizacion" value="servicio">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_next" value="https://servicomp-plus.com/gracias.html">
+
+                            <!-- ===== CAMPO 1: Tipo de servicio ===== -->
+                            <div class="form-group">
+                                <label>
+                                    1. ¿Qué tipo de servicio necesitas? <span class="required">*</span>
+                                </label>
+                                <select name="tipo_servicio" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="soporte">🖥️ Soporte técnico</option>
+                                    <option value="instalacion">💻 Instalación de software</option>
+                                    <option value="redes">🌐 Configuración de redes</option>
+                                    <option value="optimizacion">🚀 Optimización de sistema</option>
+                                    <option value="seguridad">🔒 Desinfección de malware / Seguridad</option>
+                                    <option value="backup">☁️ Copias de seguridad</option>
+                                    <option value="hardware">🔧 Reparación / Upgrade de hardware</option>
+                                    <option value="automatizacion">🤖 Automatización de procesos</option>
+                                    <option value="ia">🧠 Inteligencia Artificial</option>
+                                    <option value="asesoria">📊 Asesoría tecnológica</option>
+                                    <option value="consultoria">🏢 Consultoría IT</option>
+                                    <option value="emergencia">🆘 Emergencia informática</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 2: Descripción de la incidencia ===== -->
+                            <div class="form-group">
+                                <label>
+                                    2. Describe la incidencia o necesidad <span class="required">*</span>
+                                </label>
+                                <textarea name="descripcion_incidencia" required placeholder="Ej. Mi PC no enciende, necesito instalar AutoCAD y configurar mi red, tengo un virus que no se elimina, etc."></textarea>
+                                <span class="help-text">Cuanto más detalle, mejor podremos ayudarte.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 3: Nivel de urgencia ===== -->
+                            <div class="form-group">
+                                <label>
+                                    3. ¿Cuál es el nivel de urgencia? <span class="required">*</span>
+                                </label>
+                                <select name="urgencia" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="inmediato">🆘 Urgente (hoy / ahora mismo)</option>
+                                    <option value="corto">⚠️ Corto plazo (1-3 días)</option>
+                                    <option value="medio">📅 Mediano plazo (4-7 días)</option>
+                                    <option value="largo">📆 Largo plazo (más de 1 semana)</option>
+                                    <option value="sin-urgencia">Sin urgencia, solo cotización</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 4: Horario preferido ===== -->
+                            <div class="form-group">
+                                <label>
+                                    4. Horario preferido para atención (opcional)
+                                </label>
+                                <input type="text" name="horario" placeholder="Ej. Mañanas de 9am a 12pm, después de 6pm, fines de semana, etc.">
+                                <span class="help-text">Si tienes disponibilidad limitada, indícanoslo para coordinar mejor.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 5: Contacto ===== -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        Nombre completo <span class="required">*</span>
+                                    </label>
+                                    <input type="text" name="nombre" required placeholder="Ej. Carlos Mendoza">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Correo electrónico (opcional)
+                                    </label>
+                                    <input type="email" name="email" placeholder="tucorreo@ejemplo.com">
+                                    <span class="help-text">Si prefieres, podemos contactarte por WhatsApp.</span>
+                                </div>
+                            </div>
+
+                            <!-- ===== CAMPO 6: Teléfono / WhatsApp ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Teléfono / WhatsApp <span class="required">*</span>
+                                </label>
+                                <input type="tel" name="telefono" required placeholder="Ej. 973952322">
+                                <span class="help-text">Te contactaremos por este número para coordinar tu cotización.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 7: Mensaje adicional ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Mensaje adicional (opcional)
+                                </label>
+                                <textarea name="mensaje" placeholder="Cuéntanos más sobre tu necesidad, plazos o requerimientos especiales..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit submit-servicios">
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de servicio
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ===== FOOTER DEL FORMULARIO ===== -->
+                    <div style="text-align:center;margin-top:24px;font-size:11px;color:#adb5bd;">
+                        <p>
+                            <i class="fa-regular fa-lock mr-1"></i>
+                            Tus datos están seguros. No compartimos tu información con terceros.
+                        </p>
+                        <p style="margin-top:4px;">
+                            <a class="link-privacidad" id="openPrivacyModal">Política de Privacidad</a>
+                            <span class="mx-2">|</span>
+                            <a href="/" class="link-privacidad">Volver al inicio</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODAL POLÍTICA DE PRIVACIDAD                                -->
+    <!-- ============================================================ -->
+    <div id="privacyModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3><i class="fa-regular fa-shield-halved"></i> Política de Privacidad</h3>
+            <p>
+                En <strong>ServiComp+</strong>, nos tomamos muy en serio la protección de tus datos personales. Esta política explica cómo manejamos tu información.
+            </p>
+            <ul>
+                <li><strong>🔒 Datos recopilados:</strong> Solo recopilamos la información necesaria para procesar tu cotización.</li>
+                <li><strong>📧 Uso de la información:</strong> Tus datos se utilizan exclusivamente para enviarte la proforma solicitada.</li>
+                <li><strong>🚫 No compartimos:</strong> No vendemos, alquilamos ni compartimos tu información con terceros.</li>
+                <li><strong>⏱️ Conservación:</strong> Guardamos tus datos solo el tiempo necesario para atender tu solicitud.</li>
+                <li><strong>✉️ Tus derechos:</strong> Puedes solicitar la eliminación de tus datos en cualquier momento.</li>
+            </ul>
+            <p style="font-size:12px;color:#adb5bd;text-align:center;border-top:1px solid #e9ecef;padding-top:12px;">
+                Última actualización: Agosto 2026
+            </p>
+            <div style="text-align:center;margin-top:12px;">
+                <button class="modal-close-btn" id="closePrivacyModal">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER GLOBAL                                                -->
+    <!-- ============================================================ -->
+    <div id="footer-placeholder"></div>
+
+    <!-- ============================================================ -->
+    <!-- SCRIPTS                                                     -->
+    <!-- ============================================================ -->
+    <script src="js/main.js"></script>
+    
+    <script>
+        // ===== TABS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = {
+                productos: document.getElementById('tab-productos'),
+                servicios: document.getElementById('tab-servicios')
+            };
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tab = this.dataset.tab;
+                    Object.keys(tabContents).forEach(key => {
+                        tabContents[key].classList.toggle('active', key === tab);
+                    });
+                });
+            });
+        });
+
+        // ===== MODAL POLÍTICA DE PRIVACIDAD =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('privacyModal');
+            const openBtn = document.getElementById('openPrivacyModal');
+            const closeBtn = document.getElementById('closePrivacyModal');
+
+            function abrirModal() {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function cerrarModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            if (openBtn) openBtn.addEventListener('click', abrirModal);
+            if (closeBtn) closeBtn.addEventListener('click', cerrarModal);
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) cerrarModal();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') cerrarModal();
+            });
+        });
+
+        // ===== FORMULARIO DE PRODUCTOS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formProductos');
+            const submitBtn = form.querySelector('.submit-productos');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = '#dc3545';
+                        field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
+                    } else {
+                        field.style.borderColor = '#dee2e6';
+                        field.style.boxShadow = 'none';
+                    }
+                });
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Campos incompletos',
+                        text: 'Por favor, completa todos los campos requeridos.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+                    return;
+                }
+                
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Enviando...
+                `;
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        submitBtn.style.background = '#10b981';
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-circle-check"></i>
+                            ¡Cotización enviada!
+                        `;
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Listo!',
+                            text: 'Tu cotización ha sido enviada. Te contactaremos en menos de 24 horas.',
+                            confirmButtonColor: '#1a3a5c'
+                        });
+
+                        form.reset();
+
+                        setTimeout(() => {
+                            submitBtn.style.background = '#1a3a5c';
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = `
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de producto
+                            `;
+                        }, 5000);
+
+                    } else {
+                        throw new Error('Error al enviar');
+                    }
+
+                } catch (error) {
+                    submitBtn.style.background = '#dc3545';
+                    submitBtn.innerHTML = `
+                        <i class="fa-regular fa-circle-xmark"></i>
+                        Error al enviar. Intenta de nuevo.
+                    `;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al enviar',
+                        text: 'Ocurrió un problema. Por favor, intenta de nuevo o contáctanos por WhatsApp.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+
+                    setTimeout(() => {
+                        submitBtn.style.background = '#1a3a5c';
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-paper-plane"></i>
+                            Enviar cotización de producto
+                        `;
+                    }, 4000);
+                }
+            });
+
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('input', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+                field.addEventListener('change', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+
+        // ===== FORMULARIO DE SERVICIOS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formServicios');
+            const submitBtn = form.querySelector('.submit-servicios');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = '#dc3545';
+                        field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
+                    } else {
+                        field.style.borderColor = '#dee2e6';
+                        field.style.boxShadow = 'none';
+                    }
+                });
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Campos incompletos',
+                        text: 'Por favor, completa todos los campos requeridos.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+                    return;
+                }
+                
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Enviando...
+                `;
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        submitBtn.style.background = '#10b981';
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-circle-check"></i>
+                            ¡Cotización enviada!
+                        `;
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Listo!',
+                            text: 'Tu cotización ha sido enviada. Te contactaremos en menos de 24 horas.',
+                            confirmButtonColor: '#1a3a5c'
+                        });
+
+                        form.reset();
+
+                        setTimeout(() => {
+                            submitBtn.style.background = '#1a3a5c';
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = `
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de servicio
+                            `;
+                        }, 5000);
+
+                    } else {
+                        throw new Error('Error al enviar');
+                    }
+
+                } catch (error) {
+                    submitBtn.style.background = '#dc3545';
+                    submitBtn.innerHTML = `
+                        <i class="fa-regular fa-circle-xmark"></i>
+                        Error al enviar. Intenta de nuevo.
+                    `;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al enviar',
+                        text: 'Ocurrió un problema. Por favor, intenta de nuevo o contáctanos por WhatsApp.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+
+                    setTimeout(() => {
+                        submitBtn.style.background = '#1a3a5c';
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-paper-plane"></i>
+                            Enviar cotización de servicio
+                        `;
+                    }, 4000);
+                }
+            });
+
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('input', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+                field.addEventListener('change', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
