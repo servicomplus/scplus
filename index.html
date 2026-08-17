@@ -14,6 +14,9 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     
+    <!-- BASE para GitHub Pages -->
+    <base href="/scplus/">
+    
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
     
@@ -53,7 +56,7 @@
     </script>
     
     <!-- CSS Principal -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -107,7 +110,7 @@
                             <i class="fa-brands fa-whatsapp text-lg"></i>
                             <span>Atención Inmediata</span>
                         </a>
-                        <a href="/cotizacion.html"
+                        <a href="cotizacion.html"
                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-navy border border-gray-border font-semibold text-sm px-6 py-3.5 rounded-xl transition-all shadow-sm hover:shadow-md">
                             <i class="fa-regular fa-file-lines"></i>
                             <span>Solicitar Cotización</span>
@@ -281,7 +284,7 @@
             </div>
             
             <div class="text-center mt-10">
-                <a href="/servicios.html" class="inline-flex items-center gap-2 bg-navy hover:bg-navy-light text-white font-semibold text-sm px-8 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-navy/20 btn-shine">
+                <a href="servicios.html" class="inline-flex items-center gap-2 bg-navy hover:bg-navy-light text-white font-semibold text-sm px-8 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-navy/20 btn-shine">
                     Ver todos los servicios
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
@@ -392,39 +395,7 @@
     <!-- ============================================================ -->
     <!-- SCRIPTS                                                     -->
     <!-- ============================================================ -->
-    <script src="/js/main.js"></script>
-
-    <!-- Carga de componentes -->
-    <script>
-        // Cargar componentes al inicio
-        document.addEventListener('DOMContentLoaded', function() {
-            // Cargar header
-            fetch('/components/header.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('header-placeholder').innerHTML = html;
-                    // Re-ejecutar la lógica del header después de cargarlo
-                    if (typeof initHeader === 'function') initHeader();
-                })
-                .catch(err => console.error('Error loading header:', err));
-            
-            // Cargar footer
-            fetch('/components/footer.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('footer-placeholder').innerHTML = html;
-                })
-                .catch(err => console.error('Error loading footer:', err));
-            
-            // Cargar WhatsApp float
-            fetch('/components/whatsapp-float.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('whatsapp-placeholder').innerHTML = html;
-                })
-                .catch(err => console.error('Error loading whatsapp:', err));
-        });
-    </script>
+    <script src="js/main.js"></script>
 
 </body>
 </html>

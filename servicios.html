@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicios | ServiComp+ - Soporte TI, Automatización e IA</title>
-    <meta name="description" content="Descubre todos los servicios de soporte técnico, automatización e IA que ofrecemos en ServiComp+. Más de 17 años de experiencia.">
+    <title>Cotización | ServiComp+ - Solicita tu presupuesto personalizado</title>
+    <meta name="description" content="Solicita una cotización personalizada para servicios de soporte TI, automatización, IA o productos tecnológicos. Respuesta en menos de 24 horas.">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="Servicios | ServiComp+">
-    <meta property="og:description" content="Soporte TI, Automatización e IA para empresas, profesionales y emprendedores.">
+    <meta property="og:title" content="Cotización | ServiComp+">
+    <meta property="og:description" content="Solicita tu presupuesto personalizado para servicios o productos tecnológicos.">
     <meta property="og:image" content="https://via.placeholder.com/1200x630/1a3a5c/dc3545?text=ServiComp%2B">
-    <meta property="og:url" content="https://servicomp-plus.com/servicios.html">
+    <meta property="og:url" content="https://servicomp-plus.com/cotizacion.html">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- BASE para GitHub Pages -->
+    <base href="/scplus/">
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
@@ -24,6 +27,9 @@
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -55,656 +61,781 @@
     <link rel="stylesheet" href="css/style.css">
     
     <style>
-        /* ===== ESTILOS ADICIONALES PARA SERVICIOS ===== */
+        /* ===== ESTILOS BASE ===== */
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* ===== MODO OSCURO CLASES ===== */
+        .dark-mode {
+            background: #0d1117 !important;
+            color: #c9d1d9 !important;
+        }
+        .dark-mode .bg-white { background: #161b22 !important; }
+        .dark-mode .bg-gray-custom { background: #0d1117 !important; }
+        .dark-mode .border-gray-border { border-color: #30363d !important; }
+        .dark-mode .text-gray-text { color: #8b949e !important; }
+        .dark-mode .text-navy { color: #58a6ff !important; }
+        .dark-mode .text-red-custom { color: #f85149 !important; }
+        .dark-mode .bg-navy { background: #58a6ff !important; }
+        .dark-mode .bg-navy-light { background: #1f6feb !important; }
+        .dark-mode .bg-blue-50 { background: #1c2333 !important; }
+        .dark-mode .border-blue-100 { border-color: #30363d !important; }
+        .dark-mode .glass-card { background: #161b22 !important; border-color: #30363d !important; }
+        .dark-mode .bg-gray-50 { background: #0d1117 !important; }
+        .dark-mode .border-gray-border { border-color: #30363d !important; }
+        .dark-mode input, .dark-mode select, .dark-mode textarea {
+            background: #0d1117 !important;
+            border-color: #30363d !important;
+            color: #c9d1d9 !important;
+        }
+        .dark-mode input::placeholder, .dark-mode textarea::placeholder {
+            color: #8b949e !important;
+        }
+
+        /* ===== BADGE EN VIVO ===== */
+        .live-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 18px 4px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+        }
+        .pulse-icon {
+            font-size: 8px;
+            color: #fff;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.6); }
+        }
+
+        /* ===== SHINE EN BOTONES ===== */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+        .btn-shine:hover::after {
+            left: 100%;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f0f2f5; }
+        ::-webkit-scrollbar-thumb { background: #1a3a5c; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2c5282; }
+        .dark-mode ::-webkit-scrollbar-track { background: #0d1117; }
+        .dark-mode ::-webkit-scrollbar-thumb { background: #58a6ff; }
+
+        /* ===== ESTILOS ADICIONALES PARA COTIZACION ===== */
         
-        /* Filtros de categoría */
-        .filter-btn {
-            padding: 8px 18px;
-            border-radius: 9999px;
-            font-size: 13px;
+        .hero-inner {
+            background: #f8f9fa;
+            padding: 32px 0 16px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dark-mode .hero-inner {
+            background: #0d1117;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border-radius: 8px 8px 0 0;
             font-weight: 600;
+            font-size: 14px;
             transition: all 0.3s ease;
-            background: white;
-            border: 1px solid #e8eaed;
+            background: transparent;
+            border: none;
             color: #6c757d;
             cursor: pointer;
-            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 3px solid transparent;
         }
-        .filter-btn:hover {
-            border-color: #1a3a5c;
+
+        .tab-btn:hover {
             color: #1a3a5c;
         }
-        .filter-btn.active {
-            background: #1a3a5c;
-            color: white;
-            border-color: #1a3a5c;
-            box-shadow: 0 4px 16px rgba(26, 58, 92, 0.25);
+
+        .tab-btn.active {
+            color: #1a3a5c;
+            border-bottom-color: #1a3a5c;
+            background: rgba(26, 58, 92, 0.04);
         }
-        .dark-mode .filter-btn {
-            background: #161b22;
-            border-color: #30363d;
+
+        .dark-mode .tab-btn {
             color: #8b949e;
         }
-        .dark-mode .filter-btn:hover {
-            border-color: #58a6ff;
+
+        .dark-mode .tab-btn:hover {
             color: #58a6ff;
         }
-        .dark-mode .filter-btn.active {
-            background: #58a6ff;
-            color: #0d1117;
-            border-color: #58a6ff;
+
+        .dark-mode .tab-btn.active {
+            color: #58a6ff;
+            border-bottom-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.08);
         }
 
-        /* Cards de servicios */
-        .service-card-full {
-            background: white;
-            border: 1px solid #e8eaed;
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .service-card-full:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 48px rgba(26, 58, 92, 0.10);
-            border-color: #1a3a5c;
-        }
-        .service-card-full .icon-wrapper {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 14px;
-            flex-shrink: 0;
-        }
-        .service-card-full .icon-wrapper.blue { background: #e8f0fe; color: #1a3a5c; }
-        .service-card-full .icon-wrapper.red { background: #fde8ea; color: #dc3545; }
-        .service-card-full .icon-wrapper.green { background: #e6f7ed; color: #10b981; }
-        .service-card-full .icon-wrapper.purple { background: #f0ebff; color: #7c3aed; }
-        .service-card-full .icon-wrapper.amber { background: #fef3c7; color: #b45309; }
-        .service-card-full .icon-wrapper.indigo { background: #e8edf5; color: #4f46e5; }
-        .service-card-full .icon-wrapper.teal { background: #e6f7f7; color: #0d9488; }
-        .service-card-full .icon-wrapper.pink { background: #fce7f3; color: #db2777; }
-        .service-card-full .icon-wrapper.orange { background: #fff3e0; color: #e65100; }
-        .service-card-full .icon-wrapper.cyan { background: #e0f7fa; color: #00838f; }
-
-        .dark-mode .service-card-full {
-            background: #161b22;
-            border-color: #30363d;
-        }
-        .dark-mode .service-card-full:hover {
-            border-color: #58a6ff;
+        .tab-btn i {
+            font-size: 16px;
         }
 
-        /* Animación de entrada */
-        .service-card-full {
-            opacity: 0;
-            animation: fadeInUp 0.5s ease forwards;
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
-        .service-card-full:nth-child(1) { animation-delay: 0.03s; }
-        .service-card-full:nth-child(2) { animation-delay: 0.06s; }
-        .service-card-full:nth-child(3) { animation-delay: 0.09s; }
-        .service-card-full:nth-child(4) { animation-delay: 0.12s; }
-        .service-card-full:nth-child(5) { animation-delay: 0.15s; }
-        .service-card-full:nth-child(6) { animation-delay: 0.18s; }
-        .service-card-full:nth-child(7) { animation-delay: 0.21s; }
-        .service-card-full:nth-child(8) { animation-delay: 0.24s; }
-        .service-card-full:nth-child(9) { animation-delay: 0.27s; }
-        .service-card-full:nth-child(10) { animation-delay: 0.30s; }
-        .service-card-full:nth-child(11) { animation-delay: 0.33s; }
-        .service-card-full:nth-child(12) { animation-delay: 0.36s; }
-        .service-card-full:nth-child(13) { animation-delay: 0.39s; }
-        .service-card-full:nth-child(14) { animation-delay: 0.42s; }
-        .service-card-full:nth-child(15) { animation-delay: 0.45s; }
-        .service-card-full:nth-child(16) { animation-delay: 0.48s; }
-        .service-card-full:nth-child(17) { animation-delay: 0.51s; }
-        .service-card-full:nth-child(18) { animation-delay: 0.54s; }
-        .service-card-full:nth-child(19) { animation-delay: 0.57s; }
-        .service-card-full:nth-child(20) { animation-delay: 0.60s; }
-        .service-card-full:nth-child(21) { animation-delay: 0.63s; }
-        .service-card-full:nth-child(22) { animation-delay: 0.66s; }
-        .service-card-full:nth-child(23) { animation-delay: 0.69s; }
-        .service-card-full:nth-child(24) { animation-delay: 0.72s; }
-        .service-card-full:nth-child(25) { animation-delay: 0.75s; }
-        .service-card-full:nth-child(26) { animation-delay: 0.78s; }
-        .service-card-full:nth-child(27) { animation-delay: 0.81s; }
-        .service-card-full:nth-child(28) { animation-delay: 0.84s; }
-        .service-card-full:nth-child(29) { animation-delay: 0.87s; }
-        .service-card-full:nth-child(30) { animation-delay: 0.90s; }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Hero interno */
-        .hero-inner {
-            background: linear-gradient(135deg, #1a3a5c 0%, #2c5282 50%, #1a3a5c 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-inner::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 60%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .hero-inner::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -10%;
-            width: 40%;
-            height: 150%;
-            background: radial-gradient(circle, rgba(220, 53, 69, 0.08) 0%, transparent 70%);
-            pointer-events: none;
+        .form-container {
+            max-width: 680px;
+            margin: 0 auto;
         }
 
-        /* CTA flotante al final */
-        .cta-banner {
-            background: linear-gradient(135deg, #1a3a5c, #2c5282);
-            border-radius: 20px;
-            padding: 48px;
-            position: relative;
-            overflow: hidden;
-        }
-        .cta-banner::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 50%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-            pointer-events: none;
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        /* ===== FILTRO QUIETO - SIN STICKY ===== */
-        .filter-section {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid #e8eaed;
-            padding: 14px 0;
-            transition: all 0.3s ease;
-        }
-        .dark-mode .filter-section {
-            background: rgba(13, 17, 23, 0.95);
-            border-bottom-color: #30363d;
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 4px;
         }
 
-        .filter-container {
+        /* ===== CORRECCIÓN: Labels visibles en modo oscuro ===== */
+        .dark-mode .form-group label {
+            color: #c9d1d9 !important;
+        }
+
+        .form-group .required {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .form-group .help-text {
+            display: block;
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+            color: #1a1a1a;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1a3a5c;
+            box-shadow: 0 0 0 3px rgba(26, 58, 92, 0.1);
+        }
+
+        .dark-mode .form-group input,
+        .dark-mode .form-group select,
+        .dark-mode .form-group textarea {
+            background: #0d1117;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+
+        .dark-mode .form-group input:focus,
+        .dark-mode .form-group select:focus,
+        .dark-mode .form-group textarea:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #1a3a5c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
             align-items: center;
-            gap: 8px;
-        }
-        .filter-container .filter-btn {
-            flex: 0 1 auto;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .filter-section {
-                padding: 10px 0;
+        .btn-submit:hover {
+            background: #2c5282;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(26, 58, 92, 0.2);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .dark-mode .btn-submit {
+            background: #58a6ff;
+            color: #0d1117;
+        }
+
+        .dark-mode .btn-submit:hover {
+            background: #79c0ff;
+        }
+
+        .btn-submit i {
+            font-size: 16px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .dark-mode .modal-content {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .modal-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a3a5c;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dark-mode .modal-content h3 {
+            color: #58a6ff;
+        }
+
+        .modal-content p {
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .dark-mode .modal-content p {
+            color: #8b949e;
+        }
+
+        .modal-content ul {
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.8;
+            padding-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .dark-mode .modal-content ul {
+            color: #8b949e;
+        }
+
+        .modal-close-btn {
+            padding: 8px 24px;
+            background: #1a3a5c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: #2c5282;
+        }
+
+        .dark-mode .modal-close-btn {
+            background: #58a6ff;
+            color: #0d1117;
+        }
+
+        .dark-mode .modal-close-btn:hover {
+            background: #79c0ff;
+        }
+
+        .link-privacidad {
+            color: #1a3a5c;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dark-mode .link-privacidad {
+            color: #58a6ff;
+        }
+
+        .link-privacidad:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
             }
-            .filter-section .filter-btn {
-                padding: 6px 12px;
-                font-size: 11px;
+            .modal-content {
+                padding: 24px 20px;
+                margin: 10px;
             }
-            .filter-container {
-                gap: 6px;
+            .tab-btn {
+                padding: 8px 14px;
+                font-size: 12px;
             }
-            .cta-banner {
-                padding: 28px 20px;
-            }
-            .service-card-full {
-                padding: 18px;
-            }
-            .service-card-full .icon-wrapper {
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
+            .tab-btn i {
+                font-size: 14px;
             }
             .hero-inner {
-                padding: 40px 0;
+                padding: 20px 0 12px 0;
             }
             .hero-inner h1 {
                 font-size: 2rem;
-            }
-        }
-        @media (max-width: 480px) {
-            .filter-section {
-                padding: 8px 0;
-            }
-            .filter-section .filter-btn {
-                padding: 4px 10px;
-                font-size: 10px;
-            }
-            .filter-container {
-                gap: 4px;
-            }
-            .hero-inner h1 {
-                font-size: 1.75rem;
-            }
-            .hero-inner .text-lg {
-                font-size: 0.95rem;
-            }
-        }
-        @media (max-width: 400px) {
-            .filter-section .filter-btn {
-                padding: 3px 8px;
-                font-size: 9px;
-            }
-            .filter-container {
-                gap: 3px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
+    <!-- ===== HEADER GLOBAL ===== -->
     <div id="header-placeholder"></div>
 
     <!-- ===== WHATSAPP FLOTANTE ===== -->
     <div id="whatsapp-placeholder"></div>
 
     <!-- ============================================================ -->
-    <!-- HERO INTERNO - SERVICIOS                                    -->
+    <!-- HERO INTERNO - FONDO SIMPLE, PADDING REDUCIDO              -->
     <!-- ============================================================ -->
-    <section class="hero-inner py-20 md:py-28">
+    <section class="hero-inner">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center max-w-4xl mx-auto">
-                <div class="flex flex-wrap items-center justify-center gap-3 mb-4">
+            <div class="text-center max-w-3xl mx-auto">
+                <div class="flex items-center justify-center gap-3 mb-3">
                     <span class="live-badge">
                         <i class="fa-solid fa-circle pulse-icon"></i> EN VIVO
                     </span>
-                    <span class="text-xs font-medium text-white/70 bg-white/10 px-3 py-1 rounded-full border border-white/10">
+                    <span class="text-xs font-medium text-gray-text bg-white px-3 py-1 rounded-full border border-gray-border dark:bg-dark-card dark:border-dark-border">
                         <i class="fa-regular fa-clock mr-1"></i> Soporte 24/7
                     </span>
-                    <span class="text-xs font-medium text-white/70 bg-green-500/20 px-3 py-1 rounded-full border border-green-400/30">
-                        <i class="fa-regular fa-circle-check mr-1"></i> Diagnóstico Gratuito
-                    </span>
                 </div>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1]">
-                    Nuestros <span class="text-red-custom">Servicios</span>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-navy tracking-tight leading-[1.1]">
+                    Solicita tu <span class="text-red-custom">Cotización</span>
                 </h1>
-                <p class="text-base md:text-lg text-white/80 mt-4 max-w-3xl mx-auto leading-relaxed">
-                    Soluciones integrales de soporte TI, asesoría, automatización e inteligencia artificial para empresas, profesionales y emprendedores. Tenemos más de <strong class="text-white">17 años de experiencia</strong>.
+                <p class="text-sm text-gray-text mt-2 max-w-2xl mx-auto leading-relaxed">
+                    Elige el tipo de cotización que necesitas y completa el formulario. Te responderemos en menos de 24 horas.
                 </p>
-                <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
-                    <span class="text-xs text-white/60 uppercase tracking-wider flex items-center gap-1.5">🌍 Cobertura Global</span>
-                    <span class="w-1 h-1 rounded-full bg-white/30"></span>
-                    <span class="text-xs text-white/60 uppercase tracking-wider flex items-center gap-1.5">🖥️ Soporte Remoto</span>
-                    <span class="w-1 h-1 rounded-full bg-white/30"></span>
-                    <span class="text-xs text-white/60 uppercase tracking-wider flex items-center gap-1.5">🤝 Atención Personalizada</span>
-                    <span class="w-1 h-1 rounded-full bg-white/30"></span>
-                    <span class="text-xs text-white/60 uppercase tracking-wider flex items-center gap-1.5">✅ Diagnóstico Gratuito</span>
-                </div>
             </div>
         </div>
     </section>
 
     <!-- ============================================================ -->
-    <!-- FILTROS POR CATEGORÍA - QUIETO (SIN STICKY)                -->
+    <!-- FORMULARIO CON PESTAÑAS                                     -->
     <!-- ============================================================ -->
-    <div class="filter-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="filter-container">
-                <button class="filter-btn active" data-filter="all">📋 Todos</button>
-                <button class="filter-btn" data-filter="soporte">🖥️ Soporte</button>
-                <button class="filter-btn" data-filter="datos">💾 Datos</button>
-                <button class="filter-btn" data-filter="seguridad">🔐 Seguridad</button>
-                <button class="filter-btn" data-filter="redes">🌐 Redes</button>
-                <button class="filter-btn" data-filter="hardware">🔧 Hardware</button>
-                <button class="filter-btn" data-filter="laptops">💻 Laptops</button>
-                <button class="filter-btn" data-filter="gaming">🎮 Gaming</button>
-                <button class="filter-btn" data-filter="software">👨‍💻 Software</button>
-                <button class="filter-btn" data-filter="empresas">🏢 Empresas</button>
-                <button class="filter-btn" data-filter="ia">🤖 IA</button>
-                <button class="filter-btn" data-filter="emergencia">🆘 Emergencia</button>
+    <section class="py-6 bg-gray-custom transition-all duration-300">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-border dark:bg-dark-card">
+                <div class="form-container">
+                    
+                    <!-- ===== TABS ===== -->
+                    <div class="tabs-container no-print">
+                        <button class="tab-btn active" data-tab="productos">
+                            <i class="fa-solid fa-box"></i> Productos
+                        </button>
+                        <button class="tab-btn" data-tab="servicios">
+                            <i class="fa-solid fa-wrench"></i> Servicios
+                        </button>
+                    </div>
+
+                    <!-- ========================================================== -->
+                    <!-- TAB: PRODUCTOS                                             -->
+                    <!-- ========================================================== -->
+                    <div id="tab-productos" class="tab-content active">
+                        <form id="formProductos" action="https://formspree.io/f/xaewpkoo" method="POST">
+                            
+                            <input type="hidden" name="tipo_cotizacion" value="producto">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_next" value="https://servicomp-plus.com/gracias.html">
+
+                            <!-- ===== CAMPO 1: Tipo de equipo ===== -->
+                            <div class="form-group">
+                                <label>
+                                    1. ¿Qué tipo de equipo estás buscando? <span class="required">*</span>
+                                </label>
+                                <select name="tipo_equipo" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="laptop">Laptop</option>
+                                    <option value="pc-escritorio">PC de Escritorio</option>
+                                    <option value="servidor">Servidor</option>
+                                    <option value="tablet">Tablet</option>
+                                    <option value="celular">Celular</option>
+                                    <option value="impresora">Impresora</option>
+                                    <option value="periferico">Periférico (mouse, teclado, monitor)</option>
+                                    <option value="componente">Componente (RAM, SSD, GPU)</option>
+                                    <option value="accesorio">Accesorio</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 2: Marca y modelo ===== -->
+                            <div class="form-group">
+                                <label>
+                                    2. Marca y modelo (opcional)
+                                </label>
+                                <input type="text" name="marca_modelo" placeholder="Ej. HP Pavilion x360, Dell Inspiron 15, etc.">
+                                <span class="help-text">Si conoces el modelo exacto, escríbelo para una cotización más precisa.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 3: Presupuesto ===== -->
+                            <div class="form-group">
+                                <label>
+                                    3. ¿Cuál es tu presupuesto estimado? <span class="required">*</span>
+                                </label>
+                                <select name="presupuesto" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="menos-500">Menos de S/ 500</option>
+                                    <option value="500-1000">S/ 500 - S/ 1,000</option>
+                                    <option value="1000-2000">S/ 1,000 - S/ 2,000</option>
+                                    <option value="2000-3500">S/ 2,000 - S/ 3,500</option>
+                                    <option value="3500-5000">S/ 3,500 - S/ 5,000</option>
+                                    <option value="5000-10000">S/ 5,000 - S/ 10,000</option>
+                                    <option value="mas-10000">Más de S/ 10,000</option>
+                                    <option value="no-definido">No tengo un presupuesto definido</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 4: ¿Para qué lo usarás? ===== -->
+                            <div class="form-group">
+                                <label>
+                                    4. ¿Para qué usarás el equipo? <span class="required">*</span>
+                                </label>
+                                <select name="uso_principal" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="oficina">Oficina / Trabajo</option>
+                                    <option value="estudio">Estudio / Educación</option>
+                                    <option value="diseño">Diseño gráfico / Arquitectura</option>
+                                    <option value="gaming">Gaming / Juegos</option>
+                                    <option value="programacion">Programación / Desarrollo</option>
+                                    <option value="edicion">Edición de video / Audio</option>
+                                    <option value="servidor">Servidor / Hosting</option>
+                                    <option value="hogar">Uso doméstico / Familiar</option>
+                                    <option value="empresa">Uso empresarial / Corporativo</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 5: Características especiales ===== -->
+                            <div class="form-group">
+                                <label>
+                                    5. ¿Tienes alguna característica especial? (opcional)
+                                </label>
+                                <textarea name="caracteristicas" placeholder="Ej. Puerto USB-C, pantalla táctil, teclado retroiluminado, batería de larga duración, GPU dedicada, etc."></textarea>
+                            </div>
+
+                            <!-- ===== CAMPO 6: Plazo ===== -->
+                            <div class="form-group">
+                                <label>
+                                    6. ¿Cuándo necesitas el equipo? <span class="required">*</span>
+                                </label>
+                                <select name="plazo" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="inmediato">Inmediato (esta semana)</option>
+                                    <option value="corto">Corto plazo (1-2 semanas)</option>
+                                    <option value="medio">Mediano plazo (3-4 semanas)</option>
+                                    <option value="largo">Largo plazo (más de 1 mes)</option>
+                                    <option value="sin-urgencia">Sin urgencia, solo cotización</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 7: Contacto ===== -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        Nombre completo <span class="required">*</span>
+                                    </label>
+                                    <input type="text" name="nombre" required placeholder="Ej. Carlos Mendoza">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Correo electrónico (opcional)
+                                    </label>
+                                    <input type="email" name="email" placeholder="tucorreo@ejemplo.com">
+                                    <span class="help-text">Si prefieres, podemos contactarte por WhatsApp.</span>
+                                </div>
+                            </div>
+
+                            <!-- ===== CAMPO 8: Teléfono / WhatsApp ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Teléfono / WhatsApp <span class="required">*</span>
+                                </label>
+                                <input type="tel" name="telefono" required placeholder="Ej. 973952322">
+                                <span class="help-text">Te contactaremos por este número para coordinar tu cotización.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 9: Mensaje adicional ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Mensaje adicional (opcional)
+                                </label>
+                                <textarea name="mensaje" placeholder="Cuéntanos más sobre tu necesidad, plazos o requerimientos especiales..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit submit-productos">
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de producto
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ========================================================== -->
+                    <!-- TAB: SERVICIOS                                             -->
+                    <!-- ========================================================== -->
+                    <div id="tab-servicios" class="tab-content">
+                        <form id="formServicios" action="https://formspree.io/f/xaewpkoo" method="POST">
+                            
+                            <input type="hidden" name="tipo_cotizacion" value="servicio">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_next" value="https://servicomp-plus.com/gracias.html">
+
+                            <!-- ===== CAMPO 1: Tipo de servicio ===== -->
+                            <div class="form-group">
+                                <label>
+                                    1. ¿Qué tipo de servicio necesitas? <span class="required">*</span>
+                                </label>
+                                <select name="tipo_servicio" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="soporte">🖥️ Soporte técnico</option>
+                                    <option value="instalacion">💻 Instalación de software</option>
+                                    <option value="redes">🌐 Configuración de redes</option>
+                                    <option value="optimizacion">🚀 Optimización de sistema</option>
+                                    <option value="seguridad">🔒 Desinfección de malware / Seguridad</option>
+                                    <option value="backup">☁️ Copias de seguridad</option>
+                                    <option value="hardware">🔧 Reparación / Upgrade de hardware</option>
+                                    <option value="automatizacion">🤖 Automatización de procesos</option>
+                                    <option value="ia">🧠 Inteligencia Artificial</option>
+                                    <option value="asesoria">📊 Asesoría tecnológica</option>
+                                    <option value="consultoria">🏢 Consultoría IT</option>
+                                    <option value="emergencia">🆘 Emergencia informática</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 2: Descripción de la incidencia ===== -->
+                            <div class="form-group">
+                                <label>
+                                    2. Describe la incidencia o necesidad <span class="required">*</span>
+                                </label>
+                                <textarea name="descripcion_incidencia" required placeholder="Ej. Mi PC no enciende, necesito instalar AutoCAD y configurar mi red, tengo un virus que no se elimina, etc."></textarea>
+                                <span class="help-text">Cuanto más detalle, mejor podremos ayudarte.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 3: Nivel de urgencia ===== -->
+                            <div class="form-group">
+                                <label>
+                                    3. ¿Cuál es el nivel de urgencia? <span class="required">*</span>
+                                </label>
+                                <select name="urgencia" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="inmediato">🆘 Urgente (hoy / ahora mismo)</option>
+                                    <option value="corto">⚠️ Corto plazo (1-3 días)</option>
+                                    <option value="medio">📅 Mediano plazo (4-7 días)</option>
+                                    <option value="largo">📆 Largo plazo (más de 1 semana)</option>
+                                    <option value="sin-urgencia">Sin urgencia, solo cotización</option>
+                                </select>
+                            </div>
+
+                            <!-- ===== CAMPO 4: Horario preferido ===== -->
+                            <div class="form-group">
+                                <label>
+                                    4. Horario preferido para atención (opcional)
+                                </label>
+                                <input type="text" name="horario" placeholder="Ej. Mañanas de 9am a 12pm, después de 6pm, fines de semana, etc.">
+                                <span class="help-text">Si tienes disponibilidad limitada, indícanoslo para coordinar mejor.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 5: Contacto ===== -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        Nombre completo <span class="required">*</span>
+                                    </label>
+                                    <input type="text" name="nombre" required placeholder="Ej. Carlos Mendoza">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Correo electrónico (opcional)
+                                    </label>
+                                    <input type="email" name="email" placeholder="tucorreo@ejemplo.com">
+                                    <span class="help-text">Si prefieres, podemos contactarte por WhatsApp.</span>
+                                </div>
+                            </div>
+
+                            <!-- ===== CAMPO 6: Teléfono / WhatsApp ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Teléfono / WhatsApp <span class="required">*</span>
+                                </label>
+                                <input type="tel" name="telefono" required placeholder="Ej. 973952322">
+                                <span class="help-text">Te contactaremos por este número para coordinar tu cotización.</span>
+                            </div>
+
+                            <!-- ===== CAMPO 7: Mensaje adicional ===== -->
+                            <div class="form-group">
+                                <label>
+                                    Mensaje adicional (opcional)
+                                </label>
+                                <textarea name="mensaje" placeholder="Cuéntanos más sobre tu necesidad, plazos o requerimientos especiales..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit submit-servicios">
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de servicio
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ===== FOOTER DEL FORMULARIO ===== -->
+                    <div style="text-align:center;margin-top:24px;font-size:11px;color:#adb5bd;">
+                        <p>
+                            <i class="fa-regular fa-lock mr-1"></i>
+                            Tus datos están seguros. No compartimos tu información con terceros.
+                        </p>
+                        <p style="margin-top:4px;">
+                            <a class="link-privacidad" id="openPrivacyModal">Política de Privacidad</a>
+                            <span class="mx-2">|</span>
+                            <a href="index.html" class="link-privacidad">Volver al inicio</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODAL POLÍTICA DE PRIVACIDAD                                -->
+    <!-- ============================================================ -->
+    <div id="privacyModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3><i class="fa-regular fa-shield-halved"></i> Política de Privacidad</h3>
+            <p>
+                En <strong>ServiComp+</strong>, nos tomamos muy en serio la protección de tus datos personales. Esta política explica cómo manejamos tu información.
+            </p>
+            <ul>
+                <li><strong>🔒 Datos recopilados:</strong> Solo recopilamos la información necesaria para procesar tu cotización.</li>
+                <li><strong>📧 Uso de la información:</strong> Tus datos se utilizan exclusivamente para enviarte la proforma solicitada.</li>
+                <li><strong>🚫 No compartimos:</strong> No vendemos, alquilamos ni compartimos tu información con terceros.</li>
+                <li><strong>⏱️ Conservación:</strong> Guardamos tus datos solo el tiempo necesario para atender tu solicitud.</li>
+                <li><strong>✉️ Tus derechos:</strong> Puedes solicitar la eliminación de tus datos en cualquier momento.</li>
+            </ul>
+            <p style="font-size:12px;color:#adb5bd;text-align:center;border-top:1px solid #e9ecef;padding-top:12px;">
+                Última actualización: Agosto 2026
+            </p>
+            <div style="text-align:center;margin-top:12px;">
+                <button class="modal-close-btn" id="closePrivacyModal">Entendido</button>
             </div>
         </div>
     </div>
 
     <!-- ============================================================ -->
-    <!-- MATRIZ COMPLETA DE SERVICIOS                               -->
-    <!-- ============================================================ -->
-    <section class="py-12 bg-gray-custom transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <!-- Contador de servicios -->
-            <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
-                <div>
-                    <h2 class="text-2xl font-bold text-navy">Todos los Servicios</h2>
-                    <p class="text-sm text-gray-text">Encuentra la solución que necesitas</p>
-                </div>
-                <span class="text-sm font-medium text-gray-text bg-white px-4 py-2 rounded-full border border-gray-border">
-                    <span id="serviceCount">30</span> servicios disponibles
-                </span>
-            </div>
-
-            <!-- Grid de Servicios -->
-            <div id="servicesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🖥️ SOPORTE Y SISTEMAS                          -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="soporte">
-                    <div class="icon-wrapper blue"><i class="fa-solid fa-windows"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Instalación de Windows</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Instalación limpia de Windows, formateo, clonación de discos y migración HDD → SSD.</p>
-                </div>
-
-                <div class="service-card-full" data-category="soporte">
-                    <div class="icon-wrapper amber"><i class="fa-solid fa-rotate"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Actualización de Windows</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Actualización del sistema operativo, reparación de errores y configuración de usuarios.</p>
-                </div>
-
-                <div class="service-card-full" data-category="soporte">
-                    <div class="icon-wrapper green"><i class="fa-solid fa-gauge-high"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Optimización del Sistema</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Limpieza de archivos, optimización de arranque, configuración de copias de seguridad y puntos de restauración.</p>
-                </div>
-
-                <div class="service-card-full" data-category="soporte">
-                    <div class="icon-wrapper red"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Reparación de Errores</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Reparación de errores de Windows, recuperación del sistema y reparación del arranque.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 💾 DATOS Y ALMACENAMIENTO                     -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="datos">
-                    <div class="icon-wrapper teal"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Copias de Seguridad</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Configuración de copias de seguridad automáticas, restauración del sistema y puntos de restauración.</p>
-                </div>
-
-                <div class="service-card-full" data-category="datos">
-                    <div class="icon-wrapper amber"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Migración de Datos</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Copia y migración de datos, clonación de discos, configuración de discos externos y almacenamiento en red.</p>
-                </div>
-
-                <div class="service-card-full" data-category="datos">
-                    <div class="icon-wrapper purple"><i class="fa-solid fa-folder-tree"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Organización de Archivos</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Organización de archivos, sincronización con OneDrive/Google Drive y configuración de almacenamiento.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🔐 SEGURIDAD INFORMÁTICA                      -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="seguridad">
-                    <div class="icon-wrapper red"><i class="fa-solid fa-shield-virus"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Eliminación de Virus/Malware</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Eliminación de virus, malware, spyware y ransomware cuando sea técnicamente posible.</p>
-                </div>
-
-                <div class="service-card-full" data-category="seguridad">
-                    <div class="icon-wrapper indigo"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Configuración de Seguridad</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Configuración de antivirus, firewall, autenticación de dos factores y auditoría básica de seguridad.</p>
-                </div>
-
-                <div class="service-card-full" data-category="seguridad">
-                    <div class="icon-wrapper orange"><i class="fa-solid fa-user-shield"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Seguridad de Cuentas</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Revisión de programas sospechosos, seguridad de cuentas y configuración de navegación segura.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🌐 INTERNET Y REDES                           -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="redes">
-                    <div class="icon-wrapper blue"><i class="fa-solid fa-wifi"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Configuración de Wi-Fi</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Configuración y optimización de Wi-Fi, routers, repetidores y puntos de acceso.</p>
-                </div>
-
-                <div class="service-card-full" data-category="redes">
-                    <div class="icon-wrapper green"><i class="fa-solid fa-network-wired"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Redes LAN y Compartición</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Configuración de redes LAN, impresoras de red, compartir archivos e impresoras.</p>
-                </div>
-
-                <div class="service-card-full" data-category="redes">
-                    <div class="icon-wrapper purple"><i class="fa-solid fa-globe"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Diagnóstico de Internet</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico de problemas de Internet, configuración de DNS, VPN y acceso remoto.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🔧 HARDWARE                                   -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="hardware">
-                    <div class="icon-wrapper amber"><i class="fa-solid fa-microchip"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Diagnóstico de Hardware</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico de componentes, pruebas de estabilidad, memoria, almacenamiento y temperatura.</p>
-                </div>
-
-                <div class="service-card-full" data-category="hardware">
-                    <div class="icon-wrapper blue"><i class="fa-solid fa-memory"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Actualización de Componentes</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Cambio de RAM, SSD, HDD, tarjetas gráficas, fuentes, Wi-Fi y adaptadores Bluetooth.</p>
-                </div>
-
-                <div class="service-card-full" data-category="hardware">
-                    <div class="icon-wrapper red"><i class="fa-solid fa-temperature-high"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Diagnóstico de Temperatura</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico de temperatura, sobrecalentamiento y evaluación de compatibilidad de componentes.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 💻 LAPTOPS                                     -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="laptops">
-                    <div class="icon-wrapper indigo"><i class="fa-solid fa-laptop"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Diagnóstico de Laptop</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico completo de laptop, optimización, cambio de SSD, ampliación de RAM.</p>
-                </div>
-
-                <div class="service-card-full" data-category="laptops">
-                    <div class="icon-wrapper green"><i class="fa-solid fa-battery-three-quarters"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Configuración de Batería</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Configuración de batería, diagnóstico de batería, configuración de cámara y micrófono.</p>
-                </div>
-
-                <div class="service-card-full" data-category="laptops">
-                    <div class="icon-wrapper orange"><i class="fa-solid fa-keyboard"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Problemas de Teclado/Touchpad</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Solución de problemas de teclado, touchpad, pantalla, Wi-Fi y actualización de BIOS/UEFI.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🎮 GAMING                                     -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="gaming">
-                    <div class="icon-wrapper purple"><i class="fa-solid fa-gamepad"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Optimización Gaming</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Optimización para juegos, configuración gráfica, actualización de drivers GPU y optimización de Windows.</p>
-                </div>
-
-                <div class="service-card-full" data-category="gaming">
-                    <div class="icon-wrapper red"><i class="fa-solid fa-chart-simple"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Diagnóstico de FPS y Temperaturas</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico de FPS bajos, temperaturas, configuración de periféricos gaming y optimización de almacenamiento.</p>
-                </div>
-
-                <div class="service-card-full" data-category="gaming">
-                    <div class="icon-wrapper cyan"><i class="fa-solid fa-steam"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Configuración de Plataformas</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Configuración de plataformas de juegos, periféricos gaming y optimización de almacenamiento.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 👨‍💻 PROGRAMAS PROFESIONALES                    -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="software">
-                    <div class="icon-wrapper blue"><i class="fa-solid fa-cube"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Software Profesional</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Instalación de AutoCAD, SOLIDWORKS, Office, Adobe, programas de diseño, contables y administrativos.</p>
-                </div>
-
-                <div class="service-card-full" data-category="software">
-                    <div class="icon-wrapper amber"><i class="fa-solid fa-file-lines"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Software Empresarial</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Instalación de software empresarial, configuración de licencias, actualización y solución de errores.</p>
-                </div>
-
-                <div class="service-card-full" data-category="software">
-                    <div class="icon-wrapper green"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Migración de Configuraciones</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Migración de configuraciones de software, ajustes personalizados y transferencia de licencias.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🏢 EMPRESAS                                   -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="empresas">
-                    <div class="icon-wrapper indigo"><i class="fa-solid fa-building"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Soporte Empresarial</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Soporte a usuarios, administración de equipos, inventario tecnológico y mantenimiento preventivo/correctivo.</p>
-                </div>
-
-                <div class="service-card-full" data-category="empresas">
-                    <div class="icon-wrapper teal"><i class="fa-solid fa-clipboard-list"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Gestión de Incidencias</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Gestión de incidencias, soporte remoto y presencial, configuración de estaciones de trabajo.</p>
-                </div>
-
-                <div class="service-card-full" data-category="empresas">
-                    <div class="icon-wrapper purple"><i class="fa-solid fa-file-pen"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Documentación y Auditoría</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Documentación tecnológica, auditoría básica de equipos, alta/baja de usuarios y configuración de impresoras.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🤖 TECNOLOGÍA E IA                            -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="ia">
-                    <div class="icon-wrapper purple"><i class="fa-solid fa-robot"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Instalación de Herramientas IA</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Instalación y configuración de herramientas de IA, ChatGPT, automatización con IA y tareas repetitivas.</p>
-                </div>
-
-                <div class="service-card-full" data-category="ia">
-                    <div class="icon-wrapper pink"><i class="fa-solid fa-gears"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Automatización de Flujos</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Creación de flujos de trabajo, integración de herramientas digitales y optimización de procesos digitales.</p>
-                </div>
-
-                <div class="service-card-full" data-category="ia">
-                    <div class="icon-wrapper cyan"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Capacitación Tecnológica</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Capacitación en herramientas digitales, IA, automatización y optimización de procesos.</p>
-                </div>
-
-                <!-- ========================================================== -->
-                <!-- CATEGORÍA: 🆘 EMERGENCIAS INFORMÁTICAS                   -->
-                <!-- ========================================================== -->
-                
-                <div class="service-card-full" data-category="emergencia">
-                    <div class="icon-wrapper red"><i class="fa-solid fa-circle-exclamation"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">PC que no inicia</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico y solución de equipos que no inician. Recuperación de arranque y datos.</p>
-                </div>
-
-                <div class="service-card-full" data-category="emergencia">
-                    <div class="icon-wrapper orange"><i class="fa-solid fa-wifi"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Internet Caído</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico y solución de problemas de conectividad. Configuración de routers y redes.</p>
-                </div>
-
-                <div class="service-card-full" data-category="emergencia">
-                    <div class="icon-wrapper red"><i class="fa-solid fa-bug"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Virus o Malware</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Eliminación urgente de virus, malware o ransomware. Recuperación de información.</p>
-                </div>
-
-                <div class="service-card-full" data-category="emergencia">
-                    <div class="icon-wrapper amber"><i class="fa-solid fa-print"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Problemas con Impresoras</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Diagnóstico y solución de problemas de impresión, configuración de impresoras Wi-Fi.</p>
-                </div>
-
-                <div class="service-card-full" data-category="emergencia">
-                    <div class="icon-wrapper blue"><i class="fa-regular fa-clock"></i></div>
-                    <h3 class="text-lg font-bold text-navy mb-2">Soporte antes de Reunión</h3>
-                    <p class="text-sm text-gray-text mb-3 flex-1">Asistencia urgente antes de reuniones/presentaciones. Configuración de equipos y periféricos.</p>
-                </div>
-
-            </div>
-
-            <!-- Mensaje cuando no hay resultados -->
-            <div id="noResults" class="hidden text-center py-16">
-                <i class="fa-regular fa-circle-xmark text-5xl text-gray-text mb-4"></i>
-                <h3 class="text-xl font-bold text-navy">No encontramos servicios</h3>
-                <p class="text-sm text-gray-text">Prueba con otra categoría o filtro</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!-- CTA FINAL                                                    -->
-    <!-- ============================================================ -->
-    <section class="py-16 bg-white border-t border-gray-border transition-all duration-300">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="cta-banner">
-                <div class="relative z-10 text-center">
-                    <span class="inline-block text-xs font-bold text-white/70 uppercase tracking-wider mb-3 border border-white/20 rounded-full px-4 py-1">¿Necesitas ayuda?</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
-                        ¿No encuentras lo que buscas?
-                    </h2>
-                    <p class="text-white/70 max-w-2xl mx-auto mb-6 text-base">
-                        Contáctanos y te ofrecemos una solución personalizada para tu necesidad específica.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a href="https://wa.me/51973952322?text=Hola%20ServiComp%2B,%20necesito%20informaci%C3%B3n%20sobre%20sus%20servicios." 
-                           target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center gap-2.5 bg-[#25D366] hover:bg-[#1da851] text-white font-bold text-sm px-7 py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-green-500/25 btn-shine">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>Consultar por WhatsApp</span>
-                        </a>
-                        <a href="/cotizacion.html"
-                           class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold text-sm px-6 py-3.5 rounded-xl transition-all backdrop-blur-sm">
-                            <i class="fa-regular fa-file-lines"></i>
-                            <span>Solicitar Cotización</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!-- FOOTER                                                       -->
+    <!-- FOOTER GLOBAL                                                -->
     <!-- ============================================================ -->
     <div id="footer-placeholder"></div>
 
@@ -714,49 +845,283 @@
     <script src="js/main.js"></script>
     
     <script>
-        // ===== FILTROS POR CATEGORÍA =====
+        // ===== TABS =====
         document.addEventListener('DOMContentLoaded', function() {
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const services = document.querySelectorAll('.service-card-full');
-            const noResults = document.getElementById('noResults');
-            const serviceCount = document.getElementById('serviceCount');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = {
+                productos: document.getElementById('tab-productos'),
+                servicios: document.getElementById('tab-servicios')
+            };
 
-            function filterServices(category) {
-                let visibleCount = 0;
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tab = this.dataset.tab;
+                    Object.keys(tabContents).forEach(key => {
+                        tabContents[key].classList.toggle('active', key === tab);
+                    });
+                });
+            });
+        });
+
+        // ===== MODAL POLÍTICA DE PRIVACIDAD =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('privacyModal');
+            const openBtn = document.getElementById('openPrivacyModal');
+            const closeBtn = document.getElementById('closePrivacyModal');
+
+            function abrirModal() {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function cerrarModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            if (openBtn) openBtn.addEventListener('click', abrirModal);
+            if (closeBtn) closeBtn.addEventListener('click', cerrarModal);
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) cerrarModal();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') cerrarModal();
+            });
+        });
+
+        // ===== FORMULARIO DE PRODUCTOS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formProductos');
+            const submitBtn = form.querySelector('.submit-productos');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                services.forEach(service => {
-                    const serviceCategory = service.dataset.category;
-                    if (category === 'all' || serviceCategory === category) {
-                        service.style.display = 'flex';
-                        visibleCount++;
-                        service.style.animation = 'none';
-                        setTimeout(() => {
-                            service.style.animation = 'fadeInUp 0.5s ease forwards';
-                        }, 50);
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = '#dc3545';
+                        field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
                     } else {
-                        service.style.display = 'none';
+                        field.style.borderColor = '#dee2e6';
+                        field.style.boxShadow = 'none';
                     }
                 });
 
-                serviceCount.textContent = visibleCount;
-
-                if (visibleCount === 0) {
-                    noResults.classList.remove('hidden');
-                } else {
-                    noResults.classList.add('hidden');
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Campos incompletos',
+                        text: 'Por favor, completa todos los campos requeridos.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+                    return;
                 }
-            }
+                
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Enviando...
+                `;
 
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    const category = this.dataset.filter;
-                    filterServices(category);
-                });
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        submitBtn.style.background = '#10b981';
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-circle-check"></i>
+                            ¡Cotización enviada!
+                        `;
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Listo!',
+                            text: 'Tu cotización ha sido enviada. Te contactaremos en menos de 24 horas.',
+                            confirmButtonColor: '#1a3a5c'
+                        });
+
+                        form.reset();
+
+                        setTimeout(() => {
+                            submitBtn.style.background = '#1a3a5c';
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = `
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de producto
+                            `;
+                        }, 5000);
+
+                    } else {
+                        throw new Error('Error al enviar');
+                    }
+
+                } catch (error) {
+                    submitBtn.style.background = '#dc3545';
+                    submitBtn.innerHTML = `
+                        <i class="fa-regular fa-circle-xmark"></i>
+                        Error al enviar. Intenta de nuevo.
+                    `;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al enviar',
+                        text: 'Ocurrió un problema. Por favor, intenta de nuevo o contáctanos por WhatsApp.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+
+                    setTimeout(() => {
+                        submitBtn.style.background = '#1a3a5c';
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-paper-plane"></i>
+                            Enviar cotización de producto
+                        `;
+                    }, 4000);
+                }
             });
 
-            filterServices('all');
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('input', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+                field.addEventListener('change', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+
+        // ===== FORMULARIO DE SERVICIOS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formServicios');
+            const submitBtn = form.querySelector('.submit-servicios');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = '#dc3545';
+                        field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
+                    } else {
+                        field.style.borderColor = '#dee2e6';
+                        field.style.boxShadow = 'none';
+                    }
+                });
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Campos incompletos',
+                        text: 'Por favor, completa todos los campos requeridos.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+                    return;
+                }
+                
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Enviando...
+                `;
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        submitBtn.style.background = '#10b981';
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-circle-check"></i>
+                            ¡Cotización enviada!
+                        `;
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Listo!',
+                            text: 'Tu cotización ha sido enviada. Te contactaremos en menos de 24 horas.',
+                            confirmButtonColor: '#1a3a5c'
+                        });
+
+                        form.reset();
+
+                        setTimeout(() => {
+                            submitBtn.style.background = '#1a3a5c';
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = `
+                                <i class="fa-regular fa-paper-plane"></i>
+                                Enviar cotización de servicio
+                            `;
+                        }, 5000);
+
+                    } else {
+                        throw new Error('Error al enviar');
+                    }
+
+                } catch (error) {
+                    submitBtn.style.background = '#dc3545';
+                    submitBtn.innerHTML = `
+                        <i class="fa-regular fa-circle-xmark"></i>
+                        Error al enviar. Intenta de nuevo.
+                    `;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al enviar',
+                        text: 'Ocurrió un problema. Por favor, intenta de nuevo o contáctanos por WhatsApp.',
+                        confirmButtonColor: '#1a3a5c'
+                    });
+
+                    setTimeout(() => {
+                        submitBtn.style.background = '#1a3a5c';
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `
+                            <i class="fa-regular fa-paper-plane"></i>
+                            Enviar cotización de servicio
+                        `;
+                    }, 4000);
+                }
+            });
+
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('input', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+                field.addEventListener('change', function() {
+                    this.style.borderColor = '#dee2e6';
+                    this.style.boxShadow = 'none';
+                });
+            });
         });
     </script>
 
