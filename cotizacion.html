@@ -28,18 +28,28 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- CSS Principal Unificado -->
+    <!-- CSS Principal -->
     <link rel="stylesheet" href="css/style.css">
     
     <style>
         /* ===== ESTILOS ADICIONALES PARA COTIZACION ===== */
-        .hero-inner {
+        
+        /* ===== HERO COTIZACION ===== */
+        .hero-cotizacion {
             background: var(--gray-50);
             padding: 32px 0 16px 0;
-            position: relative;
-            overflow: hidden;
+            border-bottom: 1px solid var(--gray-200);
         }
 
+        .hero-cotizacion h1 {
+            color: var(--gray-900);
+        }
+
+        .hero-cotizacion p {
+            color: var(--gray-600);
+        }
+
+        /* ===== TABS ===== */
         .tabs-container {
             display: flex;
             gap: 8px;
@@ -92,6 +102,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== FORMULARIO ===== */
         .form-container {
             max-width: 680px;
             margin: 0 auto;
@@ -154,6 +165,7 @@
             gap: 16px;
         }
 
+        /* ===== BOTÓN ENVIAR ===== */
         .btn-submit {
             width: 100%;
             padding: 14px;
@@ -188,6 +200,7 @@
             font-size: 16px;
         }
 
+        /* ===== ENLACES ===== */
         .link-privacidad {
             color: var(--primary);
             text-decoration: none;
@@ -197,6 +210,40 @@
 
         .link-privacidad:hover {
             text-decoration: underline;
+        }
+
+        /* ===== FOOTER FORMULARIO ===== */
+        .form-footer {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .form-footer .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+        }
+
+        .form-footer .security-badge i {
+            color: var(--secondary);
+        }
+
+        .form-footer .links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 12px;
+            flex-wrap: wrap;
+        }
+
+        .form-footer .links .separator {
+            color: var(--gray-300);
         }
 
         /* ===== MODAL ===== */
@@ -273,6 +320,17 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
+        /* ===== ANIMACIÓN SPIN ===== */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 640px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -289,11 +347,18 @@
             .tab-btn i {
                 font-size: 14px;
             }
-            .hero-inner {
+            .hero-cotizacion {
                 padding: 20px 0 12px 0;
             }
-            .hero-inner h1 {
+            .hero-cotizacion h1 {
                 font-size: 2rem;
+            }
+            .form-footer .links {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .form-footer .links .separator {
+                display: none;
             }
         }
     </style>
@@ -307,20 +372,12 @@
     <div id="whatsapp-placeholder"></div>
 
     <!-- ============================================================ -->
-    <!-- HERO INTERNO                                                -->
+    <!-- HERO COTIZACION (SIN BADGES)                                -->
     <!-- ============================================================ -->
-    <section class="hero-inner">
-        <div class="container mx-auto px-4 md:px-6 relative z-10">
+    <section class="hero-cotizacion">
+        <div class="container">
             <div class="text-center max-w-3xl mx-auto">
-                <div class="flex items-center justify-center gap-3 mb-3">
-                    <span class="live-badge">
-                        <i class="fa-solid fa-circle pulse-icon"></i> EN VIVO
-                    </span>
-                    <span class="text-xs font-medium text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200">
-                        <i class="fa-regular fa-clock mr-1"></i> Soporte 24/7
-                    </span>
-                </div>
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-[1.1]">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
                     Solicita tu <span class="text-danger">Cotización</span>
                 </h1>
                 <p class="text-sm text-gray-600 mt-2 max-w-2xl mx-auto leading-relaxed">
@@ -334,7 +391,7 @@
     <!-- FORMULARIO CON PESTAÑAS                                     -->
     <!-- ============================================================ -->
     <section class="py-6 bg-gray-50">
-        <div class="container mx-auto px-4 md:px-6">
+        <div class="container">
             
             <div class="card p-6 md:p-8">
                 <div class="form-container">
@@ -581,17 +638,17 @@
                         </form>
                     </div>
 
-                    <!-- ===== FOOTER DEL FORMULARIO ===== -->
-                    <div class="text-center mt-6 text-xs text-gray-400">
-                        <p>
-                            <i class="fa-regular fa-lock mr-1"></i>
+                    <!-- ===== FOOTER DEL FORMULARIO (MEJORADO) ===== -->
+                    <div class="form-footer">
+                        <div class="security-badge">
+                            <i class="fa-solid fa-shield-halved"></i>
                             Tus datos están seguros. No compartimos tu información con terceros.
-                        </p>
-                        <p class="mt-1">
+                        </div>
+                        <div class="links">
                             <a class="link-privacidad" id="openPrivacyModal">Política de Privacidad</a>
-                            <span class="mx-2">|</span>
+                            <span class="separator">|</span>
                             <a href="index.html" class="link-privacidad">Volver al inicio</a>
-                        </p>
+                        </div>
                     </div>
 
                 </div>
@@ -631,7 +688,7 @@
     <div id="footer-placeholder"></div>
 
     <!-- ============================================================ -->
-    <!-- SCRIPTS                                                     -->
+    <!-- SCRIPTS                                                      -->
     <!-- ============================================================ -->
     <script src="js/main.js"></script>
     
@@ -719,7 +776,7 @@
                 
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `
-                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin" style="width:20px;height:20px;display:inline;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -834,7 +891,7 @@
                 
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `
-                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin" style="width:20px;height:20px;display:inline;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
