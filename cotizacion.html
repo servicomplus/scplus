@@ -28,153 +28,35 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                    colors: {
-                        navy: '#1a3a5c',
-                        'navy-light': '#2c5282',
-                        'red-custom': '#dc3545',
-                        'gray-custom': '#f0f2f5',
-                        'gray-border': '#e8eaed',
-                        'gray-text': '#6c757d',
-                        'dark-bg': '#0d1117',
-                        'dark-card': '#161b22',
-                        'dark-border': '#30363d',
-                        'dark-text': '#c9d1d9',
-                        'dark-muted': '#8b949e',
-                    }
-                }
-            }
-        }
-    </script>
-    
+    <!-- CSS Principal Unificado -->
     <link rel="stylesheet" href="css/style.css">
     
     <style>
-        /* ===== ESTILOS BASE ===== */
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            transition: background 0.4s ease, color 0.4s ease;
-        }
-
-        /* ===== MODO OSCURO CLASES ===== */
-        .dark-mode {
-            background: #0d1117 !important;
-            color: #c9d1d9 !important;
-        }
-        .dark-mode .bg-white { background: #161b22 !important; }
-        .dark-mode .bg-gray-custom { background: #0d1117 !important; }
-        .dark-mode .border-gray-border { border-color: #30363d !important; }
-        .dark-mode .text-gray-text { color: #8b949e !important; }
-        .dark-mode .text-navy { color: #58a6ff !important; }
-        .dark-mode .text-red-custom { color: #f85149 !important; }
-        .dark-mode .bg-navy { background: #58a6ff !important; }
-        .dark-mode .bg-navy-light { background: #1f6feb !important; }
-        .dark-mode .bg-blue-50 { background: #1c2333 !important; }
-        .dark-mode .border-blue-100 { border-color: #30363d !important; }
-        .dark-mode .glass-card { background: #161b22 !important; border-color: #30363d !important; }
-        .dark-mode .bg-gray-50 { background: #0d1117 !important; }
-        .dark-mode .border-gray-border { border-color: #30363d !important; }
-        .dark-mode input, .dark-mode select, .dark-mode textarea {
-            background: #0d1117 !important;
-            border-color: #30363d !important;
-            color: #c9d1d9 !important;
-        }
-        .dark-mode input::placeholder, .dark-mode textarea::placeholder {
-            color: #8b949e !important;
-        }
-
-        /* ===== BADGE EN VIVO ===== */
-        .live-badge {
-            background: #10b981;
-            color: white;
-            padding: 4px 18px 4px 14px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
-        }
-        .pulse-icon {
-            font-size: 8px;
-            color: #fff;
-            animation: pulse-dot 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.2; transform: scale(0.6); }
-        }
-
-        /* ===== SHINE EN BOTONES ===== */
-        .btn-shine {
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-shine::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
-            transform: rotate(30deg);
-            transition: all 0.5s ease;
-        }
-        .btn-shine:hover::after {
-            left: 100%;
-        }
-
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f0f2f5; }
-        ::-webkit-scrollbar-thumb { background: #1a3a5c; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #2c5282; }
-        .dark-mode ::-webkit-scrollbar-track { background: #0d1117; }
-        .dark-mode ::-webkit-scrollbar-thumb { background: #58a6ff; }
-
         /* ===== ESTILOS ADICIONALES PARA COTIZACION ===== */
-        
         .hero-inner {
-            background: #f8f9fa;
+            background: var(--gray-50);
             padding: 32px 0 16px 0;
             position: relative;
             overflow: hidden;
-        }
-        
-        .dark-mode .hero-inner {
-            background: #0d1117;
         }
 
         .tabs-container {
             display: flex;
             gap: 8px;
             margin-bottom: 24px;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 2px solid var(--gray-200);
             padding-bottom: 0;
         }
 
         .tab-btn {
             padding: 10px 24px;
-            border-radius: 8px 8px 0 0;
+            border-radius: var(--radius) var(--radius) 0 0;
             font-weight: 600;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             background: transparent;
             border: none;
-            color: #6c757d;
+            color: var(--gray-500);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -183,27 +65,13 @@
         }
 
         .tab-btn:hover {
-            color: #1a3a5c;
+            color: var(--primary);
         }
 
         .tab-btn.active {
-            color: #1a3a5c;
-            border-bottom-color: #1a3a5c;
+            color: var(--primary);
+            border-bottom-color: var(--primary);
             background: rgba(26, 58, 92, 0.04);
-        }
-
-        .dark-mode .tab-btn {
-            color: #8b949e;
-        }
-
-        .dark-mode .tab-btn:hover {
-            color: #58a6ff;
-        }
-
-        .dark-mode .tab-btn.active {
-            color: #58a6ff;
-            border-bottom-color: #58a6ff;
-            background: rgba(88, 166, 255, 0.08);
         }
 
         .tab-btn i {
@@ -236,25 +104,20 @@
         .form-group label {
             display: block;
             font-size: 13px;
-            font-weight: 400;
-            color: #1a1a1a;
+            font-weight: 600;
+            color: var(--gray-700);
             margin-bottom: 4px;
         }
 
-        /* ===== CORRECCIÓN: Labels visibles en modo oscuro ===== */
-        .dark-mode .form-group label {
-            color: #c9d1d9 !important;
-        }
-
         .form-group .required {
-            color: #dc3545;
+            color: var(--danger);
             font-weight: 700;
         }
 
         .form-group .help-text {
             display: block;
             font-size: 11px;
-            color: #6c757d;
+            color: var(--gray-500);
             margin-top: 2px;
         }
 
@@ -263,36 +126,21 @@
         .form-group textarea {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
             font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: white;
-            color: #1a1a1a;
+            font-family: var(--font-family);
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--gray-900);
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #1a3a5c;
-            box-shadow: 0 0 0 3px rgba(26, 58, 92, 0.1);
-        }
-
-        .dark-mode .form-group input,
-        .dark-mode .form-group select,
-        .dark-mode .form-group textarea {
-            background: #0d1117;
-            border-color: #30363d;
-            color: #c9d1d9;
-        }
-
-        .dark-mode .form-group input:focus,
-        .dark-mode .form-group select:focus,
-        .dark-mode .form-group textarea:focus {
-            border-color: #58a6ff;
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 58, 92, 0.08);
         }
 
         .form-group textarea {
@@ -309,25 +157,25 @@
         .btn-submit {
             width: 100%;
             padding: 14px;
-            background: #1a3a5c;
-            color: white;
+            background: var(--primary);
+            color: var(--white);
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius);
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-family);
         }
 
         .btn-submit:hover {
-            background: #2c5282;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(26, 58, 92, 0.2);
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-submit:disabled {
@@ -336,19 +184,22 @@
             transform: none;
         }
 
-        .dark-mode .btn-submit {
-            background: #58a6ff;
-            color: #0d1117;
-        }
-
-        .dark-mode .btn-submit:hover {
-            background: #79c0ff;
-        }
-
         .btn-submit i {
             font-size: 16px;
         }
 
+        .link-privacidad {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .link-privacidad:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -366,96 +217,55 @@
         }
 
         .modal-content {
-            background: white;
-            border-radius: 12px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
             max-width: 500px;
             width: 100%;
             padding: 32px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-xl);
             animation: slideUp 0.3s ease;
             max-height: 80vh;
             overflow-y: auto;
         }
 
-        .dark-mode .modal-content {
-            background: #161b22;
-            border: 1px solid #30363d;
-        }
-
         .modal-content h3 {
             font-size: 18px;
             font-weight: 700;
-            color: #1a3a5c;
+            color: var(--primary);
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .dark-mode .modal-content h3 {
-            color: #58a6ff;
-        }
-
         .modal-content p {
             font-size: 13px;
-            color: #495057;
+            color: var(--gray-600);
             line-height: 1.6;
             margin-bottom: 12px;
         }
 
-        .dark-mode .modal-content p {
-            color: #8b949e;
-        }
-
         .modal-content ul {
             font-size: 13px;
-            color: #495057;
+            color: var(--gray-600);
             line-height: 1.8;
             padding-left: 20px;
             margin-bottom: 16px;
         }
 
-        .dark-mode .modal-content ul {
-            color: #8b949e;
-        }
-
         .modal-close-btn {
             padding: 8px 24px;
-            background: #1a3a5c;
-            color: white;
+            background: var(--primary);
+            color: var(--white);
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius);
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: var(--transition);
         }
 
         .modal-close-btn:hover {
-            background: #2c5282;
-        }
-
-        .dark-mode .modal-close-btn {
-            background: #58a6ff;
-            color: #0d1117;
-        }
-
-        .dark-mode .modal-close-btn:hover {
-            background: #79c0ff;
-        }
-
-        .link-privacidad {
-            color: #1a3a5c;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .dark-mode .link-privacidad {
-            color: #58a6ff;
-        }
-
-        .link-privacidad:hover {
-            text-decoration: underline;
+            background: var(--primary-dark);
         }
 
         @keyframes slideUp {
@@ -497,23 +307,23 @@
     <div id="whatsapp-placeholder"></div>
 
     <!-- ============================================================ -->
-    <!-- HERO INTERNO - FONDO SIMPLE, PADDING REDUCIDO              -->
+    <!-- HERO INTERNO                                                -->
     <!-- ============================================================ -->
     <section class="hero-inner">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
             <div class="text-center max-w-3xl mx-auto">
                 <div class="flex items-center justify-center gap-3 mb-3">
                     <span class="live-badge">
                         <i class="fa-solid fa-circle pulse-icon"></i> EN VIVO
                     </span>
-                    <span class="text-xs font-medium text-gray-text bg-white px-3 py-1 rounded-full border border-gray-border dark:bg-dark-card dark:border-dark-border">
+                    <span class="text-xs font-medium text-gray-500 bg-white px-3 py-1.5 rounded-full border border-gray-200">
                         <i class="fa-regular fa-clock mr-1"></i> Soporte 24/7
                     </span>
                 </div>
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-navy tracking-tight leading-[1.1]">
-                    Solicita tu <span class="text-red-custom">Cotización</span>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-[1.1]">
+                    Solicita tu <span class="text-danger">Cotización</span>
                 </h1>
-                <p class="text-sm text-gray-text mt-2 max-w-2xl mx-auto leading-relaxed">
+                <p class="text-sm text-gray-600 mt-2 max-w-2xl mx-auto leading-relaxed">
                     Elige el tipo de cotización que necesitas y completa el formulario. Te responderemos en menos de 24 horas.
                 </p>
             </div>
@@ -523,10 +333,10 @@
     <!-- ============================================================ -->
     <!-- FORMULARIO CON PESTAÑAS                                     -->
     <!-- ============================================================ -->
-    <section class="py-6 bg-gray-custom transition-all duration-300">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-6 bg-gray-50">
+        <div class="container mx-auto px-4 md:px-6">
             
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-gray-border dark:bg-dark-card">
+            <div class="card p-6 md:p-8">
                 <div class="form-container">
                     
                     <!-- ===== TABS ===== -->
@@ -549,7 +359,6 @@
                             <input type="hidden" name="_captcha" value="false">
                             <input type="hidden" name="_next" value="https://servicomp-plus.com/gracias.html">
 
-                            <!-- ===== CAMPO 1: Tipo de equipo ===== -->
                             <div class="form-group">
                                 <label>
                                     1. ¿Qué tipo de equipo estás buscando? <span class="required">*</span>
@@ -569,7 +378,6 @@
                                 </select>
                             </div>
 
-                            <!-- ===== CAMPO 2: Marca y modelo ===== -->
                             <div class="form-group">
                                 <label>
                                     2. Marca y modelo (opcional)
@@ -578,7 +386,6 @@
                                 <span class="help-text">Si conoces el modelo exacto, escríbelo para una cotización más precisa.</span>
                             </div>
 
-                            <!-- ===== CAMPO 3: Presupuesto ===== -->
                             <div class="form-group">
                                 <label>
                                     3. ¿Cuál es tu presupuesto estimado? <span class="required">*</span>
@@ -596,7 +403,6 @@
                                 </select>
                             </div>
 
-                            <!-- ===== CAMPO 4: ¿Para qué lo usarás? ===== -->
                             <div class="form-group">
                                 <label>
                                     4. ¿Para qué usarás el equipo? <span class="required">*</span>
@@ -616,7 +422,6 @@
                                 </select>
                             </div>
 
-                            <!-- ===== CAMPO 5: Características especiales ===== -->
                             <div class="form-group">
                                 <label>
                                     5. ¿Tienes alguna característica especial? (opcional)
@@ -624,7 +429,6 @@
                                 <textarea name="caracteristicas" placeholder="Ej. Puerto USB-C, pantalla táctil, teclado retroiluminado, batería de larga duración, GPU dedicada, etc."></textarea>
                             </div>
 
-                            <!-- ===== CAMPO 6: Plazo ===== -->
                             <div class="form-group">
                                 <label>
                                     6. ¿Cuándo necesitas el equipo? <span class="required">*</span>
@@ -639,7 +443,6 @@
                                 </select>
                             </div>
 
-                            <!-- ===== CAMPO 7: Contacto ===== -->
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>
@@ -656,7 +459,6 @@
                                 </div>
                             </div>
 
-                            <!-- ===== CAMPO 8: Teléfono / WhatsApp ===== -->
                             <div class="form-group">
                                 <label>
                                     Teléfono / WhatsApp <span class="required">*</span>
@@ -665,7 +467,6 @@
                                 <span class="help-text">Te contactaremos por este número para coordinar tu cotización.</span>
                             </div>
 
-                            <!-- ===== CAMPO 9: Mensaje adicional ===== -->
                             <div class="form-group">
                                 <label>
                                     Mensaje adicional (opcional)
@@ -690,7 +491,6 @@
                             <input type="hidden" name="_captcha" value="false">
                             <input type="hidden" name="_next" value="https://servicomp-plus.com/gracias.html">
 
-                            <!-- ===== CAMPO 1: Tipo de servicio ===== -->
                             <div class="form-group">
                                 <label>
                                     1. ¿Qué tipo de servicio necesitas? <span class="required">*</span>
@@ -713,7 +513,6 @@
                                 </select>
                             </div>
 
-                            <!-- ===== CAMPO 2: Descripción de la incidencia ===== -->
                             <div class="form-group">
                                 <label>
                                     2. Describe la incidencia o necesidad <span class="required">*</span>
@@ -722,7 +521,6 @@
                                 <span class="help-text">Cuanto más detalle, mejor podremos ayudarte.</span>
                             </div>
 
-                            <!-- ===== CAMPO 3: Nivel de urgencia ===== -->
                             <div class="form-group">
                                 <label>
                                     3. ¿Cuál es el nivel de urgencia? <span class="required">*</span>
@@ -737,7 +535,6 @@
                                 </select>
                             </div>
 
-                            <!-- ===== CAMPO 4: Horario preferido ===== -->
                             <div class="form-group">
                                 <label>
                                     4. Horario preferido para atención (opcional)
@@ -746,7 +543,6 @@
                                 <span class="help-text">Si tienes disponibilidad limitada, indícanoslo para coordinar mejor.</span>
                             </div>
 
-                            <!-- ===== CAMPO 5: Contacto ===== -->
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>
@@ -763,7 +559,6 @@
                                 </div>
                             </div>
 
-                            <!-- ===== CAMPO 6: Teléfono / WhatsApp ===== -->
                             <div class="form-group">
                                 <label>
                                     Teléfono / WhatsApp <span class="required">*</span>
@@ -772,7 +567,6 @@
                                 <span class="help-text">Te contactaremos por este número para coordinar tu cotización.</span>
                             </div>
 
-                            <!-- ===== CAMPO 7: Mensaje adicional ===== -->
                             <div class="form-group">
                                 <label>
                                     Mensaje adicional (opcional)
@@ -788,15 +582,15 @@
                     </div>
 
                     <!-- ===== FOOTER DEL FORMULARIO ===== -->
-                    <div style="text-align:center;margin-top:24px;font-size:11px;color:#adb5bd;">
+                    <div class="text-center mt-6 text-xs text-gray-400">
                         <p>
                             <i class="fa-regular fa-lock mr-1"></i>
                             Tus datos están seguros. No compartimos tu información con terceros.
                         </p>
-                        <p style="margin-top:4px;">
+                        <p class="mt-1">
                             <a class="link-privacidad" id="openPrivacyModal">Política de Privacidad</a>
                             <span class="mx-2">|</span>
-                            <a href="/" class="link-privacidad">Volver al inicio</a>
+                            <a href="index.html" class="link-privacidad">Volver al inicio</a>
                         </p>
                     </div>
 
@@ -822,10 +616,10 @@
                 <li><strong>⏱️ Conservación:</strong> Guardamos tus datos solo el tiempo necesario para atender tu solicitud.</li>
                 <li><strong>✉️ Tus derechos:</strong> Puedes solicitar la eliminación de tus datos en cualquier momento.</li>
             </ul>
-            <p style="font-size:12px;color:#adb5bd;text-align:center;border-top:1px solid #e9ecef;padding-top:12px;">
+            <p class="text-xs text-gray-400 text-center border-t border-gray-200 pt-3">
                 Última actualización: Agosto 2026
             </p>
-            <div style="text-align:center;margin-top:12px;">
+            <div class="text-center mt-3">
                 <button class="modal-close-btn" id="closePrivacyModal">Entendido</button>
             </div>
         </div>
@@ -905,10 +699,10 @@
                 requiredFields.forEach(field => {
                     if (!field.value.trim()) {
                         isValid = false;
-                        field.style.borderColor = '#dc3545';
-                        field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
+                        field.style.borderColor = '#ef4444';
+                        field.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.1)';
                     } else {
-                        field.style.borderColor = '#dee2e6';
+                        field.style.borderColor = '#e2e8f0';
                         field.style.boxShadow = 'none';
                     }
                 });
@@ -970,7 +764,7 @@
                     }
 
                 } catch (error) {
-                    submitBtn.style.background = '#dc3545';
+                    submitBtn.style.background = '#ef4444';
                     submitBtn.innerHTML = `
                         <i class="fa-regular fa-circle-xmark"></i>
                         Error al enviar. Intenta de nuevo.
@@ -996,11 +790,11 @@
 
             form.querySelectorAll('input, select, textarea').forEach(field => {
                 field.addEventListener('input', function() {
-                    this.style.borderColor = '#dee2e6';
+                    this.style.borderColor = '#e2e8f0';
                     this.style.boxShadow = 'none';
                 });
                 field.addEventListener('change', function() {
-                    this.style.borderColor = '#dee2e6';
+                    this.style.borderColor = '#e2e8f0';
                     this.style.boxShadow = 'none';
                 });
             });
@@ -1020,10 +814,10 @@
                 requiredFields.forEach(field => {
                     if (!field.value.trim()) {
                         isValid = false;
-                        field.style.borderColor = '#dc3545';
-                        field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
+                        field.style.borderColor = '#ef4444';
+                        field.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.1)';
                     } else {
-                        field.style.borderColor = '#dee2e6';
+                        field.style.borderColor = '#e2e8f0';
                         field.style.boxShadow = 'none';
                     }
                 });
@@ -1085,7 +879,7 @@
                     }
 
                 } catch (error) {
-                    submitBtn.style.background = '#dc3545';
+                    submitBtn.style.background = '#ef4444';
                     submitBtn.innerHTML = `
                         <i class="fa-regular fa-circle-xmark"></i>
                         Error al enviar. Intenta de nuevo.
@@ -1111,11 +905,11 @@
 
             form.querySelectorAll('input, select, textarea').forEach(field => {
                 field.addEventListener('input', function() {
-                    this.style.borderColor = '#dee2e6';
+                    this.style.borderColor = '#e2e8f0';
                     this.style.boxShadow = 'none';
                 });
                 field.addEventListener('change', function() {
-                    this.style.borderColor = '#dee2e6';
+                    this.style.borderColor = '#e2e8f0';
                     this.style.boxShadow = 'none';
                 });
             });
