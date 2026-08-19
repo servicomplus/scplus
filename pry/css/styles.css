@@ -1,0 +1,284 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f3f4f6;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* SIDEBAR Y CONTROLES */
+.sidebar {
+    width: 380px;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+}
+
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    font-size: 17px;
+    color: #111827;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: -10px;
+}
+
+.drop-zone {
+    border: 2px dashed #3b82f6;
+    border-radius: 8px;
+    padding: 25px 15px;
+    text-align: center;
+    background-color: #eff6ff;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+    background-color: #dbeafe;
+    border-color: #2563eb;
+}
+
+.drop-zone p { font-size: 13px; color: #1e40af; }
+.drop-zone span { font-size: 11px; color: #60a5fa; }
+
+.btn-print {
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-print:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.info-panel {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 12px;
+}
+
+.info-panel h3 {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 4px;
+}
+
+.empty-msg {
+    color: #9ca3af;
+    font-style: italic;
+    text-align: center;
+}
+
+/* BADGE DE LICENCIA */
+.license-badge {
+    padding: 12px 14px;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #166534;
+}
+
+.license-status {
+    font-weight: bold;
+    font-size: 11px;
+    color: #15803d;
+}
+
+.license-days {
+    font-size: 11px;
+    color: #166534;
+}
+
+/* ÁREA TICKET */
+.preview-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.placeholder-box {
+    padding: 40px 10px;
+    color: #6b7280;
+}
+
+/* CONTENEDOR TICKET CON FUENTE MONOSPACE */
+.ticket-container {
+    width: 360px;
+    background-color: #ffffff;
+    padding: 20px 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 12px;
+    color: #000000;
+    line-height: 1.3;
+    border: none;
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+/* RAZÓN SOCIAL: FUENTE RICHY CON FALLBACKS SERIF CHIC */
+.company-name { 
+    font-family: 'Richy', 'Cormorant Garamond', 'Playfair Display', 'Cinzel', Georgia, serif;
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #000000;
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+
+.bold-title { font-weight: 700; font-size: 12px; }
+.normal-title { font-weight: 400; font-size: 12px; }
+
+.spacer { height: 10px; }
+
+/* TABLA ITEMS */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 2px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.items-table th {
+    font-weight: 700;
+    font-size: 11.5px;
+    padding-bottom: 4px;
+    border: none;
+}
+
+.col-desc { width: 48%; }
+.col-cant { width: 32%; }
+.col-total { width: 20%; }
+
+.items-table td {
+    vertical-align: top;
+    font-size: 11px;
+    padding: 2px 0;
+    word-break: break-word;
+    border: none;
+}
+
+.item-desc-cell { text-align: left; padding-right: 4px; }
+.item-cant-cell { text-align: right; white-space: nowrap; padding-right: 4px; }
+.item-total-cell { text-align: right; white-space: nowrap; }
+
+.totals-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 4px; 
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.totals-table td { padding: 2px 0; font-size: 11px; border: none; }
+.total-pay td { font-weight: 700; font-size: 12px; }
+
+.amount-words { 
+    font-size: 10px; 
+    margin-top: 6px; 
+    text-transform: uppercase;
+}
+
+.qr-container { 
+    display: flex; 
+    justify-content: center; 
+    margin: 10px 0; 
+}
+
+.legal-text { 
+    font-size: 9.5px; 
+    text-align: center; 
+    line-height: 1.2; 
+    margin-bottom: 8px; 
+}
+
+.slogan-text { 
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    margin-top: 6px;
+    color: #000000;
+}
+
+/* REGLAS DE IMPRESIÓN */
+@media print {
+    @page { 
+        size: 80mm auto; 
+        margin: 0; 
+    }
+    body, html { 
+        width: 80mm !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        background: #fff !important; 
+    }
+    .sidebar, .placeholder-box { 
+        display: none !important; 
+    }
+    .preview-area { 
+        padding: 0 !important; 
+        margin: 0 !important; 
+        width: 80mm !important; 
+        display: block !important; 
+    }
+    .ticket-container { 
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+        box-shadow: none !important; 
+        width: 80mm !important; 
+        max-width: 80mm !important; 
+        padding: 2mm 3mm !important; 
+        margin: 0 auto !important; 
+        border: none !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .company-name {
+        font-family: 'Richy', 'Cormorant Garamond', 'Playfair Display', 'Cinzel', Georgia, serif !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia Digital 360</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ================================================================ */
+        /* RESET & BASE                                                    */
+        /* ================================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a1628;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-light: rgba(37, 99, 235, 0.08);
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f4f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --radius: 10px;
+            --radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            min-height: 100vh;
+            padding: 2.5rem 2rem;
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, rgba(37, 99, 235, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(37, 99, 235, 0.02) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1360px;
+            margin: 0 auto;
+        }
+
+        /* ================================================================ */
+        /* HEADER SECCIÓN                                                  */
+        /* ================================================================ */
+        .page-header {
+            text-align: center;
+            padding: 1.5rem 2rem 2.5rem 2rem;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #60a5fa, var(--accent));
+            background-size: 200% 100%;
+            animation: gradientMove 6s ease-in-out infinite;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .page-header .icon-main {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--primary);
+        }
+
+        .page-header h1 span {
+            color: var(--accent);
+        }
+
+        .page-header .subtitle {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            margin-top: 0.25rem;
+        }
+
+        .page-header .desc {
+            font-size: 0.95rem;
+            color: var(--gray-500);
+            max-width: 560px;
+            margin: 0.75rem auto 0 auto;
+            line-height: 1.6;
+        }
+
+        .page-header .stats-mini {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .page-header .stats-mini .item {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .page-header .stats-mini .item strong {
+            color: var(--gray-900);
+            font-weight: 700;
+        }
+
+        .page-header .stats-mini .item .num {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* ================================================================ */
+        /* BUSCADOR                                                        */
+        /* ================================================================ */
+        .search-wrapper {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            max-width: 480px;
+            padding: 0.8rem 1.25rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--gray-900);
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-light);
+        }
+
+        .search-wrapper input::placeholder {
+            color: var(--gray-400);
+        }
+
+        /* ================================================================ */
+        /* GRID DE MÓDULOS                                                 */
+        /* ================================================================ */
+        .grid-modulos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.25rem;
+        }
+
+        /* ================================================================ */
+        /* TARJETA BASE                                                    */
+        /* ================================================================ */
+        .modulo-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.75rem;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TARJETA ACTIVA ===== */
+        .modulo-card.activo {
+            border-left: 4px solid var(--accent);
+            cursor: pointer;
+        }
+
+        .modulo-card.activo:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent);
+        }
+
+        .modulo-card.activo .card-status {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--accent);
+        }
+
+        .modulo-card.activo .card-footer .link-indicator {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ===== TARJETA INACTIVA ===== */
+        .modulo-card.inactivo {
+            opacity: 0.5;
+            border-left: 4px solid var(--gray-300);
+            cursor: default;
+        }
+
+        .modulo-card.inactivo:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .modulo-card.inactivo .card-status {
+            background: var(--gray-100);
+            color: var(--gray-400);
+        }
+
+        .modulo-card.inactivo .card-footer .link-indicator {
+            color: var(--gray-400);
+        }
+
+        /* ===== ELEMENTOS DE LA TARJETA ===== */
+        .modulo-card .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .modulo-card .card-icon {
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+
+        .modulo-card .card-status {
+            font-size: 0.55rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.2rem 0.75rem;
+            border-radius: 9999px;
+            white-space: nowrap;
+        }
+
+        .modulo-card .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0.25rem 0 0.25rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .modulo-card .card-desc {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            flex: 1;
+        }
+
+        .modulo-card .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--gray-400);
+            margin-top: auto;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .modulo-card .card-footer .modulo-id {
+            color: var(--gray-300);
+            font-size: 0.65rem;
+            font-weight: 500;
+        }
+
+        /* ================================================================ */
+        /* WHATSAPP FLOAT (desde componentes/whatsapp.html)                */
+        /* ================================================================ */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #25D366;
+            color: white;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: float-bounce 2.5s ease-in-out infinite;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+            color: white;
+        }
+
+        .whatsapp-float svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* ===== TOOLTIP ===== */
+        .whatsapp-tooltip {
+            position: absolute;
+            bottom: calc(100% + 14px);
+            right: 50%;
+            transform: translateX(50%);
+            background: #0f172a;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            min-width: 140px;
+            max-width: 200px;
+        }
+
+        .whatsapp-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 50%;
+            transform: translateX(50%);
+            border: 7px solid transparent;
+            border-top-color: #0f172a;
+        }
+
+        .whatsapp-float:hover .whatsapp-tooltip {
+            opacity: 1;
+            visibility: visible;
+            bottom: calc(100% + 18px);
+        }
+
+        .tooltip-content {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .tooltip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34d399;
+            display: inline-block;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        @keyframes float-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .tooltip-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .tooltip-line1 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.01em;
+        }
+
+        .tooltip-line2 {
+            font-size: 0.6rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.02em;
+        }
+
+        /* ================================================================ */
+        /* RESPONSIVE                                                      */
+        /* ================================================================ */
+        @media (max-width: 1024px) {
+            .grid-modulos {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.25rem 1rem;
+            }
+
+            .page-header {
+                padding: 1.5rem 1.25rem 2rem 1.25rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .page-header .stats-mini {
+                gap: 1rem;
+            }
+
+            .page-header .stats-mini .item {
+                font-size: 0.7rem;
+            }
+
+            .grid-modulos {
+                grid-template-columns: 1fr;
+            }
+
+            .whatsapp-float {
+                width: 52px;
+                height: 52px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .whatsapp-float svg {
+                width: 26px;
+                height: 26px;
+            }
+
+            .whatsapp-tooltip {
+                padding: 0.5rem 1rem;
+                min-width: 120px;
+                max-width: 170px;
+            }
+
+            .tooltip-line1 {
+                font-size: 0.65rem;
+            }
+
+            .tooltip-line2 {
+                font-size: 0.55rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.35rem;
+            }
+
+            .page-header .desc {
+                font-size: 0.85rem;
+            }
+
+            .modulo-card {
+                padding: 1.25rem 1.25rem;
+            }
+
+            .whatsapp-tooltip {
+                display: none;
+            }
+        }
+
+        /* ================================================================ */
+        /* SCROLLBAR                                                       */
+        /* ================================================================ */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+
+        /* ================================================================ */
+        /* ANIMACIONES DE ENTRADA                                          */
+        /* ================================================================ */
+        .modulo-card {
+            animation: cardIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modulo-card:nth-child(1) { animation-delay: 0.02s; }
+        .modulo-card:nth-child(2) { animation-delay: 0.04s; }
+        .modulo-card:nth-child(3) { animation-delay: 0.06s; }
+        .modulo-card:nth-child(4) { animation-delay: 0.08s; }
+        .modulo-card:nth-child(5) { animation-delay: 0.10s; }
+        .modulo-card:nth-child(6) { animation-delay: 0.12s; }
+        .modulo-card:nth-child(7) { animation-delay: 0.14s; }
+        .modulo-card:nth-child(8) { animation-delay: 0.16s; }
+        .modulo-card:nth-child(9) { animation-delay: 0.18s; }
+        .modulo-card:nth-child(10) { animation-delay: 0.20s; }
+        .modulo-card:nth-child(11) { animation-delay: 0.22s; }
+        .modulo-card:nth-child(12) { animation-delay: 0.24s; }
+        .modulo-card:nth-child(13) { animation-delay: 0.26s; }
+        .modulo-card:nth-child(14) { animation-delay: 0.28s; }
+        .modulo-card:nth-child(15) { animation-delay: 0.30s; }
+        .modulo-card:nth-child(16) { animation-delay: 0.32s; }
+        .modulo-card:nth-child(17) { animation-delay: 0.34s; }
+        .modulo-card:nth-child(18) { animation-delay: 0.36s; }
+        .modulo-card:nth-child(19) { animation-delay: 0.38s; }
+        .modulo-card:nth-child(20) { animation-delay: 0.40s; }
+        .modulo-card:nth-child(21) { animation-delay: 0.42s; }
+        .modulo-card:nth-child(22) { animation-delay: 0.44s; }
+        .modulo-card:nth-child(23) { animation-delay: 0.46s; }
+        .modulo-card:nth-child(24) { animation-delay: 0.48s; }
+        .modulo-card:nth-child(25) { animation-delay: 0.50s; }
+        .modulo-card:nth-child(26) { animation-delay: 0.52s; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ============================================================ -->
+        <!-- HEADER SECCIÓN                                                -->
+        <!-- ============================================================ -->
+        <div class="page-header">
+            
+            <h1>Farmacia <span>Digital 360</span></h1>
+            <p class="subtitle">Gestión · Ventas · Atención</p>
+            <p class="desc">
+                Sistema integral para la gestión de farmacias con 26 módulos
+                especializados y herramientas inteligentes.
+            </p>
+            <div class="stats-mini">
+                <span class="item"><strong>26</strong> módulos</span>
+                <span class="item"><span class="num">2</span> activos</span>
+                <span class="item" style="color:var(--gray-400);">24 en desarrollo</span>
+            </div>
+        </div>
+
+       
+
+        <!-- ============================================================ -->
+        <!-- GRID DE 26 MÓDULOS                                           -->
+        <!-- ============================================================ -->
+        <div class="grid-modulos" id="modulosGrid">
+
+            <!-- 1️⃣ ACTIVO: Tickets -->
+            <div class="modulo-card activo" onclick="abrirModulo('ticket')">
+                <div class="card-header">
+                    <span class="card-icon">🧾</span>
+                    <span class="card-status">● Activo</span>
+                </div>
+                <div class="card-title">Impresión de Tickets</div>
+                <div class="card-desc">Genera y imprime tickets de venta con diseño profesional</div>
+                <div class="card-footer">
+                    <span class="link-indicator">🔗 Abrir módulo</span>
+                    <span class="modulo-id">#01</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣ ACTIVO: Calculadora -->
+            <div class="modulo-card activo" onclick="abrirModulo('calculadora')">
+                <div class="card-header">
+                    <span class="card-icon">📊</span>
+                    <span class="card-status">● Activo</span>
+                </div>
+                <div class="card-title">Calculadora Financiera</div>
+                <div class="card-desc">Análisis financiero, proyecciones y ROI avanzado</div>
+                <div class="card-footer">
+                    <span class="link-indicator">🔗 Abrir módulo</span>
+                    <span class="modulo-id">#02</span>
+                </div>
+            </div>
+
+            <!-- 3️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📦</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Control de Inventario</div>
+                <div class="card-desc">Gestión completa de stock, categorías y proveedores</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#03</span>
+                </div>
+            </div>
+
+            <!-- 4️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📅</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Control de Vencimientos</div>
+                <div class="card-desc">Alertas automáticas de productos próximos a vencer</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#04</span>
+                </div>
+            </div>
+
+            <!-- 5️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">🛒</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Catálogo Digital de Productos</div>
+                <div class="card-desc">Vitrina digital con búsqueda avanzada y filtros</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#05</span>
+                </div>
+            </div>
+
+            <!-- 6️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📲</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Pedidos por WhatsApp</div>
+                <div class="card-desc">Recibe y gestiona pedidos desde WhatsApp</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#06</span>
+                </div>
+            </div>
+
+            <!-- 7️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📄</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Cotizador Rápido</div>
+                <div class="card-desc">Genera cotizaciones profesionales en segundos</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#07</span>
+                </div>
+            </div>
+
+            <!-- 8️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">💰</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Caja y Ventas Diarias</div>
+                <div class="card-desc">Registro de ingresos, egresos y cierre de caja</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#08</span>
+                </div>
+            </div>
+
+            <!-- 9️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">⚠️</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Alertas de Stock Bajo</div>
+                <div class="card-desc">Notificaciones automáticas para reposición de productos</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#09</span>
+                </div>
+            </div>
+
+            <!-- 🔟 INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📈</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Dashboard de Ventas e Inventario</div>
+                <div class="card-desc">Paneles interactivos con KPIs y gráficos en tiempo real</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#10</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣1️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">🚚</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Gestión de Delivery</div>
+                <div class="card-desc">Seguimiento de entregas, rutas y repartidores</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#11</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣2️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">👥</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Registro de Clientes</div>
+                <div class="card-desc">Base de datos completa de clientes y historial de compras</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#12</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣3️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📋</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Gestión de Compras a Proveedores</div>
+                <div class="card-desc">Órdenes de compra, seguimiento y proveedores</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#13</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣4️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">🏷️</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Gestión de Precios y Promociones</div>
+                <div class="card-desc">Actualiza precios, crea ofertas y promociones</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#14</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣5️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📦</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Control de Entradas y Salidas</div>
+                <div class="card-desc">Registro detallado de movimientos de inventario</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#15</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣6️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📄</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Generador de Comprobantes</div>
+                <div class="card-desc">Facturas, boletas, notas de crédito y resúmenes</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#16</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣7️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📊</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Reporte de Productos Más Vendidos</div>
+                <div class="card-desc">Top de productos con mayor rotación y rentabilidad</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#17</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣8️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📅</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Agenda de Pedidos y Entregas</div>
+                <div class="card-desc">Calendario interactivo de pedidos programados</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#18</span>
+                </div>
+            </div>
+
+            <!-- 1️⃣9️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">⭐</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Sistema de Solicitud de Reseñas</div>
+                <div class="card-desc">Automatiza la petición de calificaciones a clientes</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#19</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣0️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📱</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">QR de Servicios y Contacto</div>
+                <div class="card-desc">Genera códigos QR para redes, servicios y contacto</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#20</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣1️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📣</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Generador de Promociones</div>
+                <div class="card-desc">Crea y gestiona campañas promocionales</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#21</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣2️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📸</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Gestor de Contenido para Redes</div>
+                <div class="card-desc">Planifica y publica contenido en redes sociales</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#22</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣3️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">🤖</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Asistente IA para tareas administrativas</div>
+                <div class="card-desc">Automatización inteligente con IA para gestión</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#23</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣4️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📚</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Biblioteca de documentos y procedimientos</div>
+                <div class="card-desc">Manuales, guías y procedimientos internos</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#24</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣5️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">🎯</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Programa de fidelización de clientes</div>
+                <div class="card-desc">Puntos, beneficios y recompensas para clientes</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#25</span>
+                </div>
+            </div>
+
+            <!-- 2️⃣6️⃣ INACTIVO -->
+            <div class="modulo-card inactivo">
+                <div class="card-header">
+                    <span class="card-icon">📈</span>
+                    <span class="card-status">○ En desarrollo</span>
+                </div>
+                <div class="card-title">Reportes Avanzados</div>
+                <div class="card-desc">Análisis profundos con gráficos interactivos y filtros</div>
+                <div class="card-footer">
+                    <span class="link-indicator">⏳ Próximamente</span>
+                    <span class="modulo-id">#26</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- WHATSAPP FLOAT (desde componentes/whatsapp.html)             -->
+    <!-- ============================================================ -->
+    <a href="https://wa.me/51973952322?text=Hola%20ServiComp%2B%2C%20necesito%20ayuda%20por%20favor." 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="whatsapp-float"
+       aria-label="WhatsApp - Soporte inmediato">
+        
+        <span class="whatsapp-tooltip">
+            <span class="tooltip-content">
+                <span class="tooltip-dot"></span>
+                <span class="tooltip-text">
+                    <span class="tooltip-line1">¡Chatea con nosotros!</span>
+                    <span class="tooltip-line2">Respuesta en minutos</span>
+                </span>
+            </span>
+        </span>
+        
+        <svg viewBox="0 0 24 24" fill="white" width="32" height="32">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT                                                    -->
+    <!-- ============================================================ -->
+    <script>
+function _0x291e(_0x568e25,_0xe72ef){const _0x430d8f=_0x430d();return _0x291e=function(_0x291e1b,_0x48c7f9){_0x291e1b=_0x291e1b-0xde;let _0x4849e3=_0x430d8f[_0x291e1b];if(_0x291e['\x44\x66\x4d\x52\x4e\x74']===undefined){var _0x2fd074=function(_0x1f7a0c){const _0x138dd9='\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x2b\x2f\x3d';let _0x520604='',_0xbbfa31='';for(let _0x223b34=0x0,_0x5eb71d,_0x5d0a05,_0x53076e=0x0;_0x5d0a05=_0x1f7a0c['\x63\x68\x61\x72\x41\x74'](_0x53076e++);~_0x5d0a05&&(_0x5eb71d=_0x223b34%0x4?_0x5eb71d*0x40+_0x5d0a05:_0x5d0a05,_0x223b34++%0x4)?_0x520604+=String['\x66\x72\x6f\x6d\x43\x68\x61\x72\x43\x6f\x64\x65'](0xff&_0x5eb71d>>(-0x2*_0x223b34&0x6)):0x0){_0x5d0a05=_0x138dd9['\x69\x6e\x64\x65\x78\x4f\x66'](_0x5d0a05);}for(let _0x962961=0x0,_0x5650a0=_0x520604['\x6c\x65\x6e\x67\x74\x68'];_0x962961<_0x5650a0;_0x962961++){_0xbbfa31+='\x25'+('\x30\x30'+_0x520604['\x63\x68\x61\x72\x43\x6f\x64\x65\x41\x74'](_0x962961)['\x74\x6f\x53\x74\x72\x69\x6e\x67'](0x10))['\x73\x6c\x69\x63\x65'](-0x2);}return decodeURIComponent(_0xbbfa31);};_0x291e['\x4f\x51\x57\x45\x50\x68']=_0x2fd074,_0x568e25=arguments,_0x291e['\x44\x66\x4d\x52\x4e\x74']=!![];}const _0x391273=_0x430d8f[0x0],_0x5e8bab=_0x291e1b+_0x391273,_0x1bd58a=_0x568e25[_0x5e8bab];return!_0x1bd58a?(_0x4849e3=_0x291e['\x4f\x51\x57\x45\x50\x68'](_0x4849e3),_0x568e25[_0x5e8bab]=_0x4849e3):_0x4849e3=_0x1bd58a,_0x4849e3;},_0x291e(_0x568e25,_0xe72ef);}const _0x52f7bd=_0x291e;(function(_0x1cc374,_0x46cfed){const _0x58cbfa=_0x291e,_0x46fdc8=_0x1cc374();while(!![]){try{const _0x3efc73=parseInt(_0x58cbfa(0xe6))/0x1+parseInt(_0x58cbfa(0xf3))/0x2*(-parseInt(_0x58cbfa(0xe3))/0x3)+parseInt(_0x58cbfa(0xe1))/0x4+-parseInt(_0x58cbfa(0xed))/0x5*(parseInt(_0x58cbfa(0xf4))/0x6)+parseInt(_0x58cbfa(0xf6))/0x7*(-parseInt(_0x58cbfa(0xe8))/0x8)+parseInt(_0x58cbfa(0xf0))/0x9*(-parseInt(_0x58cbfa(0xf9))/0xa)+-parseInt(_0x58cbfa(0xe2))/0xb*(-parseInt(_0x58cbfa(0xe4))/0xc);if(_0x3efc73===_0x46cfed)break;else _0x46fdc8['push'](_0x46fdc8['shift']());}catch(_0x54def8){_0x46fdc8['push'](_0x46fdc8['shift']());}}}(_0x430d,0x2e047));function abrirModulo(_0x1f7a0c){const _0x55416e=_0x291e,_0x138dd9={'\x74\x69\x63\x6b\x65\x74':'\x70\x72\x79\x2f\x74\x69\x63\x6b\x65\x74\x2e\x68\x74\x6d\x6c','\x63\x61\x6c\x63\x75\x6c\x61\x64\x6f\x72\x61':_0x55416e(0xf1)},_0x520604=_0x138dd9[_0x1f7a0c];_0x520604&&window[_0x55416e(0xec)](_0x520604,_0x55416e(0xe5),_0x55416e(0xf8));}function filtrarModulos(){const _0x140d2f=_0x291e,_0xbbfa31=document[_0x140d2f(0xea)](_0x140d2f(0xe7)),_0x223b34=_0xbbfa31[_0x140d2f(0xde)][_0x140d2f(0xee)](),_0x5eb71d=document[_0x140d2f(0xef)](_0x140d2f(0xe9));_0x5eb71d['\x66\x6f\x72\x45\x61\x63\x68'](_0x5d0a05=>{const _0x3411a0=_0x140d2f,_0x53076e=_0x5d0a05['\x71\x75\x65\x72\x79\x53\x65\x6c\x65\x63\x74\x6f\x72']('\x2e\x63\x61\x72\x64\x2d\x74\x69\x74\x6c\x65')[_0x3411a0(0xf7)][_0x3411a0(0xee)]();_0x53076e[_0x3411a0(0xf2)](_0x223b34)?_0x5d0a05[_0x3411a0(0xfa)][_0x3411a0(0xdf)]='':_0x5d0a05['\x73\x74\x79\x6c\x65']['\x64\x69\x73\x70\x6c\x61\x79']=_0x3411a0(0xf5);});}console[_0x52f7bd(0xeb)](_0x52f7bd(0xe0)),console[_0x52f7bd(0xeb)]('\ud83d\udce6\x20\x32\x36\x20\x6d\u00f3\x64\x75\x6c\x6f\x73\x20\u00b7\x20\x32\x20\x61\x63\x74\x69\x76\x6f\x73\x20\u00b7\x20\x32\x34\x20\x65\x6e\x20\x64\x65\x73\x61\x72\x72\x6f\x6c\x6c\x6f');function _0x430d(){const _0xbc0512=['\x42\x4d\x39\x55\x7a\x71','\x6d\x74\x69\x30\x6e\x64\x71\x59\x6e\x75\x7a\x59\x73\x66\x4c\x52\x79\x71','\x44\x67\x76\x34\x44\x65\x6e\x56\x42\x4e\x72\x4c\x42\x4e\x71','\x44\x32\x4c\x4b\x44\x67\x47\x39\x6d\x74\x61\x57\x6d\x63\x58\x4f\x7a\x77\x4c\x4e\x41\x68\x71\x39\x6e\x5a\x75\x57\x6c\x68\x6e\x4a\x43\x4d\x39\x53\x42\x67\x6a\x48\x43\x4e\x6d\x39\x45\x77\x76\x5a\x6c\x68\x6a\x4c\x43\x32\x4c\x36\x79\x77\x6a\x53\x7a\x74\x31\x35\x7a\x78\x6d','\x6d\x5a\x62\x62\x72\x30\x54\x51\x43\x30\x4b','\x43\x33\x72\x35\x42\x67\x75','\x44\x4d\x66\x53\x44\x77\x75','\x7a\x67\x4c\x5a\x43\x67\x58\x48\x45\x71','\x38\x6a\x2b\x73\x49\x49\x62\x67\x79\x78\x6a\x54\x79\x77\x6e\x50\x79\x73\x62\x65\x41\x77\x44\x50\x44\x67\x66\x53\x69\x64\x6d\x32\x6d\x61','\x6d\x74\x71\x34\x6e\x74\x43\x59\x6d\x68\x6e\x6a\x71\x4c\x44\x72\x7a\x71','\x6e\x64\x72\x34\x71\x30\x72\x4f\x76\x75\x6d','\x6d\x4a\x4b\x5a\x6d\x5a\x66\x6a\x7a\x30\x35\x52\x43\x77\x30','\x6e\x5a\x65\x33\x6e\x5a\x61\x34\x75\x33\x76\x32\x43\x30\x4c\x59','\x78\x32\x6a\x53\x79\x77\x35\x52','\x6d\x5a\x61\x31\x6e\x64\x61\x58\x74\x31\x66\x68\x43\x68\x6a\x56','\x43\x32\x76\x48\x43\x4d\x6e\x4f\x73\x77\x35\x57\x44\x78\x71','\x6f\x65\x6a\x79\x73\x4d\x7a\x6d\x43\x61','\x6c\x4d\x31\x56\x7a\x68\x76\x53\x42\x59\x31\x4a\x79\x78\x6a\x4b','\x7a\x32\x76\x30\x72\x77\x58\x4c\x42\x77\x76\x55\x44\x65\x6a\x35\x73\x77\x71','\x42\x67\x39\x4e','\x42\x33\x62\x4c\x42\x47','\x6d\x74\x43\x57\x45\x77\x6e\x57\x74\x77\x44\x79','\x44\x67\x39\x6d\x42\x33\x44\x4c\x43\x4b\x6e\x48\x43\x32\x75','\x43\x78\x76\x4c\x43\x4e\x4c\x74\x7a\x77\x58\x4c\x79\x33\x72\x56\x43\x4b\x66\x53\x42\x61','\x6f\x64\x47\x31\x6d\x74\x79\x34\x42\x78\x62\x4f\x71\x78\x62\x33','\x43\x68\x6a\x35\x6c\x32\x6e\x48\x42\x67\x6e\x31\x42\x67\x66\x4b\x42\x33\x6a\x48\x6c\x4d\x48\x30\x42\x77\x57','\x41\x77\x35\x4a\x42\x68\x76\x4b\x7a\x78\x6d','\x6d\x5a\x48\x6d\x74\x4e\x48\x68\x73\x67\x53','\x6d\x74\x69\x58\x6e\x5a\x72\x50\x44\x75\x39\x49\x73\x32\x65'];_0x430d=function(){return _0xbc0512;};return _0x430d();}
+</script>
+
+<script>
+(function(_0x515a37,_0xb75f4f){const _0x28a6ef=_0xfc75,_0x457854=_0x515a37();while(!![]){try{const _0x19f794=-parseInt(_0x28a6ef(0x178))/0x1+parseInt(_0x28a6ef(0x187))/0x2+-parseInt(_0x28a6ef(0x17b))/0x3*(parseInt(_0x28a6ef(0x177))/0x4)+-parseInt(_0x28a6ef(0x193))/0x5*(-parseInt(_0x28a6ef(0x194))/0x6)+-parseInt(_0x28a6ef(0x182))/0x7+parseInt(_0x28a6ef(0x195))/0x8*(parseInt(_0x28a6ef(0x184))/0x9)+parseInt(_0x28a6ef(0x181))/0xa;if(_0x19f794===_0xb75f4f)break;else _0x457854['push'](_0x457854['shift']());}catch(_0x139f03){_0x457854['push'](_0x457854['shift']());}}}(_0x12aa,0x21e2d),(function(){const _0x3a010e=_0xfc75;if(window[_0x3a010e(0x17c)])return;window[_0x3a010e(0x17c)]=!![],document['\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72'](_0x3a010e(0x18e),function(_0x1bc89a){const _0x56850c=_0x3a010e;_0x1bc89a[_0x56850c(0x192)]();},{'\x63\x61\x70\x74\x75\x72\x65':!![]});try{const _0x79eafb=document[_0x3a010e(0x17a)](_0x3a010e(0x189));_0x79eafb[_0x3a010e(0x17f)]=_0x3a010e(0x185),document[_0x3a010e(0x17e)]?document[_0x3a010e(0x17e)][_0x3a010e(0x17d)](_0x79eafb):document['\x64\x6f\x63\x75\x6d\x65\x6e\x74\x45\x6c\x65\x6d\x65\x6e\x74'][_0x3a010e(0x17d)](_0x79eafb);}catch(_0x145fdc){}document[_0x3a010e(0x179)]('\x73\x65\x6c\x65\x63\x74\x73\x74\x61\x72\x74',function(_0xf0cf66){const _0x312eec=_0x3a010e;_0xf0cf66[_0x312eec(0x192)]();},{'\x63\x61\x70\x74\x75\x72\x65':!![]}),[_0x3a010e(0x196),_0x3a010e(0x18f)]['\x66\x6f\x72\x45\x61\x63\x68'](function(_0x2e7d13){document['\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72'](_0x2e7d13,function(_0x23be07){_0x23be07['\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74']();},{'\x63\x61\x70\x74\x75\x72\x65':!![]});}),document['\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72'](_0x3a010e(0x18b),function(_0x5d9e91){_0x5d9e91['\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74']();},{'\x63\x61\x70\x74\x75\x72\x65':!![]}),document[_0x3a010e(0x179)](_0x3a010e(0x186),function(_0x30dcb9){const _0x20950d=_0x3a010e,_0x3289d8=String(_0x30dcb9[_0x20950d(0x191)]||'')[_0x20950d(0x18d)]();if(_0x30dcb9['\x6b\x65\x79']==='\x46\x31\x32')return _0x30dcb9[_0x20950d(0x192)](),_0x30dcb9[_0x20950d(0x188)](),![];if(_0x30dcb9[_0x20950d(0x176)]&&_0x30dcb9[_0x20950d(0x18c)]&&['\x69','\x6a','\x63'][_0x20950d(0x183)](_0x3289d8))return _0x30dcb9[_0x20950d(0x192)](),_0x30dcb9[_0x20950d(0x188)](),![];if(_0x30dcb9['\x63\x74\x72\x6c\x4b\x65\x79']&&['\x75','\x63','\x78','\x73','\x61'][_0x20950d(0x183)](_0x3289d8))return _0x30dcb9[_0x20950d(0x192)](),_0x30dcb9[_0x20950d(0x188)](),![];if(_0x30dcb9[_0x20950d(0x18a)]&&['\x75','\x63','\x78','\x73','\x61'][_0x20950d(0x183)](_0x3289d8))return _0x30dcb9[_0x20950d(0x192)](),_0x30dcb9[_0x20950d(0x188)](),![];},{'\x63\x61\x70\x74\x75\x72\x65':!![]}),window[_0x3a010e(0x179)](_0x3a010e(0x180),function(_0x4183f1){const _0x40663c=_0x3a010e;_0x4183f1[_0x40663c(0x192)](),_0x4183f1[_0x40663c(0x190)]='';});}()));function _0xfc75(_0x41dce3,_0x1fa66b){const _0x12aa8b=_0x12aa();return _0xfc75=function(_0xfc755d,_0x199544){_0xfc755d=_0xfc755d-0x176;let _0x37d9b6=_0x12aa8b[_0xfc755d];if(_0xfc75['\x6e\x49\x58\x45\x55\x67']===undefined){var _0x56176f=function(_0x1bc89a){const _0x79eafb='\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x2b\x2f\x3d';let _0x145fdc='',_0xf0cf66='';for(let _0x2e7d13=0x0,_0x23be07,_0x5d9e91,_0x30dcb9=0x0;_0x5d9e91=_0x1bc89a['\x63\x68\x61\x72\x41\x74'](_0x30dcb9++);~_0x5d9e91&&(_0x23be07=_0x2e7d13%0x4?_0x23be07*0x40+_0x5d9e91:_0x5d9e91,_0x2e7d13++%0x4)?_0x145fdc+=String['\x66\x72\x6f\x6d\x43\x68\x61\x72\x43\x6f\x64\x65'](0xff&_0x23be07>>(-0x2*_0x2e7d13&0x6)):0x0){_0x5d9e91=_0x79eafb['\x69\x6e\x64\x65\x78\x4f\x66'](_0x5d9e91);}for(let _0x3289d8=0x0,_0x4183f1=_0x145fdc['\x6c\x65\x6e\x67\x74\x68'];_0x3289d8<_0x4183f1;_0x3289d8++){_0xf0cf66+='\x25'+('\x30\x30'+_0x145fdc['\x63\x68\x61\x72\x43\x6f\x64\x65\x41\x74'](_0x3289d8)['\x74\x6f\x53\x74\x72\x69\x6e\x67'](0x10))['\x73\x6c\x69\x63\x65'](-0x2);}return decodeURIComponent(_0xf0cf66);};_0xfc75['\x76\x6c\x54\x47\x65\x59']=_0x56176f,_0x41dce3=arguments,_0xfc75['\x6e\x49\x58\x45\x55\x67']=!![];}const _0x32716b=_0x12aa8b[0x0],_0x39c91b=_0xfc755d+_0x32716b,_0xe4d44c=_0x41dce3[_0x39c91b];return!_0xe4d44c?(_0x37d9b6=_0xfc75['\x76\x6c\x54\x47\x65\x59'](_0x37d9b6),_0x41dce3[_0x39c91b]=_0x37d9b6):_0x37d9b6=_0xe4d44c,_0x37d9b6;},_0xfc75(_0x41dce3,_0x1fa66b);}function _0x12aa(){const _0x4c2ef1=['\x44\x67\x39\x6d\x42\x33\x44\x4c\x43\x4b\x6e\x48\x43\x32\x75','\x79\x32\x39\x55\x44\x67\x76\x34\x44\x67\x31\x4c\x42\x4e\x75','\x79\x33\x76\x30','\x43\x4d\x76\x30\x44\x78\x6a\x55\x76\x4d\x66\x53\x44\x77\x75','\x41\x32\x76\x35','\x43\x68\x6a\x4c\x44\x4d\x76\x55\x44\x65\x72\x4c\x7a\x4d\x66\x31\x42\x68\x71','\x6d\x4a\x71\x5a\x6d\x64\x76\x62\x45\x4d\x50\x51\x43\x67\x57','\x6d\x4a\x75\x34\x72\x4e\x72\x5a\x71\x33\x72\x6f','\x6e\x64\x6d\x59\x6f\x66\x6a\x30\x7a\x77\x6a\x36\x73\x47','\x79\x32\x39\x57\x45\x71','\x79\x33\x72\x59\x42\x65\x54\x4c\x45\x71','\x6e\x68\x6e\x75\x74\x4d\x31\x72\x79\x71','\x6d\x4a\x65\x34\x6d\x64\x47\x57\x44\x76\x72\x66\x41\x4b\x4c\x52','\x79\x77\x72\x4b\x72\x78\x7a\x4c\x42\x4e\x72\x6d\x41\x78\x6e\x30\x7a\x77\x35\x4c\x43\x47','\x79\x33\x6a\x4c\x79\x78\x72\x4c\x72\x77\x58\x4c\x42\x77\x76\x55\x44\x61','\x6d\x4a\x61\x32\x6d\x4a\x61\x31\x77\x75\x4c\x30\x76\x30\x72\x6f','\x78\x31\x39\x4f\x44\x67\x31\x53\x75\x68\x6a\x56\x44\x67\x76\x4a\x44\x67\x4c\x56\x42\x4b\x4c\x55\x43\x33\x72\x48\x42\x67\x58\x4c\x7a\x61','\x79\x78\x62\x57\x7a\x77\x35\x4b\x71\x32\x48\x50\x42\x67\x71','\x41\x67\x76\x48\x7a\x61','\x44\x67\x76\x34\x44\x65\x6e\x56\x42\x4e\x72\x4c\x42\x4e\x71','\x79\x4d\x76\x4d\x42\x33\x6a\x4c\x44\x77\x35\x53\x42\x32\x66\x4b','\x6d\x74\x65\x5a\x6d\x4a\x6d\x59\x6d\x65\x66\x62\x43\x66\x48\x30\x73\x47','\x6d\x74\x6d\x58\x6e\x4a\x6d\x33\x6f\x67\x48\x31\x45\x75\x58\x65\x41\x57','\x41\x77\x35\x4a\x42\x68\x76\x4b\x7a\x78\x6d','\x6d\x4a\x43\x35\x6f\x75\x48\x6d\x76\x33\x48\x49\x7a\x71','\x41\x68\x72\x54\x42\x63\x58\x49\x42\x32\x72\x35\x6c\x63\x50\x37\x6c\x78\x44\x4c\x79\x4d\x54\x50\x44\x63\x31\x31\x43\x32\x76\x59\x6c\x78\x6e\x4c\x42\x67\x76\x4a\x44\x64\x50\x55\x42\x32\x35\x4c\x69\x63\x66\x50\x42\x78\x62\x56\x43\x4e\x72\x48\x42\x4e\x71\x37\x6c\x77\x31\x5a\x6c\x78\x76\x5a\x7a\x78\x69\x54\x43\x32\x76\x53\x7a\x77\x6e\x30\x6f\x4d\x35\x56\x42\x4d\x75\x47\x69\x77\x4c\x54\x43\x67\x39\x59\x44\x67\x66\x55\x44\x64\x54\x31\x43\x32\x76\x59\x6c\x78\x6e\x4c\x42\x67\x76\x4a\x44\x64\x50\x55\x42\x32\x35\x4c\x69\x63\x66\x50\x42\x78\x62\x56\x43\x4e\x72\x48\x42\x4e\x71\x37\x6c\x78\x44\x4c\x79\x4d\x54\x50\x44\x63\x31\x30\x42\x33\x76\x4a\x41\x63\x31\x4a\x79\x77\x58\x53\x42\x33\x76\x30\x6f\x4d\x35\x56\x42\x4d\x75\x47\x69\x77\x4c\x54\x43\x67\x39\x59\x44\x67\x66\x55\x44\x64\x54\x39','\x41\x32\x76\x35\x7a\x67\x39\x33\x42\x47','\x6d\x4a\x71\x32\x6d\x5a\x69\x57\x71\x76\x76\x6a\x7a\x78\x50\x5a','\x43\x33\x72\x56\x43\x66\x62\x59\x42\x33\x62\x48\x7a\x32\x66\x30\x41\x77\x39\x55','\x43\x33\x72\x35\x42\x67\x75','\x42\x77\x76\x30\x79\x75\x54\x4c\x45\x71','\x7a\x68\x6a\x48\x7a\x33\x6e\x30\x79\x78\x6a\x30','\x43\x32\x48\x50\x7a\x4e\x72\x6c\x7a\x78\x4b'];_0x12aa=function(){return _0x4c2ef1;};return _0x12aa();}
+</script></body>
+</html>

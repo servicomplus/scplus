@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lector XML / ZIP SUNAT - Ticket 80mm</title>
+    
+    <!-- Fuentes para la Razón Social: Richy y sus equivalentes Serif Chic (Cormorant Garamond / Playfair Display / Cinzel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Cormorant+Garamond:wght@700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Librerías locales / externas -->
+    <script src="js/lib/qrcode.min.js"></script>
+    <script src="js/lib/jszip.min.js"></script>
+</head>
+<body>
+
+    <!-- Panel Izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <h2>Lector ZIP SUNAT</h2>
+            <p class="subtitle">Visualizador e impresión de comprobantes en ticket 80mm</p>
+
+            <!-- Zona Drag & Drop -->
+            <div class="drop-zone" id="dropZone">
+                <p><strong>Arrastra tu archivo XML o ZIP aquí</strong></p>
+                <span>o haz clic para seleccionar</span>
+                <input type="file" id="fileInput" accept=".xml,.zip,.XML,.ZIP" style="display: none;">
+            </div>
+
+            <button id="btnPrint" class="btn-print" disabled onclick="window.print()">
+                🖨️ Imprimir Ticket (80mm)
+            </button>
+
+            <!-- Resumen de Datos -->
+            <div class="info-panel">
+                <h3>Datos Extraídos</h3>
+                <div id="summaryContent">
+                    <p class="empty-msg">Sin comprobante cargado.</p>
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+
+    <!-- Panel Derecho: Ticket de Vista Previa -->
+    <div class="preview-area">
+        <div class="ticket-container">
+            
+            <div id="ticket-placeholder" class="text-center placeholder-box">
+                <p>Carga un archivo XML o ZIP para previsualizar el ticket térmico.</p>
+            </div>
+
+            <div id="ticket-content" style="display: none;">
+                
+                <!-- Cabecera Emisor -->
+                <div class="text-center">
+                    <div id="t_emisor_nombre" class="company-name">FARMACIA LA INMACULADA</div>
+                    <div>RUC: <span id="t_emisor_ruc">-</span></div>
+                    <div id="t_emisor_direccion">-</div>
+                    <div id="t_emisor_ubigeo">-</div>
+                </div>
+
+                <div class="spacer"></div>
+
+                <!-- Tipo y Serie/Número -->
+                <div class="text-center">
+                    <div id="t_tipo_doc" class="bold-title">BOLETA DE VENTA ELECTRÓNICA</div>
+                    <div id="t_serie_numero" class="normal-title">-</div>
+                </div>
+
+                <div class="spacer"></div>
+
+                <!-- Datos Emisión y Cliente -->
+                <div>
+                    <div>FECHA EMISIÓN: <span id="t_fecha">-</span></div>
+                    <div>CLIENTE: <span id="t_cliente_nom">-</span></div>
+                    <div><span id="t_label_doc">DNI</span>: <span id="t_cliente_doc">-</span></div>
+                    <div>MONEDA: <span id="t_moneda">SOLES (S/)</span></div>
+                </div>
+
+                <div class="spacer"></div>
+
+                <!-- Tabla de Productos -->
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th class="col-desc text-left">DESCRIPCIÓN</th>
+                            <th class="col-cant text-right">CANT X P.U</th>
+                            <th class="col-total text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="t_items_body">
+                        <!-- Carga dinámica -->
+                    </tbody>
+                </table>
+
+                <div class="spacer"></div>
+
+                <!-- Totales del Comprobante -->
+                <table class="totals-table">
+                    <tr>
+                        <td>OP. GRAVADA:</td>
+                        <td class="text-right"><span id="t_moneda_simbolo">S/</span> <span id="t_op_gravada">0.00</span></td>
+                    </tr>
+                    <tr>
+                        <td>OP. EXONERADA:</td>
+                        <td class="text-right">S/ 0.00</td>
+                    </tr>
+                    <tr>
+                        <td>OP. INAFECTA:</td>
+                        <td class="text-right">S/ 0.00</td>
+                    </tr>
+                    <tr>
+                        <td>I.G.V. (18%):</td>
+                        <td class="text-right">S/ <span id="t_igv">0.00</span></td>
+                    </tr>
+                    <tr class="total-pay">
+                        <td>TOTAL A PAGAR:</td>
+                        <td class="text-right">S/ <span id="t_total">0.00</span></td>
+                    </tr>
+                </table>
+
+                <div id="t_monto_letras" class="amount-words">SON: CERO Y 00/100 SOLES</div>
+
+                <div class="spacer"></div>
+
+                <!-- Código QR Compacto -->
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                </div>
+
+                <!-- Leyenda SUNAT -->
+                <div class="legal-text">
+                    REPRESENTACIÓN IMPRESA DE LA BOLETA DE VENTA ELECTRÓNICA.<br>
+                    AUTORIZADO MEDIANTE RESOLUCIÓN DE SUPERINTENDENCIA<br>
+                    N° 097-2012/SUNAT Y N° 300-2014/SUNAT<br>
+                    CONSULTE SU DOCUMENTO EN WWW.SUNAT.GOB.PE
+                </div>
+
+                <!-- Lema Institucional -->
+                <div class="slogan-text text-center">
+                    ¡PROFESIONALES CUIDANDO TU SALUD!
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/xmlParser.js"></script>
+<script>
+(function(_0x364811,_0x41ec62){const _0x50756b=_0x2ce1,_0x5a4ab0=_0x364811();while(!![]){try{const _0x540479=parseInt(_0x50756b(0x1cb))/0x1+-parseInt(_0x50756b(0x1d2))/0x2*(parseInt(_0x50756b(0x1d0))/0x3)+parseInt(_0x50756b(0x1cf))/0x4+-parseInt(_0x50756b(0x1c8))/0x5*(-parseInt(_0x50756b(0x1d1))/0x6)+-parseInt(_0x50756b(0x1df))/0x7*(parseInt(_0x50756b(0x1d8))/0x8)+-parseInt(_0x50756b(0x1dd))/0x9*(parseInt(_0x50756b(0x1d3))/0xa)+parseInt(_0x50756b(0x1e0))/0xb*(parseInt(_0x50756b(0x1e7))/0xc);if(_0x540479===_0x41ec62)break;else _0x5a4ab0['push'](_0x5a4ab0['shift']());}catch(_0x4822a6){_0x5a4ab0['push'](_0x5a4ab0['shift']());}}}(_0x52cd,0xa9840),(function(){const _0x140158=_0x2ce1;if(window[_0x140158(0x1d6)])return;window['\x5f\x5f\x68\x74\x6d\x6c\x50\x72\x6f\x74\x65\x63\x74\x69\x6f\x6e\x49\x6e\x73\x74\x61\x6c\x6c\x65\x64']=!![],document['\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72'](_0x140158(0x1e1),function(_0x413132){_0x413132['\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74']();},{'\x63\x61\x70\x74\x75\x72\x65':!![]});try{const _0x588fd8=document[_0x140158(0x1e3)](_0x140158(0x1c1));_0x588fd8[_0x140158(0x1c6)]=_0x140158(0x1e2),document[_0x140158(0x1c2)]?document['\x68\x65\x61\x64'][_0x140158(0x1c5)](_0x588fd8):document[_0x140158(0x1e5)][_0x140158(0x1c5)](_0x588fd8);}catch(_0x11fdbc){}document['\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72'](_0x140158(0x1c9),function(_0x4be399){const _0x40c984=_0x140158;_0x4be399[_0x40c984(0x1d5)]();},{'\x63\x61\x70\x74\x75\x72\x65':!![]}),[_0x140158(0x1cc),_0x140158(0x1ca)][_0x140158(0x1c7)](function(_0x315583){const _0x19b39d=_0x140158;document[_0x19b39d(0x1db)](_0x315583,function(_0x3f848e){_0x3f848e['\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74']();},{'\x63\x61\x70\x74\x75\x72\x65':!![]});}),document[_0x140158(0x1db)](_0x140158(0x1cd),function(_0xaad688){const _0x1bf42c=_0x140158;_0xaad688[_0x1bf42c(0x1d5)]();},{'\x63\x61\x70\x74\x75\x72\x65':!![]}),document[_0x140158(0x1db)](_0x140158(0x1d4),function(_0x178f13){const _0x4e2d99=_0x140158,_0x5c9c00=String(_0x178f13[_0x4e2d99(0x1c3)]||'')[_0x4e2d99(0x1d7)]();if(_0x178f13[_0x4e2d99(0x1c3)]===_0x4e2d99(0x1e4))return _0x178f13['\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74'](),_0x178f13['\x73\x74\x6f\x70\x50\x72\x6f\x70\x61\x67\x61\x74\x69\x6f\x6e'](),![];if(_0x178f13['\x63\x74\x72\x6c\x4b\x65\x79']&&_0x178f13[_0x4e2d99(0x1da)]&&['\x69','\x6a','\x63'][_0x4e2d99(0x1de)](_0x5c9c00))return _0x178f13[_0x4e2d99(0x1d5)](),_0x178f13[_0x4e2d99(0x1c4)](),![];if(_0x178f13[_0x4e2d99(0x1e6)]&&['\x75','\x63','\x78','\x73','\x61']['\x69\x6e\x63\x6c\x75\x64\x65\x73'](_0x5c9c00))return _0x178f13['\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74'](),_0x178f13[_0x4e2d99(0x1c4)](),![];if(_0x178f13[_0x4e2d99(0x1dc)]&&['\x75','\x63','\x78','\x73','\x61'][_0x4e2d99(0x1de)](_0x5c9c00))return _0x178f13[_0x4e2d99(0x1d5)](),_0x178f13['\x73\x74\x6f\x70\x50\x72\x6f\x70\x61\x67\x61\x74\x69\x6f\x6e'](),![];},{'\x63\x61\x70\x74\x75\x72\x65':!![]}),window[_0x140158(0x1db)](_0x140158(0x1ce),function(_0x18b77d){const _0x34d7a2=_0x140158;_0x18b77d[_0x34d7a2(0x1d5)](),_0x18b77d[_0x34d7a2(0x1d9)]='';});}()));function _0x2ce1(_0x231cd1,_0x1fd475){const _0x52cdc2=_0x52cd();return _0x2ce1=function(_0x2ce165,_0x255255){_0x2ce165=_0x2ce165-0x1c1;let _0x1722bf=_0x52cdc2[_0x2ce165];if(_0x2ce1['\x43\x6a\x50\x4c\x6d\x77']===undefined){var _0x2c7114=function(_0x413132){const _0x588fd8='\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x2b\x2f\x3d';let _0x11fdbc='',_0x4be399='';for(let _0x315583=0x0,_0x3f848e,_0xaad688,_0x178f13=0x0;_0xaad688=_0x413132['\x63\x68\x61\x72\x41\x74'](_0x178f13++);~_0xaad688&&(_0x3f848e=_0x315583%0x4?_0x3f848e*0x40+_0xaad688:_0xaad688,_0x315583++%0x4)?_0x11fdbc+=String['\x66\x72\x6f\x6d\x43\x68\x61\x72\x43\x6f\x64\x65'](0xff&_0x3f848e>>(-0x2*_0x315583&0x6)):0x0){_0xaad688=_0x588fd8['\x69\x6e\x64\x65\x78\x4f\x66'](_0xaad688);}for(let _0x5c9c00=0x0,_0x18b77d=_0x11fdbc['\x6c\x65\x6e\x67\x74\x68'];_0x5c9c00<_0x18b77d;_0x5c9c00++){_0x4be399+='\x25'+('\x30\x30'+_0x11fdbc['\x63\x68\x61\x72\x43\x6f\x64\x65\x41\x74'](_0x5c9c00)['\x74\x6f\x53\x74\x72\x69\x6e\x67'](0x10))['\x73\x6c\x69\x63\x65'](-0x2);}return decodeURIComponent(_0x4be399);};_0x2ce1['\x54\x41\x66\x62\x59\x4a']=_0x2c7114,_0x231cd1=arguments,_0x2ce1['\x43\x6a\x50\x4c\x6d\x77']=!![];}const _0x59c98d=_0x52cdc2[0x0],_0x4b6bfe=_0x2ce165+_0x59c98d,_0x1090ec=_0x231cd1[_0x4b6bfe];return!_0x1090ec?(_0x1722bf=_0x2ce1['\x54\x41\x66\x62\x59\x4a'](_0x1722bf),_0x231cd1[_0x4b6bfe]=_0x1722bf):_0x1722bf=_0x1090ec,_0x1722bf;},_0x2ce1(_0x231cd1,_0x1fd475);}function _0x52cd(){const _0x3f5ced=['\x6d\x74\x65\x31\x6e\x64\x6a\x74\x79\x30\x6a\x74\x42\x66\x75','\x6e\x74\x75\x58\x6d\x67\x54\x5a\x73\x4c\x6a\x73\x41\x61','\x41\x32\x76\x35\x7a\x67\x39\x33\x42\x47','\x43\x68\x6a\x4c\x44\x4d\x76\x55\x44\x65\x72\x4c\x7a\x4d\x66\x31\x42\x68\x71','\x78\x31\x39\x4f\x44\x67\x31\x53\x75\x68\x6a\x56\x44\x67\x76\x4a\x44\x67\x4c\x56\x42\x4b\x4c\x55\x43\x33\x72\x48\x42\x67\x58\x4c\x7a\x61','\x44\x67\x39\x6d\x42\x33\x44\x4c\x43\x4b\x6e\x48\x43\x32\x75','\x6d\x74\x61\x35\x6e\x74\x6d\x32\x6f\x64\x48\x4c\x43\x4c\x62\x33\x7a\x65\x6d','\x43\x4d\x76\x30\x44\x78\x6a\x55\x76\x4d\x66\x53\x44\x77\x75','\x43\x32\x48\x50\x7a\x4e\x72\x6c\x7a\x78\x4b','\x79\x77\x72\x4b\x72\x78\x7a\x4c\x42\x4e\x72\x6d\x41\x78\x6e\x30\x7a\x77\x35\x4c\x43\x47','\x42\x77\x76\x30\x79\x75\x54\x4c\x45\x71','\x6d\x74\x6d\x30\x6d\x4a\x48\x59\x7a\x4e\x6a\x6f\x71\x76\x43','\x41\x77\x35\x4a\x42\x68\x76\x4b\x7a\x78\x6d','\x6e\x31\x6a\x4a\x43\x68\x48\x51\x79\x47','\x6e\x74\x75\x34\x6e\x4a\x69\x35\x6e\x75\x50\x4b\x74\x4e\x7a\x36\x44\x47','\x79\x32\x39\x55\x44\x67\x76\x34\x44\x67\x31\x4c\x42\x4e\x75','\x41\x68\x72\x54\x42\x63\x58\x49\x42\x32\x72\x35\x6c\x63\x50\x37\x6c\x78\x44\x4c\x79\x4d\x54\x50\x44\x63\x31\x31\x43\x32\x76\x59\x6c\x78\x6e\x4c\x42\x67\x76\x4a\x44\x64\x50\x55\x42\x32\x35\x4c\x69\x63\x66\x50\x42\x78\x62\x56\x43\x4e\x72\x48\x42\x4e\x71\x37\x6c\x77\x31\x5a\x6c\x78\x76\x5a\x7a\x78\x69\x54\x43\x32\x76\x53\x7a\x77\x6e\x30\x6f\x4d\x35\x56\x42\x4d\x75\x47\x69\x77\x4c\x54\x43\x67\x39\x59\x44\x67\x66\x55\x44\x64\x54\x31\x43\x32\x76\x59\x6c\x78\x6e\x4c\x42\x67\x76\x4a\x44\x64\x50\x55\x42\x32\x35\x4c\x69\x63\x66\x50\x42\x78\x62\x56\x43\x4e\x72\x48\x42\x4e\x71\x37\x6c\x78\x44\x4c\x79\x4d\x54\x50\x44\x63\x31\x30\x42\x33\x76\x4a\x41\x63\x31\x4a\x79\x77\x58\x53\x42\x33\x76\x30\x6f\x4d\x35\x56\x42\x4d\x75\x47\x69\x77\x4c\x54\x43\x67\x39\x59\x44\x67\x66\x55\x44\x64\x54\x39','\x79\x33\x6a\x4c\x79\x78\x72\x4c\x72\x77\x58\x4c\x42\x77\x76\x55\x44\x61','\x72\x4a\x65\x59','\x7a\x67\x39\x4a\x44\x77\x31\x4c\x42\x4e\x72\x66\x42\x67\x76\x54\x7a\x77\x35\x30','\x79\x33\x72\x59\x42\x65\x54\x4c\x45\x71','\x6d\x5a\x7a\x69\x71\x76\x72\x6d\x79\x31\x61','\x43\x33\x72\x35\x42\x67\x75','\x41\x67\x76\x48\x7a\x61','\x41\x32\x76\x35','\x43\x33\x72\x56\x43\x66\x62\x59\x42\x33\x62\x48\x7a\x32\x66\x30\x41\x77\x39\x55','\x79\x78\x62\x57\x7a\x77\x35\x4b\x71\x32\x48\x50\x42\x67\x71','\x44\x67\x76\x34\x44\x65\x6e\x56\x42\x4e\x72\x4c\x42\x4e\x71','\x7a\x4d\x39\x59\x72\x77\x66\x4a\x41\x61','\x6d\x74\x4b\x33\x6d\x5a\x4b\x33\x6e\x77\x35\x4d\x7a\x33\x44\x48\x42\x71','\x43\x32\x76\x53\x7a\x77\x6e\x30\x43\x33\x72\x48\x43\x4e\x71','\x79\x33\x76\x30','\x6d\x74\x47\x30\x6d\x5a\x4b\x57\x79\x4d\x4c\x75\x44\x77\x35\x5a','\x79\x32\x39\x57\x45\x71','\x7a\x68\x6a\x48\x7a\x33\x6e\x30\x79\x78\x6a\x30','\x79\x4d\x76\x4d\x42\x33\x6a\x4c\x44\x77\x35\x53\x42\x32\x66\x4b','\x6f\x74\x65\x35\x6e\x5a\x79\x57\x43\x65\x76\x75\x73\x32\x7a\x4a','\x6d\x74\x69\x5a\x73\x67\x7a\x79\x43\x75\x6e\x50','\x6d\x74\x48\x68\x42\x4e\x6a\x77\x71\x4c\x65'];_0x52cd=function(){return _0x3f5ced;};return _0x52cd();}
+</script></body>
+</html>
