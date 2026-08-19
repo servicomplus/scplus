@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesoría | ServiComp+ - Diagnóstico y Soluciones Tecnológicas</title>
+    <meta name="description" content="Diagnóstico gratuito para tu negocio. Identificamos oportunidades de mejora y te ayudamos a implementar soluciones tecnológicas prácticas.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Asesoría | ServiComp+">
+    <meta property="og:description" content="Diagnóstico gratuito para tu negocio. Soluciones tecnológicas personalizadas.">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/1a3a5c/dc3545?text=ServiComp%2B">
+    <meta property="og:url" content="https://servicomp-plus.com/asesor.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* ===== ESTILOS ADICIONALES PARA ASESOR ===== */
+        
+        .hero-asesor {
+            background: var(--white);
+            padding: 32px 0 20px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .hero-asesor h1 {
+            color: var(--gray-900);
+            font-size: 2.8rem;
+            line-height: 1.2;
+        }
+
+        .hero-asesor p {
+            color: var(--gray-600);
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 16px auto 0 auto;
+        }
+
+        /* ===== SITUACIONES ===== */
+        .situaciones-section {
+            padding: 40px 0;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .situaciones-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .situaciones-header .section-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.25rem 1.2rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border: 1px solid rgba(26, 58, 92, 0.1);
+        }
+
+        .situaciones-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-top: 8px;
+        }
+
+        .situaciones-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .situacion-item {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .situacion-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .situacion-item .icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .situacion-item .text {
+            font-size: 13px;
+            color: var(--gray-700);
+            line-height: 1.3;
+        }
+
+        .situacion-item.highlight {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            justify-content: center;
+        }
+
+        .situacion-item.highlight .icon {
+            font-size: 20px;
+        }
+
+        .situacion-item.highlight .text {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 15px;
+        }
+
+        /* ===== SECTORES ===== */
+        .sectores-section {
+            padding: 40px 0;
+            background: var(--gray-50);
+        }
+
+        .sectores-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .sectores-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+
+        .sectores-header p {
+            font-size: 0.95rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 4px auto 0 auto;
+        }
+
+        .sectores-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .sector-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 16px 14px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .sector-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .sector-card .icon {
+            font-size: 26px;
+            margin-bottom: 4px;
+        }
+
+        .sector-card h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 2px;
+        }
+
+        .sector-card p {
+            font-size: 10px;
+            color: var(--gray-500);
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        /* ===== PROCESO ===== */
+        .proceso-section {
+            padding: 50px 0 60px 0;
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .proceso-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .proceso-header .section-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.25rem 1.2rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border: 1px solid rgba(26, 58, 92, 0.1);
+        }
+
+        .proceso-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-top: 8px;
+        }
+
+        .proceso-header p {
+            font-size: 0.95rem;
+            color: var(--gray-600);
+            max-width: 550px;
+            margin: 4px auto 0 auto;
+        }
+
+        .pasos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .paso-card {
+            text-align: center;
+            padding: 24px 16px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .paso-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .paso-card .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0 auto 12px auto;
+        }
+
+        .paso-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .paso-card p {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .paso-card .arrow {
+            position: absolute;
+            right: -14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-300);
+            font-size: 18px;
+        }
+
+        .paso-card:last-child .arrow {
+            display: none;
+        }
+
+        /* ===== DIAGNÓSTICO CARD ===== */
+        .diagnostico-section {
+            padding: 50px 0 60px 0;
+            background: var(--white);
+        }
+
+        .diagnostico-card {
+            background: var(--white);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-xl);
+            padding: 36px 40px;
+            text-align: center;
+            max-width: 620px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .diagnostico-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+        }
+
+        .diagnostico-card .icon-big {
+            font-size: 44px;
+            margin-bottom: 10px;
+        }
+
+        .diagnostico-card h3 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .diagnostico-card .subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 16px;
+        }
+
+        .diagnostico-card .features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .diagnostico-card .features span {
+            font-size: 12px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .diagnostico-card .features span i {
+            color: var(--secondary);
+        }
+
+        .diagnostico-card .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .sectores-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .situaciones-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .pasos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .paso-card .arrow {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-asesor {
+                padding: 20px 0 16px 0;
+            }
+            .hero-asesor h1 {
+                font-size: 1.8rem;
+            }
+            .hero-asesor p {
+                font-size: 0.9rem;
+            }
+
+            .situaciones-section {
+                padding: 28px 0;
+            }
+            .situaciones-header h2 {
+                font-size: 1.6rem;
+            }
+            .situaciones-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sectores-section {
+                padding: 28px 0;
+            }
+            .sectores-header h2 {
+                font-size: 1.6rem;
+            }
+            .sectores-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .sector-card {
+                padding: 12px 10px;
+            }
+            .sector-card .icon {
+                font-size: 22px;
+            }
+
+            .proceso-section {
+                padding: 30px 0 40px 0;
+            }
+            .proceso-header h2 {
+                font-size: 1.8rem;
+            }
+            .pasos-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .diagnostico-section {
+                padding: 30px 0 40px 0;
+            }
+            .diagnostico-card {
+                padding: 24px 20px;
+            }
+            .diagnostico-card h3 {
+                font-size: 18px;
+            }
+            .diagnostico-card .features {
+                gap: 10px;
+            }
+            .diagnostico-card .features span {
+                font-size: 11px;
+            }
+            .diagnostico-card .btn-group .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-asesor h1 {
+                font-size: 1.5rem;
+            }
+            .sectores-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .sector-card {
+                padding: 10px 8px;
+            }
+            .sector-card .icon {
+                font-size: 20px;
+            }
+            .sector-card h4 {
+                font-size: 11px;
+            }
+            .sector-card p {
+                font-size: 9px;
+            }
+            .situacion-item {
+                padding: 10px 12px;
+            }
+            .situacion-item .text {
+                font-size: 12px;
+            }
+            .situacion-item.highlight .text {
+                font-size: 13px;
+            }
+            .proceso-header h2 {
+                font-size: 1.5rem;
+            }
+            .paso-card {
+                padding: 18px 14px;
+            }
+            .paso-card h4 {
+                font-size: 14px;
+            }
+            .paso-card p {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER GLOBAL ===== -->
+    <div id="header-placeholder"></div>
+
+    <!-- ===== WHATSAPP FLOTANTE ===== -->
+    <div id="whatsapp-placeholder"></div>
+
+    <!-- ============================================================ -->
+    <!-- HERO ASESOR                                                  -->
+    <!-- ============================================================ -->
+    <section class="hero-asesor">
+    <div class="container">
+        <div class="text-center max-w-4xl mx-auto">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
+                ¿Y si la tecnología pudiera hacerte la vida <span class="text-danger">más fácil</span>?
+            </h1>
+            <p>
+                No necesitas ser experto en tecnología. En <strong>ServiComp+</strong>, identificamos oportunidades de mejora y te ayudamos a implementar <strong>soluciones prácticas</strong> según tus necesidades.
+            </p>
+        </div>
+    </div>
+</section>
+
+    <!-- ============================================================ -->
+    <!-- SITUACIONES                                                  -->
+    <!-- ============================================================ -->
+    <section class="situaciones-section">
+        <div class="container">
+            <div class="situaciones-header">
+                
+                <h2>Estas son las situaciones que <span class="text-danger">resolvemos</span></h2>
+            </div>
+            <div class="situaciones-grid">
+                <div class="situacion-item">
+                    <span class="icon">🌐</span>
+                    <span class="text">¿Te gustaría que más personas conozcan tu negocio, profesión o servicio?</span>
+                </div>
+                <div class="situacion-item">
+                    <span class="icon">⏰</span>
+                    <span class="text">¿Te gustaría tener más tiempo para hacer lo que realmente importa?</span>
+                </div>
+                <div class="situacion-item">
+                    <span class="icon">⚙️</span>
+                    <span class="text">¿Te gustaría organizar mejor tu trabajo y reducir tareas repetitivas?</span>
+                </div>
+                <div class="situacion-item">
+                    <span class="icon">🔐</span>
+                    <span class="text">¿Te gustaría proteger mejor tu información y tus cuentas digitales?</span>
+                </div>
+                <div class="situacion-item">
+                    <span class="icon">🤖</span>
+                    <span class="text">¿Te gustaría saber qué puedes mejorar con tecnología sin invertir demasiado?</span>
+                </div>
+                <div class="situacion-item highlight">
+                    <span class="icon">💡</span>
+                    <span class="text">Si respondiste "sí" a alguna... ¡Podemos ayudarte!</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTORES QUE ATENDEMOS                                      -->
+    <!-- ============================================================ -->
+    <section class="sectores-section">
+        <div class="container">
+            <div class="sectores-header">
+                <h2>Atendemos a <span class="text-danger">más de 45 sectores</span></h2>
+                <p>Soluciones personalizadas para cada industria.</p>
+            </div>
+
+            <div class="sectores-grid">
+
+                <!-- ===== HOSPITALIDAD Y TURISMO ===== -->
+                <div class="sector-card">
+                    <div class="icon">🏨</div>
+                    <h4>Hoteles</h4>
+                    <p>Reservas, habitaciones, check-in/out, facturación</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🍽️</div>
+                    <h4>Restaurantes</h4>
+                    <p>Menú, pedidos, caja, inventario, delivery</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🌳</div>
+                    <h4>Centros Campestres</h4>
+                    <p>Reservas, eventos, facturación, inventario</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">✈️</div>
+                    <h4>Agencias de Viaje</h4>
+                    <p>Itinerarios, reservas, clientes, pagos</p>
+                </div>
+
+                <!-- ===== SALUD Y BIENESTAR ===== -->
+                <div class="sector-card">
+                    <div class="icon">🏥</div>
+                    <h4>Clínicas</h4>
+                    <p>Historia clínica, agenda, pacientes, citas</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🦷</div>
+                    <h4>Odontología</h4>
+                    <p>Agenda, historia, tratamientos, cobros</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🏋️</div>
+                    <h4>Gimnasios</h4>
+                    <p>Socios, membresías, asistencias, pagos</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🥗</div>
+                    <h4>Nutricionistas</h4>
+                    <p>Pacientes, planes, seguimiento, citas</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🧠</div>
+                    <h4>Psicólogos</h4>
+                    <p>Pacientes, sesiones, evolución, historial</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">💊</div>
+                    <h4>Farmacias / Boticas</h4>
+                    <p>Inventario, ventas, proveedores, vencimientos</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🐾</div>
+                    <h4>Veterinarias</h4>
+                    <p>Pacientes, citas, historial, vacunas, inventario</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">💪</div>
+                    <h4>Fisioterapia</h4>
+                    <p>Pacientes, sesiones, ejercicios, evolución</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">💆</div>
+                    <h4>Centros de Estética</h4>
+                    <p>Clientes, citas, tratamientos, productos</p>
+                </div>
+
+                <!-- ===== TRANSPORTE Y MECÁNICA ===== -->
+                <div class="sector-card">
+                    <div class="icon">🚗</div>
+                    <h4>Mecánicos</h4>
+                    <p>Órdenes de trabajo, repuestos, clientes, historial</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🔧</div>
+                    <h4>Talleres</h4>
+                    <p>Servicios, repuestos, clientes, facturación</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🚚</div>
+                    <h4>Logística</h4>
+                    <p>Rutas, envíos, conductores, vehículos, seguimiento</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🚌</div>
+                    <h4>Transporte</h4>
+                    <p>Rutas, pasajeros, conductores, mantenimiento</p>
+                </div>
+
+                <!-- ===== SERVICIOS PROFESIONALES ===== -->
+                <div class="sector-card">
+                    <div class="icon">⚖️</div>
+                    <h4>Abogados</h4>
+                    <p>Casos, clientes, calendario, documentos, honorarios</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🧾</div>
+                    <h4>Contadores</h4>
+                    <p>Clientes, facturación, impuestos, reportes</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📐</div>
+                    <h4>Arquitectos</h4>
+                    <p>Proyectos, planos, clientes, presupuestos</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📊</div>
+                    <h4>Asesores</h4>
+                    <p>Clientes, agenda, seguimiento, facturación</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">👨‍💻</div>
+                    <h4>Profesionales en General</h4>
+                    <p>Agenda, clientes, facturación, seguimiento</p>
+                </div>
+
+                <!-- ===== COMERCIO Y VENTAS ===== -->
+                <div class="sector-card">
+                    <div class="icon">🛍️</div>
+                    <h4>Comercio General</h4>
+                    <p>Inventario, ventas, clientes, promociones</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🛒</div>
+                    <h4>Tiendas Online</h4>
+                    <p>Catálogo, ventas, envíos, clientes, pagos</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🏠</div>
+                    <h4>Inmobiliarias</h4>
+                    <p>Propiedades, clientes, contratos, comisiones</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🚗</div>
+                    <h4>Automotriz</h4>
+                    <p>Ventas, clientes, inventario, financiamiento</p>
+                </div>
+
+                <!-- ===== EDUCACIÓN Y FORMACIÓN ===== -->
+                <div class="sector-card">
+                    <div class="icon">🏫</div>
+                    <h4>Colegios</h4>
+                    <p>Alumnos, notas, asistencia, horarios, certificados</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📚</div>
+                    <h4>Academias</h4>
+                    <p>Alumnos, cursos, horarios, certificados</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🎓</div>
+                    <h4>Universidades</h4>
+                    <p>Alumnos, docentes, horarios, notas, trámites</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📖</div>
+                    <h4>Capacitación</h4>
+                    <p>Cursos, alumnos, certificados, facturación</p>
+                </div>
+
+                <!-- ===== CONSTRUCCIÓN E INGENIERÍA ===== -->
+                <div class="sector-card">
+                    <div class="icon">👷</div>
+                    <h4>Construcción</h4>
+                    <p>Presupuestos, materiales, avance, personal</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📐</div>
+                    <h4>Ingeniería</h4>
+                    <p>Proyectos, planos, clientes, materiales, avance</p>
+                </div>
+
+                <!-- ===== AGRO Y GANADERÍA ===== -->
+                <div class="sector-card">
+                    <div class="icon">🌾</div>
+                    <h4>Agricultura</h4>
+                    <p>Cultivos, fertilización, riego, plagas, cosechas</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🐄</div>
+                    <h4>Ganadería</h4>
+                    <p>Animales, vacunas, alimentación, reproducción</p>
+                </div>
+
+                <!-- ===== TECNOLOGÍA Y DIGITAL ===== -->
+                <div class="sector-card">
+                    <div class="icon">👨‍💻</div>
+                    <h4>Programadores</h4>
+                    <p>Proyectos, clientes, facturación, entregas</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🎨</div>
+                    <h4>Diseñadores</h4>
+                    <p>Clientes, proyectos, entregables, facturación</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📷</div>
+                    <h4>Fotógrafos</h4>
+                    <p>Clientes, sesiones, entregas, facturación</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🎬</div>
+                    <h4>Videógrafos</h4>
+                    <p>Clientes, proyectos, entregas, facturación</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📈</div>
+                    <h4>Marketing</h4>
+                    <p>Leads, campañas, KPIs, análisis, presupuestos</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📱</div>
+                    <h4>Community Managers</h4>
+                    <p>Redes, contenido, métricas, clientes, facturación</p>
+                </div>
+
+                <!-- ===== SERVICIOS ESPECIALIZADOS ===== -->
+                <div class="sector-card">
+                    <div class="icon">🛡️</div>
+                    <h4>Seguridad</h4>
+                    <p>Incidentes, accesos, bitácora, auditorías</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🌍</div>
+                    <h4>Medio Ambiente</h4>
+                    <p>Huella carbono, residuos, energía, auditorías</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🗳️</div>
+                    <h4>Política</h4>
+                    <p>Simpatizantes, actividades, donaciones, encuestas</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">📦</div>
+                    <h4>Almacén</h4>
+                    <p>Entradas, salidas, inventario, kardex, lotes</p>
+                </div>
+                <div class="sector-card">
+                    <div class="icon">🧾</div>
+                    <h4>Contabilidad</h4>
+                    <p>Libro caja, balance, flujo de caja, impuestos</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- PROCESO                                                      -->
+    <!-- ============================================================ -->
+    <section class="proceso-section">
+        <div class="container">
+            <div class="proceso-header">
+                
+                <h2>¿Cómo <span class="text-danger">trabajamos</span>?</h2>
+                <p>Un proceso simple y sin complicaciones para que puedas enfocarte en lo que realmente importa.</p>
+            </div>
+
+            <div class="pasos-grid">
+                <div class="paso-card">
+                    <div class="step-number">1</div>
+                    <h4>Diagnóstico</h4>
+                    <p>Te escuchamos y analizamos para identificar oportunidades de mejora.</p>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="paso-card">
+                    <div class="step-number">2</div>
+                    <h4>Propuesta Personalizada</h4>
+                    <p>Diseñamos un plan con soluciones prácticas adaptadas a tu negocio, profesión o necesidad.</p>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="paso-card">
+                    <div class="step-number">3</div>
+                    <h4>Implementación</h4>
+                    <p>Te ayudamos a poner en marcha las soluciones con acompañamiento paso a paso.</p>
+                    <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                </div>
+                <div class="paso-card">
+                    <div class="step-number">4</div>
+                    <h4>Acompañamiento</h4>
+                    <p>Seguimos de cerca los resultados y hacemos los ajustes necesarios para asegurar el éxito.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- DIAGNÓSTICO                                                  -->
+    <!-- ============================================================ -->
+    <section class="diagnostico-section" id="diagnostico">
+        <div class="container">
+            <div class="diagnostico-card">
+                <div class="icon-big">🔍</div>
+                <h3>Diagnóstico Inicial</h3>
+                <p class="subtitle">Sin compromiso · Sin costo · 100% gratuito</p>
+                <div class="features">
+                    <span><i class="fa-regular fa-circle-check"></i> Evaluación personalizada</span>
+                    <span><i class="fa-regular fa-circle-check"></i> Identificación de oportunidades</span>
+                    <span><i class="fa-regular fa-circle-check"></i> Propuesta de mejora</span>
+                </div>
+                <div class="btn-group">
+                    <a href="https://wa.me/51973952322?text=Hola%20ServiComp%2B,%20quiero%20agendar%20mi%20diagn%C3%B3stico%20digital%20gratuito." 
+                       target="_blank" rel="noopener noreferrer"
+                       class="btn btn-success btn-lg">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        Agenda tu diagnóstico
+                    </a>
+                    <a href="cotizacion.html"
+                       class="btn btn-outline btn-lg">
+                        <i class="fa-regular fa-file-lines"></i>
+                        Solicitar Cotización
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER                                                       -->
+    <!-- ============================================================ -->
+    <div id="footer-placeholder"></div>
+
+    <!-- ============================================================ -->
+    <!-- SCRIPTS                                                      -->
+    <!-- ============================================================ -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>

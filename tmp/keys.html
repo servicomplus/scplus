@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Credenciales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b1020;
+            --card: rgba(255, 255, 255, .08);
+            --card-hover: rgba(255, 255, 255, .12);
+            --border: rgba(255, 255, 255, .10);
+            --text: #fff;
+            --muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.3);
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0f1e, #0b1120, #0f172a);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 52px;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4, #8b5cf6);
+            box-shadow: 0 20px 35px rgba(59, 130, 246, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .avatar:hover {
+            transform: scale(1.02);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--muted);
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+
+        .stats-badge {
+            display: inline-block;
+            background: rgba(59,130,246,0.2);
+            border-radius: 40px;
+            padding: 5px 14px;
+            font-size: 0.8rem;
+            margin-top: 12px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        /* Tarjetas de credenciales */
+        .credenciales {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 20px 24px;
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.15);
+            padding-bottom: 12px;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .icon-badge {
+            font-size: 32px;
+            background: rgba(59,130,246,0.2);
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+        }
+
+        .title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .id-badge {
+            font-size: 11px;
+            background: #1e293b;
+            padding: 4px 10px;
+            border-radius: 30px;
+            color: #94a3b8;
+            font-family: monospace;
+        }
+
+        .fields-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 10px 0 5px;
+            justify-content: flex-start;
+        }
+
+        .field-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            min-width: 100px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .field-item:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-3px);
+            border-color: rgba(59,130,246,0.5);
+            box-shadow: 0 5px 15px rgba(59,130,246,0.2);
+        }
+
+        .field-item:active {
+            transform: translateY(0);
+        }
+
+        .field-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .field-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+        }
+
+        .field-placeholder {
+            font-size: 10px;
+            font-family: monospace;
+            color: #475569;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 10px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #10b981;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: none;
+            z-index: 1000;
+            font-weight: 500;
+            font-size: 13px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            display: flex;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .status-msg {
+            text-align: center;
+            color: var(--muted);
+            padding: 50px 20px;
+            font-size: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 32px;
+        }
+
+        @media (max-width: 650px) {
+            body { padding: 20px 15px; }
+            .fields-grid { gap: 12px; justify-content: center; }
+            .field-item { padding: 8px 16px; min-width: 80px; }
+            .field-icon { font-size: 24px; }
+            .title { font-size: 1.1rem; }
+            .toast { font-size: 11px; padding: 8px 16px; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContent">
+    <div class="header">
+        <div class="avatar">🔐</div>
+        <h1>Credenciales</h1>
+        <p>Haz clic sobre cualquier ícono para copiar al portapapeles (máxima discreción)</p>
+        <div class="stats-badge" id="statsBadge">⚡ Cargando base de datos...</div>
+    </div>
+
+    <div class="credenciales" id="credencialesContainer">
+        <div class="status-msg">📡 Sincronizando credenciales...</div>
+    </div>
+</div>
+
+<div class="toast" id="toast">
+    <span>✓</span> <span id="toastMessage">Copiado</span>
+</div>
+
+<script>
+(() => {
+    // ==================== APP ====================
+    const CONFIG = {
+        SHEET_ID: "1QsFpbKZbFb2NOyvoYQjDmfj9Ksmzu0E7TuCkZCXgoV4",
+        SHEET_NAME: "key"
+    };
+
+    const URL = `https://opensheet.elk.sh/${CONFIG.SHEET_ID}/${CONFIG.SHEET_NAME}`;
+    
+    let registros = [];
+
+    const DOM = {
+        container: document.getElementById("credencialesContainer"),
+        toast: document.getElementById("toast"),
+        toastMessage: document.getElementById("toastMessage"),
+        statsBadge: document.getElementById("statsBadge")
+    };
+
+    let toastTimeout = null;
+
+    function showToastDiscreto(message, isError = false) {
+        if (toastTimeout) clearTimeout(toastTimeout);
+        
+        DOM.toastMessage.innerText = message;
+        DOM.toast.style.background = isError ? '#dc2626' : '#10b981';
+        DOM.toast.style.borderColor = isError ? '#ef4444' : '#10b981';
+        DOM.toast.classList.add('show');
+        
+        toastTimeout = setTimeout(() => {
+            DOM.toast.classList.remove('show');
+        }, 1200);
+    }
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>'"]/g, 
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+    }
+
+    async function copyToClipboard(text, fieldName) {
+        if (!text || text.trim() === "") {
+            showToastDiscreto(`⚠️ Campo vacío`, true);
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(text);
+            showToastDiscreto(`✓ ${fieldName} copiado al portapapeles`);
+        } catch (err) {
+            showToastDiscreto(`✗ Error al copiar`, true);
+        }
+    }
+
+    function getFieldIcon(fieldType) {
+        const icons = {
+            'usuario': '👤',
+            'clave': '🔒',
+            'serial': '🔢',
+            'pin': '📌'
+        };
+        return icons[fieldType] || '📄';
+    }
+
+    function getFieldLabel(fieldType) {
+        const labels = {
+            'usuario': 'Usuario',
+            'clave': 'Contraseña',
+            'serial': 'Serial',
+            'pin': 'PIN'
+        };
+        return labels[fieldType] || fieldType;
+    }
+
+    function getPlaceholder(fieldType) {
+        if (fieldType === 'usuario') return '👤 Copiar';
+        if (fieldType === 'clave') return '••••••';
+        if (fieldType === 'serial') return '######';
+        if (fieldType === 'pin') return '****';
+        return 'Copiar';
+    }
+
+    function renderizarTodo() {
+        if (!registros.length) {
+            DOM.container.innerHTML = `<div class="status-msg">🔐 No hay credenciales disponibles o error en los datos.</div>`;
+            DOM.statsBadge.innerHTML = `⚠️ 0 credenciales`;
+            return;
+        }
+
+        const total = registros.length;
+        DOM.statsBadge.innerHTML = `🔐 ${total} credenciales activas`;
+
+        const html = registros.map(item => {
+            let iconoPrincipal = "💳";
+            const tituloLower = (item.titulo || "").toLowerCase();
+            if (tituloLower.includes('office') || tituloLower.includes('365')) iconoPrincipal = "📧";
+            else if (tituloLower.includes('eset') || tituloLower.includes('antivirus') || tituloLower.includes('nod')) iconoPrincipal = "🛡️";
+            else if (tituloLower.includes('adobe')) iconoPrincipal = "🎨";
+            else if (tituloLower.includes('win')) iconoPrincipal = "🪟";
+            
+            const campos = [];
+            
+            if (item.usuario && item.usuario.trim() !== "") {
+                campos.push({
+                    tipo: 'usuario',
+                    valor: item.usuario
+                });
+            }
+            
+            if (item.clave && item.clave.trim() !== "") {
+                campos.push({
+                    tipo: 'clave',
+                    valor: item.clave
+                });
+            }
+            
+            if (item.serial && item.serial.trim() !== "") {
+                campos.push({
+                    tipo: 'serial',
+                    valor: item.serial
+                });
+            }
+            
+            if (item.pin && item.pin.trim() !== "") {
+                campos.push({
+                    tipo: 'pin',
+                    valor: item.pin
+                });
+            }
+
+            if (campos.length === 0) {
+                return `
+                    <div class="card" data-id="${escapeHTML(item.id)}">
+                        <div class="card-header">
+                            <div class="title-section">
+                                <div class="icon-badge">${iconoPrincipal}</div>
+                                <div>
+                                    <div class="title">${escapeHTML(item.titulo)}</div>
+                                    <div class="id-badge">ID: ${escapeHTML(item.id)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding: 20px; color: #64748b;">
+                            ⚠️ Esta credencial no tiene información adicional
+                        </div>
+                    </div>
+                `;
+            }
+
+            const fieldsHtml = campos.map(campo => `
+                <div class="field-item" data-field="${campo.tipo}" data-value="${escapeHTML(campo.valor)}">
+                    <div class="field-icon">${getFieldIcon(campo.tipo)}</div>
+                    <div class="field-label">${getFieldLabel(campo.tipo)}</div>
+                    <div class="field-placeholder">${getPlaceholder(campo.tipo)}</div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="card" data-id="${escapeHTML(item.id)}">
+                    <div class="card-header">
+                        <div class="title-section">
+                            <div class="icon-badge">${iconoPrincipal}</div>
+                            <div>
+                                <div class="title">${escapeHTML(item.titulo)}</div>
+                                <div class="id-badge">ID: ${escapeHTML(item.id)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fields-grid">
+                        ${fieldsHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        DOM.container.innerHTML = html;
+
+        const fieldItems = document.querySelectorAll('.field-item');
+        fieldItems.forEach(item => {
+            const value = item.dataset.value;
+            const fieldName = item.dataset.field;
+            
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (value && value.trim() !== "") {
+                    copyToClipboard(value, getFieldLabel(fieldName));
+                } else {
+                    showToastDiscreto(`⚠️ Campo vacío`, true);
+                }
+            });
+        });
+    }
+
+    async function cargarDatos() {
+        try {
+            const response = await fetch(URL);
+            if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
+            
+            const rawData = await response.json();
+            if (!rawData || !rawData.length) {
+                throw new Error("La hoja de cálculo está vacía o no se pudo acceder");
+            }
+
+            const mapeados = rawData.map(row => {
+                return {
+                    id: row.id || row.ID || '',
+                    titulo: row.titulo || row.Titulo || row.TÍTULO || row.nombre || 'Sin título',
+                    usuario: row.usuario || row.Usuario || row.USER || row.user || '',
+                    clave: row.clave || row.Clave || row.CLAVE || row.password || row.contraseña || '',
+                    serial: row.serial || row.Serial || row.SERIAL || row.licencia || row.Licencia || '',
+                    pin: row.pin || row.Pin || row.PIN || row.codigo || ''
+                };
+            }).filter(item => item.id && item.titulo);
+
+            if (mapeados.length === 0 && rawData.length > 0) {
+                for (let i = 0; i < rawData.length; i++) {
+                    const row = rawData[i];
+                    mapeados.push({
+                        id: (i + 1).toString(),
+                        titulo: row.titulo || row.Titulo || row.nombre || `Credencial ${i+1}`,
+                        usuario: row.usuario || row.user || '',
+                        clave: row.clave || row.password || '',
+                        serial: row.serial || row.licencia || '',
+                        pin: row.pin || row.codigo || ''
+                    });
+                }
+            }
+
+            if (mapeados.length === 0) {
+                throw new Error("No se pudo interpretar ninguna fila como credencial válida");
+            }
+
+            registros = mapeados.sort((a, b) => {
+                const ta = (a.titulo || "").toLowerCase();
+                const tb = (b.titulo || "").toLowerCase();
+                return ta.localeCompare(tb, 'es');
+            });
+
+            renderizarTodo();
+        } catch (error) {
+            console.error("Error cargando credenciales:", error);
+            DOM.container.innerHTML = `<div class="status-msg" style="color:#f87171;">⚠️ Error al conectar con la base de datos.<br><span style="font-size:13px;">${escapeHTML(error.message)}</span><br><br>🔁 Recarga la página o verifica la hoja de cálculo.</div>`;
+            DOM.statsBadge.innerHTML = "⚠️ Error de conexión";
+        }
+    }
+
+    // Iniciar directamente sin login
+    cargarDatos();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Control</title>
+    <style>
+        /* ===== ESTILOS PROPIOS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(145deg, #0b1120 0%, #1a2639 100%);
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 2.5rem;
+            padding: 2.5rem 2.8rem;
+            max-width: 780px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.25s ease;
+        }
+
+        /* === LOGIN === */
+        .login-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .login-section h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #f0f4ff;
+            text-shadow: 0 4px 12px rgba(0, 20, 40, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-section h1 small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #8e9fcb;
+            letter-spacing: 0.2px;
+            margin-left: 0.75rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.2rem 1rem;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 3rem;
+            padding: 0.3rem 0.3rem 0.3rem 1.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: 0.2s;
+        }
+
+        .input-group:focus-within {
+            border-color: #6c8cff;
+            box-shadow: 0 0 0 3px rgba(108, 140, 255, 0.2);
+        }
+
+        .input-group label {
+            color: #b6c8f0;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .input-group input {
+            flex: 1;
+            min-width: 150px;
+            background: transparent;
+            border: none;
+            padding: 0.9rem 0.2rem;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 400;
+            outline: none;
+            letter-spacing: 1px;
+        }
+
+        .input-group input::placeholder {
+            color: #5b6e95;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            font-size: 0.95rem;
+        }
+
+        .input-group button {
+            background: #4a6cf7;
+            border: none;
+            padding: 0.8rem 2.2rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(74, 108, 247, 0.3);
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-group button:hover {
+            background: #5a7aff;
+            transform: scale(1.02);
+            box-shadow: 0 12px 28px rgba(74, 108, 247, 0.45);
+        }
+
+        .input-group button:active {
+            transform: scale(0.96);
+        }
+
+        #loginError {
+            color: #ff7a8b;
+            font-size: 0.9rem;
+            padding-left: 0.8rem;
+            min-height: 1.8rem;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        /* === PANEL (oculto hasta login) === */
+        .panel {
+            display: none;
+            flex-direction: column;
+            gap: 2rem;
+            animation: fadeUp 0.5s ease;
+        }
+
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(18px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 0.8rem;
+        }
+
+        .panel-header h2 {
+            color: #e8eeff;
+            font-weight: 500;
+            font-size: 1.7rem;
+            letter-spacing: -0.3px;
+        }
+
+        .panel-header .badge {
+            background: rgba(74, 108, 247, 0.2);
+            color: #9bb2ff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(74, 108, 247, 0.2);
+        }
+
+        .grid-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .grid-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 0.8rem;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 2rem;
+            text-decoration: none;
+            color: #d3defa;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.3px;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .grid-links a:hover {
+            background: rgba(74, 108, 247, 0.15);
+            border-color: rgba(74, 108, 247, 0.25);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .grid-links a:active {
+            transform: translateY(0px);
+        }
+
+        .grid-links a span {
+            opacity: 0.5;
+            font-size: 0.7rem;
+            margin-left: 6px;
+            font-weight: 300;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: #9aabd0;
+            padding: 0.5rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.6rem;
+            align-self: flex-end;
+            font-size: 0.85rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 70, 70, 0.08);
+            border-color: rgba(255, 70, 70, 0.2);
+            color: #ff9aa8;
+        }
+
+        /* Responsive */
+        @media (max-width: 550px) {
+            .card { padding: 1.8rem 1.2rem; }
+            .login-section h1 { font-size: 1.8rem; flex-wrap: wrap; }
+            .input-group { padding-left: 1.2rem; }
+            .input-group button { width: 100%; justify-content: center; }
+            .grid-links { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 400px) {
+            .grid-links { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="appContainer">
+    <!-- LOGIN -->
+    <div class="login-section" id="loginSection">
+        <h1>
+            🔐 Ingrese su clave:
+         
+        </h1>
+        <div class="input-group">
+            <label for="codeInput">📅</label>
+            <input type="password" id="codeInput" placeholder="Ingresa tu clave..." autocomplete="off" />
+            <button id="loginBtn">→ Ingresar</button>
+        </div>
+        <div id="loginError"></div>
+    </div>
+
+    <!-- PANEL PRINCIPAL -->
+    <div class="panel" id="panelSection">
+        <div class="panel-header">
+            <h2>📋 herramientas</h2>
+            <span class="badge" id="dateBadge">18/08/2026</span>
+        </div>
+
+        <div class="grid-links">
+            <a href="tmp/diagnostico.html">🩺 Software de Diagnostico <span>↗</span></a>
+            <a href="tmp/extractor.html">📤 Extractor de MINI CODIGOS <span>↗</span></a>
+            <a href="tmp/keys.html">🔑 CREDENCIALES <span>↗</span></a>
+            <a href="tmp/ofuscador.html">🌀 Ofuscador <span>↗</span></a>
+            <a href="tmp/productos.html">📦 Catalogo de productos + buscador<span>↗</span></a>
+            <a href="tmp/qr.html">📲 QR <span>↗</span></a>
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">✕ cerrar sesión</button>
+    </div>
+</div>
+
+<!-- ===== SEGURIDAD EN JS (mismo directorio) ===== -->
+<script>
+    (function() {
+        "use strict";
+
+        // ---------- CONFIGURACIÓN DE CLAVE DIARIA ----------
+        // La clave se genera con el formato DDMMAA (ej. 180826)
+        // La fecha de referencia es 18/08/2026 -> 180826
+
+        function getDailyCode() {
+            const now = new Date();
+            // Forzar zona horaria local (día/mes/año)
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = String(now.getFullYear()).slice(2); // últimos 2 dígitos
+            return `${day}${month}${year}`;
+        }
+
+        function getFormattedDate() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // ---------- ELEMENTOS DOM ----------
+        const loginSection = document.getElementById('loginSection');
+        const panelSection = document.getElementById('panelSection');
+        const codeInput = document.getElementById('codeInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const dateBadge = document.getElementById('dateBadge');
+
+        // Mostrar fecha actual en el badge (formato día/mes/año)
+        dateBadge.textContent = getFormattedDate();
+
+        // ---------- FUNCIONES DE SESIÓN ----------
+        function checkDailyCode(inputCode) {
+            const expected = getDailyCode();
+            return inputCode.trim() === expected;
+        }
+
+        function login() {
+            const code = codeInput.value;
+            if (checkDailyCode(code)) {
+                // Éxito: mostrar panel y ocultar login
+                loginSection.style.display = 'none';
+                panelSection.style.display = 'flex';
+                loginError.textContent = '';
+                codeInput.value = '';   // limpiar por seguridad
+                // Opcional: guardar sesión en sessionStorage (por si recarga)
+                try {
+                    sessionStorage.setItem('controlSession', 'active');
+                } catch (_) { /* ignorar */ }
+            } else {
+                loginError.textContent = '❌ Código incorrecto. Intenta con el código de hoy.';
+                codeInput.value = '';
+                codeInput.focus();
+                // Efecto sutil de sacudida (opcional)
+                loginError.style.transition = '0.15s';
+                loginError.style.transform = 'translateX(6px)';
+                setTimeout(() => { loginError.style.transform = 'translateX(0)'; }, 150);
+            }
+        }
+
+        function logout() {
+            panelSection.style.display = 'none';
+            loginSection.style.display = 'flex';
+            loginError.textContent = '';
+            codeInput.value = '';
+            try {
+                sessionStorage.removeItem('controlSession');
+            } catch (_) { /* ignorar */ }
+            // Forzar foco en input
+            setTimeout(() => codeInput.focus(), 50);
+        }
+
+        // ---------- EVENTOS ----------
+        loginBtn.addEventListener('click', login);
+
+        codeInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                login();
+            }
+        });
+
+        logoutBtn.addEventListener('click', logout);
+
+        // ---------- RECUPERAR SESIÓN (si existe) ----------
+        try {
+            if (sessionStorage.getItem('controlSession') === 'active') {
+                // Si la sesión está activa, mostramos panel directamente
+                // Pero debemos verificar que el código de hoy sigue siendo válido
+                // (por seguridad, si cambió el día, la sesión expira)
+                // Para ello, simplemente forzamos login automático con el código actual
+                // (si el usuario recarga el mismo día, funciona)
+                const todayCode = getDailyCode();
+                // simulamos un login silencioso
+                if (todayCode) {
+                    // Mostramos panel sin validar con input (ya que la sesión es activa)
+                    // pero para mayor seguridad, validamos que el código de hoy coincida con algún almacenado
+                    // Podríamos guardar el día de la sesión, pero por simplicidad:
+                    // si la sesión está activa, asumimos que es el mismo día (o forzamos re-login)
+                    // Mejor: guardamos el día en sessionStorage al hacer login.
+                    const storedDate = sessionStorage.getItem('controlDate');
+                    const today = getFormattedDate();
+                    if (storedDate === today) {
+                        // Mismo día, mostramos panel
+                        loginSection.style.display = 'none';
+                        panelSection.style.display = 'flex';
+                        codeInput.value = '';
+                        loginError.textContent = '';
+                    } else {
+                        // Día distinto, cerramos sesión forzosamente
+                        sessionStorage.removeItem('controlSession');
+                        sessionStorage.removeItem('controlDate');
+                        logout();
+                    }
+                }
+            }
+        } catch (_) { /* fallback seguro */ }
+
+        // Extendemos la función login para guardar la fecha de sesión
+        const originalLogin = login;
+        login = function() {
+            const code = codeInput.value;
+            if (checkDailyCode(code)) {
+                loginSection.style.display = 'none';
+                panelSection.style.display = 'flex';
+                loginError.textContent = '';
+                codeInput.value = '';
+                try {
+                    sessionStorage.setItem('controlSession', 'active');
+                    sessionStorage.setItem('controlDate', getFormattedDate());
+                } catch (_) { /* ignorar */ }
+            } else {
+                loginError.textContent = '❌ Código incorrecto. Intenta con el código de hoy.';
+                codeInput.value = '';
+                codeInput.focus();
+            }
+        };
+        // Reemplazar el listener del botón y del enter
+        loginBtn.removeEventListener('click', originalLogin);
+        loginBtn.addEventListener('click', login);
+
+        // También reemplazar el evento keydown para que use el nuevo login
+        // Quitamos el anterior y añadimos el nuevo
+        const newKeyHandler = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                login();
+            }
+        };
+        codeInput.removeEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                // se llama al login original, pero no importa porque ya no está
+            }
+        });
+        codeInput.addEventListener('keydown', newKeyHandler);
+
+        // Ajuste final: si después de todo el panel está visible, aseguramos foco
+        if (panelSection.style.display === 'flex') {
+            // nada
+        } else {
+            // Si no hay sesión, aseguramos que el login esté visible
+            loginSection.style.display = 'flex';
+            panelSection.style.display = 'none';
+            // enfocar input
+            setTimeout(() => codeInput.focus(), 100);
+        }
+
+        // Mostrar en consola (solo para referencia) el código esperado hoy (útil para pruebas)
+        console.log(`[control] Código esperado hoy: ${getDailyCode()}`);
+
+        // Si el usuario hace clic en cualquier enlace, no se requiere lógica extra
+        // porque los enlaces apuntan a archivos en el mismo directorio.
+        // Agregamos un pequeño interceptor para que si no hay sesión, no redirija?
+        // Pero eso se maneja mejor en cada página hija. Dejamos así.
+
+        // Pequeño detalle: si el usuario intenta ir a un enlace sin haber hecho login,
+        // el panel no está visible, pero el enlace es accesible. No obstante, el control
+        // está diseñado para que solo se vea el panel después del login.
+        // Si alguien escribe la URL directamente, no hay protección, pero eso es esperado
+        // porque el requerimiento pide solo el control de acceso a través de este HTML.
+        // Cada página hija puede implementar su propia verificación si se desea.
+
+        // También se puede forzar que los enlaces solo sean clickeables cuando el panel está visible.
+        // Pero es más amigable dejarlos así, ya que el panel se oculta.
+        // Aun así, añadimos un comportamiento: si el panel no está visible, prevenir clics en enlaces?
+        // No, porque rompería la experiencia. Mejor confiar en que el usuario usará el control.
+
+        console.log('✅ control cargado correctamente.');
+    })();
+</script>
+
+</body>
+</html>

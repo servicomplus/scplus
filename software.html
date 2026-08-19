@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Recomendado | ServiComp+ - Herramientas que recomendamos</title>
+    <meta name="description" content="Descubre los programas y herramientas que ServiComp+ recomienda para empresas, profesionales y emprendedores.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Software Recomendado | ServiComp+">
+    <meta property="og:description" content="Las mejores herramientas de software seleccionadas por nuestros expertos.">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/1a3a5c/dc3545?text=ServiComp%2B">
+    <meta property="og:url" content="https://servicomp-plus.com/software.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* ===== ESTILOS ADICIONALES PARA SOFTWARE ===== */
+        
+        .hero-software {
+            background: var(--white);
+            padding: 32px 0 16px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .hero-software h1 {
+            color: var(--gray-900);
+        }
+
+        .hero-software p {
+            color: var(--gray-600);
+        }
+
+        /* ===== BUSCADOR ===== */
+        .search-software {
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+            position: relative;
+        }
+
+        .search-software .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        .search-software input {
+            width: 100%;
+            padding: 12px 14px 12px 44px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-family: var(--font-family);
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--gray-900);
+            outline: none;
+        }
+
+        .search-software input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 58, 92, 0.06);
+        }
+
+        .search-software input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .search-software .search-clear {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-400);
+            cursor: pointer;
+            font-size: 16px;
+            display: none;
+            padding: 4px;
+        }
+
+        .search-software .search-clear.visible {
+            display: block;
+        }
+
+        .search-software .search-clear:hover {
+            color: var(--gray-600);
+        }
+
+        .search-results-count {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-400);
+            margin-bottom: 16px;
+        }
+
+        .search-results-count strong {
+            color: var(--gray-700);
+        }
+
+        /* ===== FILTROS CATEGORÍA ===== */
+        .filter-software {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-software .filter-btn {
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            color: var(--gray-500);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-software .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-software .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px rgba(26, 58, 92, 0.25);
+        }
+
+        /* ===== TARJETAS DE SOFTWARE - VERSIÓN MINIMALISTA ===== */
+        .software-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .software-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .software-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .software-card .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .software-card .card-header .icon-software {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .software-card .card-header .icon-software.blue { background: var(--primary-light); color: var(--primary); }
+        .software-card .card-header .icon-software.green { background: #e6f7ed; color: var(--secondary); }
+        .software-card .card-header .icon-software.purple { background: #f0ebff; color: #7c3aed; }
+        .software-card .card-header .icon-software.amber { background: #fef3c7; color: #b45309; }
+        .software-card .card-header .icon-software.red { background: #fde8ea; color: var(--danger); }
+        .software-card .card-header .icon-software.teal { background: #e6f7f7; color: #0d9488; }
+        .software-card .card-header .icon-software.cyan { background: #e0f7fa; color: #00838f; }
+        .software-card .card-header .icon-software.pink { background: #fce7f3; color: #db2777; }
+        .software-card .card-header .icon-software.indigo { background: #e8edf5; color: #4f46e5; }
+        .software-card .card-header .icon-software.orange { background: #fff3e0; color: #e65100; }
+        .software-card .card-header .icon-software.gray { background: #f3f4f6; color: #6b7280; }
+
+        /* ===== NOMBRE DEL PROGRAMA = ENLACE ===== */
+        .software-card .card-header .info h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .software-card .card-header .info h3 a {
+            color: var(--gray-900);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .software-card .card-header .info h3 a:hover {
+            color: var(--primary);
+        }
+
+        .software-card .description {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.5;
+            margin: 0;
+            flex: 1;
+        }
+
+        /* ===== OCULTOS ===== */
+        .software-card .badge-category,
+        .software-card .tags,
+        .software-card .card-footer {
+            display: none !important;
+        }
+
+        .software-card.hidden {
+            display: none !important;
+        }
+
+        .software-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding: 0 2px;
+        }
+
+        .software-section-title .text {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--gray-700);
+        }
+
+        .software-section-title .line {
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+
+        .software-section-title .count {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--gray-400);
+            background: var(--gray-100);
+            padding: 1px 10px;
+            border-radius: 100px;
+        }
+
+        /* ===== CATEGORÍA: TÍTULO CON ÍCONO ===== */
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        .category-title i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        /* ===== NO RESULTADOS ===== */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-400);
+        }
+
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .no-results h3 {
+            font-size: 18px;
+            color: var(--gray-600);
+            margin-bottom: 4px;
+        }
+
+        .no-results p {
+            font-size: 14px;
+            color: var(--gray-400);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .software-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-software {
+                padding: 20px 0 12px 0;
+            }
+            .hero-software h1 {
+                font-size: 2rem;
+            }
+            .software-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .software-card {
+                padding: 16px;
+            }
+            .software-card .card-header .icon-software {
+                width: 38px;
+                height: 38px;
+                font-size: 15px;
+            }
+            .software-card .card-header .info h3 {
+                font-size: 14px;
+            }
+            .software-card .description {
+                font-size: 12px;
+            }
+            .filter-software .filter-btn {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+            .search-software {
+                max-width: 100%;
+                padding: 0 8px;
+            }
+            .search-software input {
+                font-size: 13px;
+                padding: 10px 14px 10px 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-software h1 {
+                font-size: 1.75rem;
+            }
+            .filter-software {
+                gap: 4px;
+            }
+            .filter-software .filter-btn {
+                font-size: 10px;
+                padding: 3px 10px;
+            }
+            .software-grid {
+                gap: 8px;
+            }
+            .software-card {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER GLOBAL ===== -->
+    <div id="header-placeholder"></div>
+
+    <!-- ===== WHATSAPP FLOTANTE ===== -->
+    <div id="whatsapp-placeholder"></div>
+
+    <!-- ============================================================ -->
+    <!-- HERO SOFTWARE                                                -->
+    <!-- ============================================================ -->
+    <section class="hero-software">
+        <div class="container">
+            <div class="text-center max-w-3xl mx-auto">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
+                    Software que <span class="text-danger">Recomendamos</span>
+                </h1>
+                <p class="text-sm text-gray-600 mt-2 max-w-2xl mx-auto leading-relaxed">
+                    Herramientas seleccionadas por nuestro equipo de expertos para potenciar tu productividad.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- BUSCADOR Y FILTROS                                           -->
+    <!-- ============================================================ -->
+    <section class="py-4 bg-gray-50 border-b border-gray-200">
+        <div class="container">
+
+            <!-- ===== BUSCADOR INTELIGENTE ===== -->
+            <div class="search-software">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, categoría o descripción...">
+                <button class="search-clear" id="searchClear"><i class="fa-regular fa-circle-xmark"></i></button>
+            </div>
+
+            <!-- ===== CONTADOR DE RESULTADOS ===== -->
+            <div class="search-results-count" id="resultsCount">
+                <strong id="countNumber">0</strong> programas encontrados
+            </div>
+
+            <!-- ===== FILTROS ===== -->
+            <div class="filter-software">
+                <button class="filter-btn active" data-filter="all">📋 Todos</button>
+                <button class="filter-btn" data-filter="browsers">🌐 Browsers</button>
+                <button class="filter-btn" data-filter="antivirus">🔒 Antivirus</button>
+                <button class="filter-btn" data-filter="vpn">🛡️ VPN</button>
+                <button class="filter-btn" data-filter="remote">🖥️ Acceso Remoto</button>
+                <button class="filter-btn" data-filter="office">📄 Office</button>
+                <button class="filter-btn" data-filter="storage">☁️ Almacenamiento</button>
+                <button class="filter-btn" data-filter="developer">👨‍💻 Desarrollo</button>
+                <button class="filter-btn" data-filter="utilities">🔧 Utilidades</button>
+                <button class="filter-btn" data-filter="os">🪟 Sistemas</button>
+                <button class="filter-btn" data-filter="ia">🤖 IA</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- LISTA DE SOFTWARE RECOMENDADO                               -->
+    <!-- ============================================================ -->
+    <section class="py-8 bg-gray-50">
+        <div class="container" id="softwareContainer">
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: WEB BROWSERS (5)                                -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="browsers">
+                <div class="category-title">
+                    <i class="fa-solid fa-globe"></i>
+                    Web Browsers
+                </div>
+                <div class="software-grid" data-category="browsers">
+
+                    <div class="software-card" data-category="browsers" data-search="google chrome navegador">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-brands fa-chrome"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.google.com/intl/es_us/chrome" target="_blank" rel="noopener noreferrer">Google Chrome</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Navegador rápido y seguro de Google. Sincronización con tu cuenta Google, extensiones y actualizaciones automáticas.</p>
+                    </div>
+
+                    <div class="software-card" data-category="browsers" data-search="opera gx navegador gamers">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-brands fa-opera"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.opera.com/es/gx/gx-browser-nb" target="_blank" rel="noopener noreferrer">Opera GX</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Navegador para gamers con control de CPU/RAM, integración con Discord y Twitch, y modo oscuro.</p>
+                    </div>
+
+                    <div class="software-card" data-category="browsers" data-search="brave navegador privacidad">
+                        <div class="card-header">
+                            <div class="icon-software amber"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div class="info">
+                                <h3><a href="https://brave.com" target="_blank" rel="noopener noreferrer">Brave</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Navegador enfocado en la privacidad con bloqueador de anuncios integrado. Navegación rápida y segura.</p>
+                    </div>
+
+                    <div class="software-card" data-category="browsers" data-search="duckduckgo navegador privacidad">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-solid fa-duck"></i></div>
+                            <div class="info">
+                                <h3><a href="https://duckduckgo.com" target="_blank" rel="noopener noreferrer">DuckDuckGo</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Navegador centrado en la privacidad. Bloquea rastreadores, sin historial, búsquedas anónimas y sin publicidad invasiva.</p>
+                    </div>
+
+                    <div class="software-card" data-category="browsers" data-search="mozilla firefox navegador extensiones">
+                        <div class="card-header">
+                            <div class="icon-software orange"><i class="fa-brands fa-firefox"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.mozilla.org/firefox" target="_blank" rel="noopener noreferrer">Mozilla Firefox</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Navegador extensible, enfocado en la privacidad y seguridad. Gran variedad de extensiones y personalización.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: ANTIVIRUS Y SEGURIDAD (14)                      -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="antivirus">
+                <div class="category-title">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Antivirus y Seguridad
+                </div>
+                <div class="software-grid" data-category="antivirus">
+
+                    <div class="software-card" data-category="antivirus" data-search="kaspersky premium antivirus seguridad">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-shield"></i></div>
+                            <div class="info">
+                                <h3><a href="https://latam.kaspersky.com/downloads/premium" target="_blank" rel="noopener noreferrer">Kaspersky Premium</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección completa contra malware, ransomware y phishing. VPN incluida, control parental y gestión de contraseñas.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="kaspersky plus antivirus seguridad">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div class="info">
+                                <h3><a href="https://latam.kaspersky.com/downloads/plus" target="_blank" rel="noopener noreferrer">Kaspersky Plus</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección avanzada con VPN ilimitada, control de identidad, y herramientas de rendimiento. Ideal para usuarios exigentes.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="kaspersky total security antivirus">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-lock"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.kaspersky.es/downloads/total-security" target="_blank" rel="noopener noreferrer">Kaspersky Total Security</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Suite de seguridad completa: antivirus, firewall, control parental, copias de seguridad y protección de pagos.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="kaspersky standard antivirus">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-shield"></i></div>
+                            <div class="info">
+                                <h3><a href="https://latam.kaspersky.com/downloads/standard" target="_blank" rel="noopener noreferrer">Kaspersky Standard</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección esencial contra amenazas con actualizaciones automáticas y rendimiento optimizado para tu PC.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="kaspersky antivirus seguridad">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-bug"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.kaspersky.es/downloads/antivirus" target="_blank" rel="noopener noreferrer">Kaspersky Anti-Virus</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección básica contra virus, malware y spyware. Ligero y eficiente para equipos con recursos limitados.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="kaspersky internet security antivirus">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-wifi"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.kaspersky.es/downloads/internet-security" target="_blank" rel="noopener noreferrer">Kaspersky Internet Security</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección total para navegación, compras y banca online. Firewall inteligente y control parental.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="kaspersky movil antivirus android ios">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                            <div class="info">
+                                <h3><a href="https://support.kaspersky.com/es/common/beforeinstall/16085#block1" target="_blank" rel="noopener noreferrer">Kaspersky Móvil</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección para dispositivos Android e iOS. Antivirus, anti-phishing, bloqueo de llamadas y localización remota.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="mcafee total protection antivirus">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-shield-virus"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.mcafee.com/es-pe/antivirus/mcafee-total-protection.html" target="_blank" rel="noopener noreferrer">McAfee Total Protection</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección completa para todos tus dispositivos. Antivirus, firewall, VPN y protección de identidad.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="mcafee internet security antivirus">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-globe"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.mcafee.com" target="_blank" rel="noopener noreferrer">McAfee Internet Security</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección avanzada para navegación online, compras y banca. Firewall inteligente y control parental.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="eset nod32 antivirus seguridad">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-solid fa-shield-dog"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.eset.com" target="_blank" rel="noopener noreferrer">Eset NOD32 Antivirus</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Antivirus ligero y eficiente con detección proactiva de amenazas. Bajo consumo de recursos y alta protección.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="eset home security antivirus">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-solid fa-house-shield"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.eset.com/pe/hogar/prueba-gratis" target="_blank" rel="noopener noreferrer">Eset Home Security</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección completa para el hogar. Antivirus, firewall, control parental y protección de pagos online.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="eset offline installer antivirus">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-solid fa-download"></i></div>
+                            <div class="info">
+                                <h3><a href="https://support.eset.com/es/kb2885-descargar-el-instalador-fuera-de-linea-de-eset-o-versiones-anteriores-de-los-productos" target="_blank" rel="noopener noreferrer">Eset Offline Installer</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Instalador offline de Eset. Perfecto para equipos sin conexión a internet o para descargas rápidas.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="bitdefender total security antivirus">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-solid fa-shield"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.bitdefender.com" target="_blank" rel="noopener noreferrer">Bitdefender Total Security</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Suite de seguridad completa con protección avanzada contra ransomware, VPN, firewall y optimización de rendimiento.</p>
+                    </div>
+
+                    <div class="software-card" data-category="antivirus" data-search="avast ultimate antivirus seguridad">
+                        <div class="card-header">
+                            <div class="icon-software orange"><i class="fa-solid fa-shield"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.avast.com" target="_blank" rel="noopener noreferrer">Avast ULTIMATE</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Protección máxima con antivirus, VPN, limpiador de PC y protección de identidad. Todo en una suite completa.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: VPN (7)                                          -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="vpn">
+                <div class="category-title">
+                    <i class="fa-solid fa-vpn"></i>
+                    VPN
+                </div>
+                <div class="software-grid" data-category="vpn">
+
+                    <div class="software-card" data-category="vpn" data-search="nord vpn seguridad privacidad">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-solid fa-vpn"></i></div>
+                            <div class="info">
+                                <h3><a href="https://nordvpn.com/es" target="_blank" rel="noopener noreferrer">Nord VPN</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">La VPN más popular del mundo. Cifrado de nivel militar, sin registros, y servidores en más de 60 países.</p>
+                    </div>
+
+                    <div class="software-card" data-category="vpn" data-search="express vpn seguridad privacidad">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-solid fa-vpn"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.expressvpn.com/es" target="_blank" rel="noopener noreferrer">Express VPN</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">VPN de alta velocidad con servidores en 94 países. Ideal para streaming, gaming y navegación segura.</p>
+                    </div>
+
+                    <div class="software-card" data-category="vpn" data-search="surfshark vpn seguridad privacidad">
+                        <div class="card-header">
+                            <div class="icon-software purple"><i class="fa-solid fa-vpn"></i></div>
+                            <div class="info">
+                                <h3><a href="https://surfshark.com/es" target="_blank" rel="noopener noreferrer">Surfshark VPN</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">VPN ilimitada con conexiones simultáneas en todos tus dispositivos. Cifrado fuerte y sin registros.</p>
+                    </div>
+
+                    <div class="software-card" data-category="vpn" data-search="hma vpn seguridad privacidad">
+                        <div class="card-header">
+                            <div class="icon-software amber"><i class="fa-solid fa-vpn"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.hidemyass.com/download-vpn-pc" target="_blank" rel="noopener noreferrer">HMA VPN</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">VPN con servidores en más de 190 países. Conexiones rápidas y estables para navegación anónima.</p>
+                    </div>
+
+                    <div class="software-card" data-category="vpn" data-search="cyberghost vpn seguridad privacidad">
+                        <div class="card-header">
+                            <div class="icon-software teal"><i class="fa-solid fa-vpn"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.cyberghostvpn.com/vpn-free-trial" target="_blank" rel="noopener noreferrer">CyberGhost VPN</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">VPN fácil de usar con servidores optimizados para streaming, gaming y descargas P2P.</p>
+                    </div>
+
+                    <div class="software-card" data-category="vpn" data-search="kaspersky vpn seguridad privacidad">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-vpn"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.kaspersky.com/vpn-secure-connection" target="_blank" rel="noopener noreferrer">Kaspersky VPN</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">VPN segura de Kaspersky. Protege tu conexión, oculta tu IP y navega de forma anónima y segura.</p>
+                    </div>
+
+                    <div class="software-card" data-category="vpn" data-search="avast vpn seguridad privacidad">
+                        <div class="card-header">
+                            <div class="icon-software orange"><i class="fa-solid fa-vpn"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.avast.com/vpn" target="_blank" rel="noopener noreferrer">Avast VPN</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">VPN de Avast para navegación segura y anónima. Protege tu conexión en redes públicas y privadas.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: ACCESO REMOTO (2)                               -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="remote">
+                <div class="category-title">
+                    <i class="fa-solid fa-desktop"></i>
+                    Acceso Remoto
+                </div>
+                <div class="software-grid" data-category="remote">
+
+                    <div class="software-card" data-category="remote" data-search="anyviewer acceso remoto soporte">
+                        <div class="card-header">
+                            <div class="icon-software purple"><i class="fa-solid fa-desktop"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.anyviewer.com/es/individual.html" target="_blank" rel="noopener noreferrer">AnyViewer</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Acceso remoto rápido y seguro. Conéctate a cualquier computadora desde cualquier lugar con alta velocidad y rendimiento.</p>
+                    </div>
+
+                    <div class="software-card" data-category="remote" data-search="teamviewer quicksupport acceso remoto soporte">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-solid fa-arrows-rotate"></i></div>
+                            <div class="info">
+                                <h3><a href="https://dl.teamviewer.com/download/TeamViewerQS_x64.exe" target="_blank" rel="noopener noreferrer">TeamViewer QuickSupport</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Versión ligera de TeamViewer para soporte rápido. Ideal para asistencia técnica sin instalación completa.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: OFFICE Y PRODUCTIVIDAD (5)                      -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="office">
+                <div class="category-title">
+                    <i class="fa-solid fa-file-lines"></i>
+                    Office y Productividad
+                </div>
+                <div class="software-grid" data-category="office">
+
+                    <div class="software-card" data-category="office" data-search="office 365 microsoft word excel powerpoint">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-brands fa-microsoft"></i></div>
+                            <div class="info">
+                                <h3><a href="https://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60/media/es-ES/O365HomePremRetail.img" target="_blank" rel="noopener noreferrer">Office 365</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Suite de oficina en la nube con Word, Excel, PowerPoint, Outlook y más. Colaboración en tiempo real y actualizaciones constantes.</p>
+                    </div>
+
+                    <div class="software-card" data-category="office" data-search="office 2024 microsoft word excel powerpoint">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-solid fa-file-word"></i></div>
+                            <div class="info">
+                                <h3><a href="https://files.rg-adguard.net/file/1bb52549-6afe-20f6-709f-f11f86d65c66" target="_blank" rel="noopener noreferrer">Office 2024</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Última versión de Office con todas las aplicaciones clásicas. Licencia perpetua sin suscripción.</p>
+                    </div>
+
+                    <div class="software-card" data-category="office" data-search="office 2021 microsoft word excel powerpoint">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-solid fa-file-pen"></i></div>
+                            <div class="info">
+                                <h3><a href="https://files.rg-adguard.net/files/2b7311aa-0b87-9794-1b8b-d05426f67b6c" target="_blank" rel="noopener noreferrer">Office 2021</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Versión de Office con todas las aplicaciones clásicas. Licencia perpetua para usuarios domésticos y empresas.</p>
+                    </div>
+
+                    <div class="software-card" data-category="office" data-search="adobe acrobat reader pdf leer documentos">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-regular fa-file-pdf"></i></div>
+                            <div class="info">
+                                <h3><a href="https://get.adobe.com/es/reader" target="_blank" rel="noopener noreferrer">Adobe Acrobat Reader</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Lector de PDF más popular del mundo. Visualiza, imprime, comenta y firma documentos PDF de forma segura.</p>
+                    </div>
+
+                    <div class="software-card" data-category="office" data-search="adobe creative cloud photoshop illustrator premiere">
+                        <div class="card-header">
+                            <div class="icon-software pink"><i class="fa-solid fa-cloud"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.adobe.com/pe/creativecloud/desktop-app.html" target="_blank" rel="noopener noreferrer">Adobe Creative Cloud</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Suite completa de diseño y creatividad: Photoshop, Illustrator, Premiere, After Effects y más.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: ALMACENAMIENTO (3)                              -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="storage">
+                <div class="category-title">
+                    <i class="fa-solid fa-cloud"></i>
+                    Almacenamiento en Línea
+                </div>
+                <div class="software-grid" data-category="storage">
+
+                    <div class="software-card" data-category="storage" data-search="dropbox almacenamiento nube sincronizar">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-brands fa-dropbox"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.dropbox.com/download" target="_blank" rel="noopener noreferrer">Dropbox</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Almacenamiento en la nube y sincronización de archivos. Accede desde cualquier dispositivo y comparte con enlaces.</p>
+                    </div>
+
+                    <div class="software-card" data-category="storage" data-search="google drive almacenamiento nube sincronizar">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-brands fa-google"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.google.com/drive/download" target="_blank" rel="noopener noreferrer">Google Drive</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Almacenamiento en la nube de Google. Integración con Gmail, Docs y Fotos. Acceso desde cualquier dispositivo.</p>
+                    </div>
+
+                    <div class="software-card" data-category="storage" data-search="onedrive almacenamiento nube sincronizar microsoft">
+                        <div class="card-header">
+                            <div class="icon-software purple"><i class="fa-brands fa-microsoft"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.microsoft.com/onedrive/download" target="_blank" rel="noopener noreferrer">Microsoft OneDrive</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Almacenamiento en la nube de Microsoft. Integración con Windows y Office 365. Sincronización automática.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: DESARROLLO (3)                                  -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="developer">
+                <div class="category-title">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    Desarrollo
+                </div>
+                <div class="software-grid" data-category="developer">
+
+                    <div class="software-card" data-category="developer" data-search="visual studio code editor programacion">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-regular fa-window-maximize"></i></div>
+                            <div class="info">
+                                <h3><a href="https://code.visualstudio.com/download" target="_blank" rel="noopener noreferrer">Visual Studio Code</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Editor de código más popular del mundo. Extensiones para cualquier lenguaje, depuración integrada y Git.</p>
+                    </div>
+
+                    <div class="software-card" data-category="developer" data-search="notepad editor programacion codigo">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-solid fa-pen-nib"></i></div>
+                            <div class="info">
+                                <h3><a href="https://notepad-plus-plus.org/downloads" target="_blank" rel="noopener noreferrer">Notepad++</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Editor de texto avanzado con resaltado de sintaxis. Soporte para múltiples lenguajes. Ligero y rápido.</p>
+                    </div>
+
+                    <div class="software-card" data-category="developer" data-search="net framework desarrollo microsoft">
+                        <div class="card-header">
+                            <div class="icon-software purple"><i class="fa-solid fa-cube"></i></div>
+                            <div class="info">
+                                <h3><a href="https://dotnet.microsoft.com/es-es/download/dotnet-framework/thank-you/net481-offline-installer" target="_blank" rel="noopener noreferrer">.NET Framework 4.8.1</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Framework de desarrollo de Microsoft. Necesario para ejecutar aplicaciones y juegos en Windows.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: UTILIDADES (4)                                  -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="utilities">
+                <div class="category-title">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Utilidades
+                </div>
+                <div class="software-grid" data-category="utilities">
+
+                    <div class="software-card" data-category="utilities" data-search="glary utilities optimizacion limpieza">
+                        <div class="card-header">
+                            <div class="icon-software amber"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.glarysoft.com/glary-utilities/download" target="_blank" rel="noopener noreferrer">Glary Utilities</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Suite de herramientas para optimización y mantenimiento de PC. Limpia archivos, repara el registro y mejora el rendimiento.</p>
+                    </div>
+
+                    <div class="software-card" data-category="utilities" data-search="ccleaner limpieza optimizacion">
+                        <div class="card-header">
+                            <div class="icon-software green"><i class="fa-solid fa-broom"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.ccleaner.com/ccleaner/download" target="_blank" rel="noopener noreferrer">CCleaner</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Limpiador de archivos temporales, caché y registro. Mejora el rendimiento y libera espacio en disco.</p>
+                    </div>
+
+                    <div class="software-card" data-category="utilities" data-search="revo uninstaller desinstalar limpieza">
+                        <div class="card-header">
+                            <div class="icon-software red"><i class="fa-solid fa-trash-can"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.revouninstaller.com/download" target="_blank" rel="noopener noreferrer">Revo Uninstaller</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Desinstalador avanzado que elimina programas y archivos residuales. Limpia el registro y mejora el rendimiento.</p>
+                    </div>
+
+                    <div class="software-card" data-category="utilities" data-search="open-shell menu inicio windows">
+                        <div class="card-header">
+                            <div class="icon-software gray"><i class="fa-solid fa-window-restore"></i></div>
+                            <div class="info">
+                                <h3><a href="https://open-shell.net/download" target="_blank" rel="noopener noreferrer">Open-Shell</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Restaura el menú de inicio clásico de Windows. Personaliza la interfaz y mejora la productividad.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: SISTEMAS OPERATIVOS (3)                         -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="os">
+                <div class="category-title">
+                    <i class="fa-solid fa-windows"></i>
+                    Sistemas Operativos
+                </div>
+                <div class="software-grid" data-category="os">
+
+                    <div class="software-card" data-category="os" data-search="windows 11 sistema operativo microsoft">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-brands fa-windows"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.microsoft.com/es-es/software-download/windows11" target="_blank" rel="noopener noreferrer">Windows 11</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Última versión de Windows con nuevo diseño, rendimiento mejorado, compatibilidad con Android y experiencia moderna.</p>
+                    </div>
+
+                    <div class="software-card" data-category="os" data-search="windows 10 sistema operativo microsoft">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-brands fa-windows"></i></div>
+                            <div class="info">
+                                <h3><a href="https://www.microsoft.com/es-es/software-download/windows10" target="_blank" rel="noopener noreferrer">Windows 10</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Sistema operativo estable y confiable de Microsoft. Compatible con la mayoría de aplicaciones y hardware.</p>
+                    </div>
+
+                    <div class="software-card" data-category="os" data-search="windows 10 enterprise ltsc sistema operativo">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-brands fa-windows"></i></div>
+                            <div class="info">
+                                <h3><a href="https://archive.org/details/es-es_windows_10_enterprise_2019_ltsc" target="_blank" rel="noopener noreferrer">Windows 10 Enterprise LTSC</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Versión empresarial de Windows 10 con soporte extendido. Ideal para entornos corporativos y servidores.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- CATEGORÍA: IA (6)                                          -->
+            <!-- ========================================================== -->
+            <div class="mb-8 category-section" data-category="ia">
+                <div class="category-title">
+                    <i class="fa-solid fa-brain"></i>
+                    Inteligencia Artificial
+                </div>
+                <div class="software-grid" data-category="ia">
+
+                    <div class="software-card" data-category="ia" data-search="chatgpt ia inteligencia artificial openai">
+                        <div class="card-header">
+                            <div class="icon-software purple"><i class="fa-regular fa-message"></i></div>
+                            <div class="info">
+                                <h3><a href="https://chatgpt.com/download" target="_blank" rel="noopener noreferrer">ChatGPT</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Asistente de IA conversacional de OpenAI. Responde preguntas, genera contenido, analiza datos y mucho más.</p>
+                    </div>
+
+                    <div class="software-card" data-category="ia" data-search="claude ia inteligencia artificial anthropic">
+                        <div class="card-header">
+                            <div class="icon-software pink"><i class="fa-regular fa-comment-dots"></i></div>
+                            <div class="info">
+                                <h3><a href="https://claude.ai/download" target="_blank" rel="noopener noreferrer">Claude</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Asistente de IA con gran capacidad de contexto y razonamiento. Excelente para análisis de documentos y programación.</p>
+                    </div>
+
+                    <div class="software-card" data-category="ia" data-search="gemini ia inteligencia artificial google">
+                        <div class="card-header">
+                            <div class="icon-software blue"><i class="fa-brands fa-google"></i></div>
+                            <div class="info">
+                                <h3><a href="https://gemini.google.com/download" target="_blank" rel="noopener noreferrer">Gemini</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Asistente de IA de Google. Integración con Gmail, Docs, Drive y todo el ecosistema Google. Multimodal.</p>
+                    </div>
+
+                    <div class="software-card" data-category="ia" data-search="perplexity ia inteligencia artificial busqueda">
+                        <div class="card-header">
+                            <div class="icon-software teal"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <div class="info">
+                                <h3><a href="https://perplexity.ai/download" target="_blank" rel="noopener noreferrer">Perplexity</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Motor de búsqueda conversacional con IA. Responde preguntas con fuentes verificadas.</p>
+                    </div>
+
+                    <div class="software-card" data-category="ia" data-search="grok ia inteligencia artificial x ai elon musk">
+                        <div class="card-header">
+                            <div class="icon-software amber"><i class="fa-brands fa-x-twitter"></i></div>
+                            <div class="info">
+                                <h3><a href="https://x.com/premium" target="_blank" rel="noopener noreferrer">Grok</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Asistente de IA de xAI (Elon Musk). Integrado con X (Twitter). Acceso a información en tiempo real.</p>
+                    </div>
+
+                    <div class="software-card" data-category="ia" data-search="midjourney ia inteligencia artificial imagenes">
+                        <div class="card-header">
+                            <div class="icon-software cyan"><i class="fa-regular fa-image"></i></div>
+                            <div class="info">
+                                <h3><a href="https://midjourney.com/download" target="_blank" rel="noopener noreferrer">Midjourney</a></h3>
+                            </div>
+                        </div>
+                        <p class="description">Generación de imágenes con IA. Crea arte, ilustraciones, logotipos y diseños a partir de descripciones.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===== NO RESULTADOS ===== -->
+            <div id="noResults" class="no-results" style="display:none;">
+                <i class="fa-regular fa-magnifying-glass"></i>
+                <h3>No encontramos programas</h3>
+                <p>Prueba con otros términos de búsqueda o revisa los filtros seleccionados.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- CTA FINAL                                                    -->
+    <!-- ============================================================ -->
+    <section class="py-16 bg-white border-t border-gray-200">
+        <div class="container">
+            <div class="cta-banner" style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-xl); padding: 40px; text-align: center;">
+                <div class="relative z-10">
+                    <span class="inline-block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 border border-gray-200 rounded-full px-4 py-1">¿Necesitas ayuda?</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-3">
+                        ¿No encuentras lo que buscas?
+                    </h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto mb-6 text-base">
+                        Contáctanos y te recomendamos la mejor herramienta para tu necesidad específica.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="https://wa.me/51973952322?text=Hola%20ServiComp%2B,%20necesito%20una%20recomendaci%C3%B3n%20de%20software." 
+                           target="_blank" rel="noopener noreferrer"
+                           class="btn btn-success btn-lg">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            Consultar por WhatsApp
+                        </a>
+                        <a href="cotizacion.html"
+                           class="btn btn-outline btn-lg">
+                            <i class="fa-regular fa-file-lines"></i>
+                            Solicitar Cotización
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER                                                       -->
+    <!-- ============================================================ -->
+    <div id="footer-placeholder"></div>
+
+    <!-- ============================================================ -->
+    <!-- SCRIPTS                                                      -->
+    <!-- ============================================================ -->
+    <script src="js/main.js"></script>
+
+    <script>
+        // ===== BUSCADOR INTELIGENTE + FILTROS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchClear = document.getElementById('searchClear');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.software-card');
+            const categorySections = document.querySelectorAll('.category-section');
+            const noResults = document.getElementById('noResults');
+            const countNumber = document.getElementById('countNumber');
+
+            let currentFilter = 'all';
+            let currentSearch = '';
+
+            function filterAndSearch() {
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const cardCategory = card.dataset.category;
+                    const searchData = (card.dataset.search || '').toLowerCase();
+                    const cardText = card.textContent.toLowerCase();
+                    const searchTerm = currentSearch.toLowerCase().trim();
+
+                    const matchesFilter = currentFilter === 'all' || cardCategory === currentFilter;
+                    const matchesSearch = !searchTerm || 
+                        searchData.includes(searchTerm) || 
+                        cardText.includes(searchTerm);
+
+                    const isVisible = matchesFilter && matchesSearch;
+
+                    if (isVisible) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                        card.style.animation = 'none';
+                        setTimeout(() => {
+                            card.style.animation = 'fadeInUp 0.4s ease forwards';
+                        }, 50);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Mostrar/ocultar secciones vacías
+                categorySections.forEach(section => {
+                    const sectionCards = section.querySelectorAll('.software-card');
+                    let hasVisible = false;
+                    sectionCards.forEach(c => {
+                        if (c.style.display !== 'none') hasVisible = true;
+                    });
+                    section.style.display = hasVisible ? 'block' : 'none';
+                });
+
+                // Mostrar/ocultar "no results"
+                if (visibleCount === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+
+                // Actualizar contador
+                countNumber.textContent = visibleCount;
+            }
+
+            // ===== BÚSQUEDA =====
+            searchInput.addEventListener('input', function() {
+                currentSearch = this.value;
+                searchClear.classList.toggle('visible', this.value.length > 0);
+                filterAndSearch();
+            });
+
+            // ===== LIMPIAR BÚSQUEDA =====
+            searchClear.addEventListener('click', function() {
+                searchInput.value = '';
+                searchClear.classList.remove('visible');
+                currentSearch = '';
+                filterAndSearch();
+                searchInput.focus();
+            });
+
+            // ===== FILTROS =====
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    filterAndSearch();
+                });
+            });
+
+            // ===== INICIALIZAR =====
+            filterAndSearch();
+        });
+    </script>
+
+</body>
+</html>

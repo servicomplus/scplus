@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Mis Cuentas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Modo claro (por defecto) */
+        body.light-mode {
+            background-color: #f0f2f5;
+            color: #1a1a1a;
+        }
+
+        /* Modo oscuro */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+
+        /* Tarjeta principal - MÁS ANCHA */
+        .main-card {
+            width: 100%;
+            max-width: 520px;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            position: relative;
+            text-align: center;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .main-card {
+            background-color: #ffffff;
+        }
+
+        body.dark-mode .main-card {
+            background-color: #1e1e1e;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Avatar con logo */
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+            flex-shrink: 0;
+            background-color: #e9e7e2;
+            padding: 12px;
+        }
+
+        body.dark-mode .avatar {
+            background-color: #333;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        /* Título */
+        .title {
+            font-size: clamp(1.4rem, 4.5vw, 1.7rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
+            word-break: break-word;
+        }
+
+        body.light-mode .title {
+            color: #111827;
+        }
+
+        body.dark-mode .title {
+            color: #f3f4f6;
+        }
+
+        /* Botón de modo oscuro */
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.92);
+        }
+
+        body.light-mode .theme-toggle {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+
+        body.light-mode .theme-toggle:hover {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        body.dark-mode .theme-toggle {
+            background-color: #333;
+            color: #9ca3af;
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            background-color: #444;
+            color: #e5e7eb;
+        }
+
+        /* Tarjetas de cuentas - MÁS ESPACIOSAS */
+        .account-card {
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 0.75rem;
+            gap: 0.75rem;
+            min-height: 80px;
+        }
+
+        .account-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .account-card:active {
+            transform: scale(0.98);
+        }
+
+        .account-card .clickable {
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .account-card .clickable:active {
+            opacity: 0.6;
+        }
+
+        /* Logo del banco en tarjeta */
+        .bank-logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: white;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .bank-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 0.5rem;
+        }
+
+        /* Información de la cuenta - AHORA CON WRAP */
+        .account-info {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        }
+
+        .account-name {
+            font-weight: 700;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .account-number {
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            word-break: break-all;
+            /* Permite que el número se rompa en varias líneas si es muy largo */
+            white-space: normal;
+            /* Permite que el texto se envuelva */
+            line-height: 1.4;
+        }
+
+        .account-number-cci {
+            font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            word-break: break-all;
+            white-space: normal;
+            line-height: 1.4;
+        }
+
+        /* Botón QR */
+        .qr-button {
+            background: rgba(255, 255, 255, 0.2);
+            transition: background 0.2s ease, transform 0.2s ease;
+            flex-shrink: 0;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 0.75rem;
+            font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+            font-weight: 600;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 40px;
+            min-width: 56px;
+        }
+
+        .qr-button:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .qr-button i {
+            font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        }
+
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, #e8e8e8 25%, #d5d5d5 50%, #e8e8e8 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 0.75rem;
+            min-height: 80px;
+        }
+
+        body.dark-mode .skeleton {
+            background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-space {
+            margin-bottom: 0.75rem;
+        }
+
+        /* Modal para QR */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 1.5rem;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            animation: fadeIn 0.25s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            max-width: 380px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+        }
+
+        /* Logo del banco en el modal */
+        .modal-logo {
+            position: absolute;
+            top: 1rem;
+            left: 1.25rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.65rem;
+            color: white;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.08);
+            padding: 4px;
+        }
+
+        .modal-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 0.3rem;
+        }
+
+        .modal-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            transition: opacity 0.2s ease;
+            color: #9ca3af;
+        }
+
+        .modal-close:hover {
+            opacity: 0.7;
+        }
+
+        .modal-close:active {
+            transform: scale(0.9);
+        }
+
+        .modal-qr-container {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        body.dark-mode .modal-qr-container {
+            background: #2a2a2a;
+        }
+
+        .modal-qr-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            display: block;
+        }
+
+        .modal-titular {
+            text-align: center;
+            font-size: clamp(1.2rem, 3.2vw, 1.35rem);
+            font-weight: 700;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            color: #111827;
+        }
+
+        body.dark-mode .modal-titular {
+            border-top-color: rgba(255, 255, 255, 0.08);
+            color: #f0f0f0;
+        }
+
+        .modal-close-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 1rem;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        body.dark-mode .modal-close-btn {
+            background-color: #333;
+            color: #f0f0f0;
+        }
+
+        .modal-close-btn:active {
+            transform: scale(0.97);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        /* Notificación */
+        .notification {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            font-weight: 500;
+            font-size: 1rem;
+            animation: slideDown 0.35s ease;
+            max-width: 90%;
+            text-align: center;
+            backdrop-filter: blur(4px);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 1.5rem;
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .footer:hover {
+            opacity: 0.8;
+        }
+
+        .footer a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+            cursor: pointer;
+        }
+
+        .footer a:active {
+            opacity: 0.6;
+        }
+
+        /* Tooltip */
+        .clickable {
+            position: relative;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .clickable .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+
+        .clickable:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (hover: none) {
+            .clickable .tooltip {
+                display: none;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c4c4c4;
+            border-radius: 2px;
+        }
+        
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #555;
+        }
+
+        /* Mejoras para móviles */
+        @media (max-width: 480px) {
+            .main-card {
+                padding: 1rem;
+                border-radius: 1.25rem;
+                max-width: 100%;
+            }
+
+            .account-card {
+                padding: 0.85rem;
+                gap: 0.5rem;
+                min-height: 72px;
+                border-radius: 0.875rem;
+                flex-wrap: nowrap;
+            }
+
+            .bank-logo {
+                width: 44px;
+                height: 44px;
+                border-radius: 0.625rem;
+                padding: 5px;
+            }
+
+            .avatar {
+                width: 64px;
+                height: 64px;
+                padding: 10px;
+            }
+
+            .theme-toggle {
+                width: 36px;
+                height: 36px;
+                top: 0.75rem;
+                right: 0.75rem;
+                font-size: 1.1rem;
+            }
+
+            .qr-button {
+                padding: 0.4rem 0.7rem;
+                min-height: 36px;
+                min-width: 48px;
+                border-radius: 0.625rem;
+            }
+
+            .modal-content {
+                padding: 1.25rem;
+                border-radius: 1rem;
+            }
+
+            .modal-logo {
+                width: 34px;
+                height: 34px;
+                top: 0.75rem;
+                left: 1rem;
+                padding: 3px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .main-card {
+                padding: 0.75rem;
+            }
+
+            .account-card {
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                padding: 0.625rem;
+            }
+
+            .account-card .account-info {
+                flex: 1 1 100%;
+                text-align: center;
+            }
+
+            .account-card .bank-logo {
+                margin: 0 auto;
+            }
+
+            .qr-button {
+                flex: 1;
+                justify-content: center;
+                min-height: 38px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .account-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            }
+
+            .qr-button:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.04);
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <div class="main-card">
+        
+        <!-- Botón Modo Oscuro -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Cambiar modo oscuro">
+            <i class="fa-regular fa-moon"></i>
+        </button>
+
+        <!-- Avatar con logo.png -->
+        <div class="avatar">
+            <img src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.textContent='PE'; this.parentElement.style.fontSize='1.5rem'; this.parentElement.style.fontWeight='700';">
+        </div>
+
+        <!-- Nombre de usuario -->
+        <h1 class="title">ServiComp Plus</h1>
+
+        <!-- Contenedor de Tarjetas -->
+        <div id="cuentas-container" class="space-y-3">
+            <!-- Skeleton loading -->
+            <div class="skeleton skeleton-space"></div>
+            <div class="skeleton skeleton-space"></div>
+            <div class="skeleton skeleton-space"></div>
+            <div class="skeleton skeleton-space"></div>
+            <div class="skeleton skeleton-space"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Diseñado por 
+            <a href="https://wa.me/51973952322?text=Hola%2C%20quiero%20uno%20igual%20por%20favor" target="_blank" rel="noopener noreferrer">
+                ServiComp+
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuración de OpenSheet ---
+        const SHEET_ID = '1FJOmxnk5MOQeRxVeo6jCEbEUMF6l-FLJS7mDdIR5FL0';
+        const SHEET_NAME = 'sc';
+        const API_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
+
+        // --- Estado del tema ---
+        let darkMode = false;
+
+        // --- Elementos del DOM ---
+        const themeToggle = document.getElementById('themeToggle');
+        const container = document.getElementById('cuentas-container');
+
+        // --- Función para cambiar el tema ---
+        function toggleTheme() {
+            darkMode = !darkMode;
+            const body = document.body;
+            const icon = themeToggle.querySelector('i');
+            
+            if (darkMode) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                icon.className = 'fa-regular fa-sun';
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                icon.className = 'fa-regular fa-moon';
+            }
+            
+            localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+        }
+
+        // --- Cargar tema guardado ---
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                darkMode = true;
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+                themeToggle.querySelector('i').className = 'fa-regular fa-sun';
+            }
+        }
+
+        // --- Event listener para el botón de tema ---
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // --- Función para copiar texto al portapapeles ---
+        function copiarTexto(texto, evento) {
+            if (evento) {
+                evento.stopPropagation();
+            }
+            
+            navigator.clipboard.writeText(texto).then(() => {
+                mostrarNotificacion('✅ ¡Copiado al portapapeles!', 'success');
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+                const textarea = document.createElement('textarea');
+                textarea.value = texto;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                mostrarNotificacion('✅ ¡Copiado al portapapeles!', 'success');
+            });
+        }
+
+        // --- Función para mostrar el QR en modal ---
+        function mostrarQR(imageQr, banco, nombre, logoBanco) {
+            if (!imageQr || imageQr.length === 0) {
+                mostrarNotificacion('⚠️ No hay código QR disponible', 'info');
+                return;
+            }
+
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            
+            const logoHtml = logoBanco ? 
+                `<img src="${logoBanco}" alt="${banco}">` : 
+                `<span>${banco.substring(0, 4).toUpperCase()}</span>`;
+            
+            overlay.innerHTML = `
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-logo" style="background: ${darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};">
+                        ${logoHtml}
+                    </div>
+                    
+                    <div class="flex justify-end items-center">
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
+                            <i class="fa-regular fa-circle-xmark"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="modal-qr-container">
+                        <img src="${imageQr}" alt="QR ${banco}" 
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23f3f4f6%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%236b7280%22 font-family=%22sans-serif%22 font-size=%2218%22%3EQR no disponible%3C/text%3E%3C/svg%3E'">
+                    </div>
+                    
+                    <div class="modal-titular">${nombre}</div>
+                    
+                    <button class="modal-close-btn" onclick="this.closest('.modal-overlay').remove()">
+                        <i class="fa-regular fa-circle-xmark"></i> Cerrar
+                    </button>
+                </div>
+            `;
+            
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.remove();
+                }
+            });
+            
+            document.body.appendChild(overlay);
+        }
+
+        // --- Función para mostrar notificaciones ---
+        function mostrarNotificacion(mensaje, tipo = 'success') {
+            const colores = {
+                success: darkMode ? '#059669' : '#10b981',
+                info: darkMode ? '#2563eb' : '#3b82f6',
+                error: darkMode ? '#dc2626' : '#ef4444'
+            };
+            
+            const notificacion = document.createElement('div');
+            notificacion.className = 'notification';
+            notificacion.style.backgroundColor = colores[tipo] || colores.success;
+            notificacion.style.color = '#ffffff';
+            notificacion.textContent = mensaje;
+            document.body.appendChild(notificacion);
+            
+            setTimeout(() => {
+                notificacion.style.opacity = '0';
+                notificacion.style.transform = 'translateX(-50%) translateY(-30px)';
+                setTimeout(() => notificacion.remove(), 300);
+            }, 2500);
+        }
+
+        // --- Función para obtener y procesar los datos ---
+        async function cargarCuentas() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`Error al cargar los datos: ${response.status}`);
+                }
+                const cuentas = await response.json();
+                renderizarCuentas(cuentas);
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl text-sm" role="alert" style="${darkMode ? 'background-color: #7f1d1d; border-color: #991b1b; color: #fca5a5;' : ''}">
+                        <strong>¡Ups!</strong> No se pudieron cargar las cuentas.
+                        <button onclick="cargarCuentas()" class="mt-2 block mx-auto font-bold py-1.5 px-4 rounded-lg text-sm transition" style="background-color: ${darkMode ? '#991b1b' : '#ef4444'}; color: white;">
+                            Reintentar
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // --- Función para renderizar las tarjetas ---
+        function renderizarCuentas(cuentas) {
+            if (!cuentas || cuentas.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-xl text-sm" role="alert" style="${darkMode ? 'background-color: #78350f; border-color: #92400e; color: #fde68a;' : ''}">
+                        No se encontraron cuentas en la hoja de cálculo.
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            cuentas.forEach((cuenta, index) => {
+                const banco = cuenta.banco || 'Banco';
+                const nombre = cuenta.nombre || 'Titular';
+                const telefono = cuenta.telefono || '';
+                const cta = cuenta.cta || '';
+                const cci = cuenta.cci || '';
+                const color = cuenta.color || '#6b7280';
+                const logoBanco = cuenta.logo_banco || '';
+                const imageQr = cuenta.image_qr || '';
+
+                const esYapePlin = telefono && telefono.length > 0;
+                const tieneQR = imageQr && imageQr.length > 0;
+
+                const logoHtml = logoBanco ? 
+                    `<img src="${logoBanco}" alt="${banco}">` : 
+                    banco.substring(0, 4).toUpperCase();
+
+                html += `
+                    <div class="account-card" style="background: ${color};">
+                        <div class="bank-logo">
+                            ${logoHtml}
+                        </div>
+                        <div class="account-info">
+                            <div class="account-name">${nombre}</div>
+                            ${esYapePlin ? `
+                                <div class="account-number clickable" onclick="copiarTexto('${telefono}', event)">
+                                    ${telefono}
+                                    <span class="tooltip">Click para copiar</span>
+                                </div>
+                            ` : `
+                                <div class="account-number clickable" onclick="copiarTexto('${cta}', event)">
+                                    Cta: ${cta}
+                                    <span class="tooltip">Click para copiar</span>
+                                </div>
+                                <div class="account-number-cci clickable" onclick="copiarTexto('${cci}', event)">
+                                    CCI: ${cci}
+                                    <span class="tooltip">Click para copiar</span>
+                                </div>
+                            `}
+                        </div>
+                        ${tieneQR ? `
+                            <button class="qr-button" onclick="mostrarQR('${imageQr}', '${banco}', '${nombre}', '${logoBanco}')">
+                                <i class="fa-solid fa-qrcode"></i> QR
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // --- Cargar tema y datos al iniciar ---
+        loadTheme();
+        cargarCuentas();
+    </script>
+
+</body>
+</html>
