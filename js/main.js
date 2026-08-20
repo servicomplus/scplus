@@ -48,9 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
         updateYear();
         initHeader();
         initMobileMenu();
-        initWhatsApp();  // ← WhatsApp siempre visible
+        initWhatsApp();
         initSmoothScroll();
         initQuoteForm();
+        initLottieAnimation();
         console.log('✅ ServiComp+ Inicializado');
     }
 
@@ -119,16 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // 6. WHATSAPP FLOAT - SIEMPRE VISIBLE                             //
     // ================================================================ //
 
- // ===== WHATSAPP FLOAT - SIEMPRE VISIBLE =====
-function initWhatsApp() {
-    const wa = document.querySelector('.whatsapp-float');
-    if (!wa) return;
+    function initWhatsApp() {
+        const wa = document.querySelector('.whatsapp-float');
+        if (!wa) return;
 
-    // Siempre visible desde el inicio
-    wa.style.opacity = '1';
-    wa.style.transform = 'scale(1)';
-    wa.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-}
+        wa.style.opacity = '1';
+        wa.style.transform = 'scale(1)';
+        wa.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
 
     // ================================================================ //
     // 7. SMOOTH SCROLL                                                //
@@ -192,7 +191,115 @@ function initWhatsApp() {
     }
 
     // ================================================================ //
-    // 9. INYECTAR ANIMACIÓN SPIN                                      //
+    // 9. ANIMACIÓN LOTTIE (JSON LOCAL)                               //
+    // ================================================================ //
+
+    function initLottieAnimation() {
+        const container = document.getElementById('lottieContainer');
+        if (!container) {
+            console.warn('⚠️ Contenedor Lottie no encontrado');
+            return;
+        }
+
+        // Verificar si lottie está disponible
+        if (typeof lottie === 'undefined') {
+            console.warn('⚠️ Librería Lottie no cargada');
+            // Cargar dinámicamente si no existe
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js';
+            script.onload = () => {
+                console.log('📦 Lottie cargado dinámicamente');
+                initAnimation();
+            };
+            script.onerror = () => {
+                console.error('❌ Error al cargar Lottie');
+                container.innerHTML = '<p style="color:red;font-size:12px;">⚠️ Error al cargar animación</p>';
+            };
+            document.head.appendChild(script);
+            return;
+        }
+
+        initAnimation();
+
+        function initAnimation() {
+            // ✅ RUTA LOCAL (archivo descargado)
+            const animationUrl = 'img/chateam.json';
+
+            // Cargar animación en pausa
+            const anim = lottie.loadAnimation({
+                container: container,
+                renderer: 'svg',
+                loop: true,
+                autoplay: false,
+                path: animationUrl,
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid meet',
+                    clearCanvas: true,
+                    progressiveLoad: true
+                }
+            });
+
+            // Estado
+            let isPlaying = false;
+
+            // 1. Scroll: activar/pausar
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !isPlaying) {
+                        anim.play();
+                        isPlaying = true;
+                        console.log('▶️ Animación activada por scroll');
+                    } else if (!entry.isIntersecting && isPlaying) {
+                        anim.pause();
+                        isPlaying = false;
+                        console.log('⏸️ Animación pausada (scroll)');
+                    }
+                });
+            }, { 
+                threshold: 0.3,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            observer.observe(container);
+
+            // 2. Hover: cambiar velocidad (solo escritorio)
+            if (!('ontouchstart' in window)) {
+                container.addEventListener('mouseenter', () => {
+                    anim.setSpeed(1.5);
+                    console.log('⚡ Velocidad 1.5x');
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    anim.setSpeed(1);
+                    console.log('🐢 Velocidad normal');
+                });
+            }
+
+            // 3. Click: toggle manual (para móviles)
+            container.addEventListener('click', () => {
+                if (anim.isPaused) {
+                    anim.play();
+                    isPlaying = true;
+                    console.log('🔄 Click: reproducir');
+                } else {
+                    anim.pause();
+                    isPlaying = false;
+                    console.log('🔄 Click: pausar');
+                }
+            });
+
+            // 4. Limpiar observer cuando se destruya la animación
+            anim.addEventListener('destroy', () => {
+                observer.disconnect();
+                console.log('🧹 Animación y observer destruidos');
+            });
+
+            console.log('✅ Animación Lottie inicializada (local)');
+        }
+    }
+
+    // ================================================================ //
+    // 10. SPIN ANIMATION STYLE                                        //
     // ================================================================ //
 
     if (!document.getElementById('spin-style')) {
@@ -210,7 +317,7 @@ function initWhatsApp() {
 });
 
 // ================================================================ //
-// 10. FUNCIONES GLOBALES                                          //
+// 11. FUNCIONES GLOBALES                                          //
 // ================================================================ //
 
 function showNotification(msg, type = 'info') {
