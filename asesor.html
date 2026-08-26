@@ -29,6 +29,9 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <!-- CSS Principal -->
     <link rel="stylesheet" href="css/style.css">
     
@@ -377,6 +380,315 @@
             gap: 12px;
         }
 
+        /* ===== MODAL DIAGNÓSTICO ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            max-width: 720px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 9999px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 9999px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ===== ESTILOS DEL DIAGNÓSTICO DENTRO DEL MODAL ===== */
+        .question-number {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--primary);
+            background: var(--primary-light);
+            display: inline-block;
+            padding: 0.15rem 1rem;
+            border-radius: 9999px;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.25rem;
+            color: var(--gray-900);
+        }
+
+        .question-help {
+            color: var(--gray-500);
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--white);
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateX(4px);
+        }
+
+        .option:has(input:checked) {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(26, 58, 92, 0.12);
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .option span {
+            flex: 1;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            font: inherit;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            background: var(--gray-50);
+            resize: vertical;
+            font-family: var(--font-family);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 58, 92, 0.08);
+            background: var(--white);
+        }
+
+        textarea.error {
+            border-color: var(--danger);
+            background: #fff5f5;
+        }
+
+        .progress-area {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 0.4rem;
+        }
+
+        .progress-track {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            border-radius: 9999px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .question-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px 18px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-lg);
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            0% { opacity: 0.6; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .buttons .btn {
+            min-width: 100px;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-family);
+            border: none;
+        }
+
+        .buttons .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .buttons .btn-outline:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+            color: var(--gray-800);
+            transform: none;
+        }
+
+        .buttons .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .buttons .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .result-card {
+            display: none;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-lg);
+            animation: fadeSlide 0.4s ease;
+        }
+
+        .result-card h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0 4px 0;
+        }
+
+        .result-card .sub {
+            color: var(--gray-500);
+            font-size: 0.85rem;
+            margin: 0 0 12px 0;
+        }
+
+        .result-type {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            border-left: 4px solid var(--primary);
+            margin: 0 0 12px 0;
+        }
+
+        .result-card details {
+            background: var(--gray-50);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+        }
+
+        .result-card details summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .result-card pre {
+            background: var(--gray-900);
+            color: var(--gray-300);
+            padding: 1rem;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+            max-height: 250px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .sectores-grid {
@@ -464,6 +776,29 @@
                 width: 100%;
                 justify-content: center;
             }
+
+            .modal-content {
+                max-width: 100%;
+                margin: 10px;
+                border-radius: var(--radius-lg);
+            }
+
+            .question-card {
+                padding: 16px;
+            }
+
+            .buttons {
+                flex-direction: column-reverse;
+            }
+
+            .buttons .btn {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .result-card {
+                padding: 16px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -522,17 +857,17 @@
     <!-- HERO ASESOR                                                  -->
     <!-- ============================================================ -->
     <section class="hero-asesor">
-    <div class="container">
-        <div class="text-center max-w-4xl mx-auto">
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
-                ¿Y si la tecnología pudiera hacerte la vida <span class="text-danger">más fácil</span>?
-            </h1>
-            <p>
-                No necesitas ser experto en tecnología. En <strong>ServiComp+</strong>, identificamos oportunidades de mejora y te ayudamos a implementar <strong>soluciones prácticas</strong> según tus necesidades.
-            </p>
+        <div class="container">
+            <div class="text-center max-w-4xl mx-auto">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
+                    ¿Y si la tecnología pudiera hacerte la vida <span class="text-danger">más fácil</span>?
+                </h1>
+                <p>
+                    No necesitas ser experto en tecnología. En <strong>ServiComp+</strong>, identificamos oportunidades de mejora y te ayudamos a implementar <strong>soluciones prácticas</strong> según tus necesidades.
+                </p>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- ============================================================ -->
     <!-- SITUACIONES                                                  -->
@@ -540,7 +875,6 @@
     <section class="situaciones-section">
         <div class="container">
             <div class="situaciones-header">
-                
                 <h2>Estas son las situaciones que <span class="text-danger">resolvemos</span></h2>
             </div>
             <div class="situaciones-grid">
@@ -839,7 +1173,6 @@
     <section class="proceso-section">
         <div class="container">
             <div class="proceso-header">
-                
                 <h2>¿Cómo <span class="text-danger">trabajamos</span>?</h2>
                 <p>Un proceso simple y sin complicaciones para que puedas enfocarte en lo que realmente importa.</p>
             </div>
@@ -886,22 +1219,104 @@
                     <span><i class="fa-regular fa-circle-check"></i> Identificación de oportunidades</span>
                     <span><i class="fa-regular fa-circle-check"></i> Propuesta de mejora</span>
                 </div>
-                <div class="btn-group">
-                    <a href="https://wa.me/51973952322?text=Hola%20ServiComp%2B,%20quiero%20agendar%20mi%20diagn%C3%B3stico%20digital%20gratuito." 
-                       target="_blank" rel="noopener noreferrer"
-                       class="btn btn-success btn-lg">
-                        <i class="fa-brands fa-whatsapp text-lg"></i>
-                        Agenda tu diagnóstico
-                    </a>
-                    <a href="cotizacion.html"
-                       class="btn btn-outline btn-lg">
-                        <i class="fa-regular fa-file-lines"></i>
-                        Solicitar Cotización
-                    </a>
+                <!-- ===== BOTÓN PARA ABRIR MODAL ===== -->
+                <div class="btn-group" style="justify-content: center; margin-top: 8px;">
+                    <button id="openDiagnosticoModal" class="btn btn-primary btn-lg" style="display: inline-flex; align-items: center; gap: 10px;">
+                        <i class="fa-regular fa-clipboard"></i>
+                        Iniciar Diagnóstico
+                    </button>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- ============================================================ -->
+    <!-- MODAL DIAGNÓSTICO 360° PRO                                  -->
+    <!-- ============================================================ -->
+    <div id="diagnosticoModal" class="modal-overlay">
+        <div class="modal-content">
+            
+            <!-- ===== HEADER DEL MODAL (cerrado) ===== -->
+            <div style="position: sticky; top: 0; z-index: 10; background: var(--white); padding: 16px 24px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius-xl) var(--radius-xl) 0 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">📊</span>
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 700; color: var(--primary); margin: 0; line-height: 1.2;">
+                            Diagnóstico 360° PRO
+                        </h3>
+                        <p style="font-size: 11px; color: var(--gray-500); margin: 0;">Responde y obtén un análisis personalizado</p>
+                    </div>
+                </div>
+                <!-- ===== BOTÓN CERRAR MEJORADO ===== -->
+<button id="closeDiagnosticoModal" 
+        style="background: none; 
+               border: none; 
+               font-size: 28px; 
+               cursor: pointer; 
+               color: var(--gray-400); 
+               transition: var(--transition); 
+               padding: 4px 8px; 
+               border-radius: 50%;
+               width: 40px;
+               height: 40px;
+               display: flex;
+               align-items: center;
+               justify-content: center;">
+    <i class="fa-regular fa-circle-xmark" style="font-size: 24px;"></i>
+</button>
+            </div>
+
+            <!-- ===== CONTENIDO DEL DIAGNÓSTICO ===== -->
+            <div style="padding: 20px 24px 24px;">
+
+
+
+                <!-- PROGRESS -->
+                <div class="progress-area" id="progressArea">
+                    <div class="progress-top">
+                        <span id="progressText">Inicio</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+
+                <!-- PREGUNTA -->
+                <div class="question-card" id="questionCard">
+                    <div id="questionContent"></div>
+                    <div class="buttons">
+                        <button type="button" class="btn btn-outline hidden" id="backButton">← Atrás</button>
+                        <button type="button" class="btn btn-primary" id="nextButton">Continuar →</button>
+                    </div>
+                </div>
+
+                <!-- RESULTADO -->
+                <div class="result-card" id="resultCard">
+                    <h2>✅ Diagnóstico completado</h2>
+                    <p class="sub">Tus respuestas han sido registradas. Aquí tienes un resumen:</p>
+                    <div class="result-type">
+                        🧭 Tipo de diagnóstico: <span id="resultType"></span>
+                    </div>
+                    <details>
+                        <summary>📋 Ver datos recopilados</summary>
+                        <pre id="resultJSON"></pre>
+                    </details>
+                    
+                    <!-- Botón de acción después del resultado -->
+                    <div style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="resetDiagnosticoBtn" class="btn btn-outline" style="border-color: var(--gray-300); color: var(--gray-600); background: transparent; padding: 0.5rem 1.25rem; border-radius: var(--radius); font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: var(--transition); font-family: var(--font-family);">
+                            <i class="fa-regular fa-rotate-left"></i> Reiniciar
+                        </button>
+                        <button id="closeResultBtn" class="btn btn-primary" style="background: var(--primary); color: var(--white); border: none; padding: 0.5rem 1.25rem; border-radius: var(--radius); font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: var(--transition); font-family: var(--font-family);">
+                            <i class="fa-regular fa-circle-check"></i> Cerrar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <!-- ============================================================ -->
     <!-- FOOTER                                                       -->
@@ -912,6 +1327,708 @@
     <!-- SCRIPTS                                                      -->
     <!-- ============================================================ -->
     <script src="js/main.js"></script>
+
+    <!-- ============================================================ -->
+    <!-- SCRIPT DIAGNÓSTICO MODAL                                    -->
+    <!-- ============================================================ -->
+    <script>
+    // ==========================================================
+    // DATOS DEL FORMULARIO
+    // ==========================================================
+    const QUESTIONS = {
+        empresa: [{
+            id: "actividad",
+            title: "🏢 ¿A qué se dedica tu negocio?",
+            help: "Cuéntanos brevemente qué vendes, qué servicios prestas o cuál es tu actividad principal.",
+            type: "textarea",
+            placeholder: "Ej.: Vendemos equipos de seguridad industrial y brindamos servicios de instalación."
+        }, {
+            id: "problema",
+            title: "⚠️ ¿Cuál es el principal desafío que enfrentas hoy?",
+            help: "Selecciona el que más resuene con tu situación actual.",
+            type: "radio",
+            options: [
+                ["clientes", "🎯 Conseguir más clientes"],
+                ["ventas", "💰 Vender más"],
+                ["operaciones", "⚙️ Organizar mejor las operaciones"],
+                ["personas", "👥 Gestionar mejor al equipo"],
+                ["finanzas", "📊 Mejorar costos o rentabilidad"],
+                ["tecnologia", "💻 Tecnología o sistemas"],
+                ["tiempo", "⏳ Falta de tiempo / exceso de trabajo"],
+                ["otro", "🔧 Otro problema"]
+            ]
+        }, {
+            id: "clientes",
+            title: "📣 ¿Cómo consigues nuevos clientes?",
+            help: "Selecciona todas las opciones que apliquen.",
+            type: "checkbox",
+            options: [
+                ["referidos", "🤝 Recomendaciones"],
+                ["redes", "📱 Redes sociales"],
+                ["publicidad", "📢 Publicidad"],
+                ["web", "🌐 Página web / internet"],
+                ["prospeccion", "📞 Contacto directo / prospección"],
+                ["licitaciones", "📄 Licitaciones / contrataciones"],
+                ["recurrentes", "🔄 Clientes recurrentes"],
+                ["ninguna", "❌ No tengo una fuente constante"]
+            ]
+        }, {
+            id: "tiempo",
+            title: "⏰ ¿Qué tareas consumen más tiempo?",
+            help: "Selecciona las que más tiempo te quitan.",
+            type: "checkbox",
+            options: [
+                ["administracion", "📋 Administración y papeleo"],
+                ["clientes", "📞 Atención y seguimiento de clientes"],
+                ["ventas", "📝 Cotizaciones y ventas"],
+                ["operaciones", "🏭 Operaciones / producción"],
+                ["documentos", "📄 Crear y revisar documentos"],
+                ["personal", "👥 Coordinar al personal"],
+                ["finanzas", "💰 Facturación / finanzas"]
+            ]
+        }, {
+            id: "informacion",
+            title: "🗂️ ¿Cómo organizan la información?",
+            help: "Clientes, documentos, datos importantes…",
+            type: "radio",
+            options: [
+                ["dispersa", "📂 Está dispersa en diferentes lugares"],
+                ["manual", "📁 Archivos, carpetas y hojas de cálculo"],
+                ["sistemas", "💻 Utilizamos sistemas específicos"],
+                ["centralizada", "📦 Está bastante centralizada"],
+                ["integrada", "🔗 Está conectada entre áreas"]
+            ]
+        }, {
+            id: "procesos",
+            title: "🔁 ¿Cómo funcionan los procesos internos?",
+            type: "radio",
+            options: [
+                ["personas", "👤 Dependen mucho de personas clave"],
+                ["informales", "📝 Hay formas habituales, no documentadas"],
+                ["parciales", "📋 Algunos procesos están documentados"],
+                ["definidos", "✅ La mayoría están definidos"],
+                ["controlados", "📊 Definidos, documentados y controlados"]
+            ]
+        }, {
+            id: "ventas",
+            title: "📈 ¿Cómo gestionan las ventas?",
+            type: "radio",
+            options: [
+                ["informal", "📝 De manera informal"],
+                ["seguimiento", "📊 Hacemos seguimiento básico"],
+                ["proceso", "📋 Tenemos un proceso comercial definido"],
+                ["medicion", "📈 Medimos resultados"],
+                ["predecible", "🎯 Gestión comercial bastante predecible"]
+            ]
+        }, {
+            id: "tecnologia",
+            title: "🤖 ¿Cómo usan tecnología e IA?",
+            type: "checkbox",
+            options: [
+                ["basicas", "🖥️ Herramientas digitales básicas"],
+                ["sistemas", "📊 Sistemas para gestionar áreas"],
+                ["integrados", "🔗 Sistemas conectados"],
+                ["ia_prueba", "🧪 Hemos probado IA"],
+                ["ia_regular", "🤖 Usamos IA regularmente"],
+                ["ia_procesos", "⚙️ IA en procesos concretos"],
+                ["ninguna", "❌ Prácticamente no usamos tecnología/IA"]
+            ]
+        }, {
+            id: "dependencia",
+            title: "🔑 ¿Qué tan dependiente es el negocio de personas clave?",
+            type: "radio",
+            options: [
+                ["muy_alta", "🚨 Sin ellas, gran parte se detiene"],
+                ["alta", "⚠️ Muchas decisiones dependen de ellas"],
+                ["media", "🔶 Existe cierta dependencia"],
+                ["baja", "✅ La mayoría puede delegarse"],
+                ["muy_baja", "🌟 Funciona de manera bastante autónoma"]
+            ]
+        }, {
+            id: "prioridad",
+            title: "🎯 Si pudieras mejorar UNA sola cosa en 3 meses, ¿qué sería?",
+            type: "radio",
+            options: [
+                ["clientes", "🎯 Conseguir más clientes"],
+                ["ventas", "💰 Mejorar ventas"],
+                ["procesos", "📋 Ordenar procesos"],
+                ["tiempo", "⏳ Ahorrar tiempo"],
+                ["equipo", "👥 Mejorar la gestión del equipo"],
+                ["finanzas", "📊 Mejorar la rentabilidad"],
+                ["digital", "💻 Mejorar la gestión digital"],
+                ["ia", "🤖 Aprovechar mejor la IA"]
+            ]
+        }],
+
+        independiente: [{
+            id: "actividad",
+            title: "👤 ¿A qué te dedicas exactamente?",
+            help: "Cuéntanos brevemente tu actividad profesional.",
+            type: "textarea",
+            placeholder: "Ej.: Soy abogado especializado en derecho laboral y asesoro a empresas."
+        }, {
+            id: "problema",
+            title: "⚠️ ¿Cuál es tu principal desafío profesional?",
+            type: "radio",
+            options: [
+                ["clientes", "🎯 Conseguir clientes"],
+                ["ventas", "💰 Convertir oportunidades en clientes"],
+                ["tiempo", "⏳ Falta de tiempo"],
+                ["organizacion", "📋 Organización y gestión"],
+                ["servicio", "📦 Gestión o entrega de servicios"],
+                ["finanzas", "📊 Ingresos, precios o rentabilidad"],
+                ["tecnologia", "💻 Tecnología / digitalización"],
+                ["otro", "🔧 Otro"]
+            ]
+        }, {
+            id: "clientes",
+            title: "📣 ¿Cómo consigues nuevos clientes?",
+            type: "checkbox",
+            options: [
+                ["referidos", "🤝 Recomendaciones"],
+                ["redes", "📱 Redes sociales"],
+                ["web", "🌐 Página web / internet"],
+                ["network", "🤝 Contactos / networking"],
+                ["prospeccion", "📞 Prospección directa"],
+                ["recurrentes", "🔄 Clientes recurrentes"],
+                ["ninguna", "❌ No tengo una fuente constante"]
+            ]
+        }, {
+            id: "tiempo",
+            title: "⏰ ¿Qué actividades consumen más tiempo?",
+            type: "checkbox",
+            options: [
+                ["clientes", "📞 Atención y seguimiento de clientes"],
+                ["documentos", "📄 Crear/revisar documentos"],
+                ["administracion", "📋 Administración"],
+                ["ventas", "📝 Cotizaciones y propuestas"],
+                ["servicio", "📦 Entrega del servicio"],
+                ["comunicacion", "✉️ Correos, mensajes y coordinación"],
+                ["finanzas", "💰 Facturación / finanzas"]
+            ]
+        }, {
+            id: "informacion",
+            title: "🗂️ ¿Cómo organizas la información?",
+            type: "radio",
+            options: [
+                ["dispersa", "📂 Está dispersa en diferentes lugares"],
+                ["manual", "📁 Archivos, carpetas y hojas de cálculo"],
+                ["sistemas", "💻 Utilizo sistemas específicos"],
+                ["centralizada", "📦 Tengo la información bastante centralizada"]
+            ]
+        }, {
+            id: "servicio",
+            title: "📦 ¿Cómo organizas y entregas tus servicios?",
+            type: "radio",
+            options: [
+                ["personalizado", "🎨 Cada cliente se gestiona de forma diferente"],
+                ["metodo", "📋 Tengo una metodología habitual"],
+                ["definido", "✅ Tengo pasos y procesos definidos"],
+                ["estandarizado", "⚙️ Mi servicio está bastante estandarizado"]
+            ]
+        }, {
+            id: "gestion",
+            title: "📊 ¿Cómo gestionas oportunidades e ingresos?",
+            type: "radio",
+            options: [
+                ["informal", "📝 De manera informal"],
+                ["registro", "📋 Registro clientes, propuestas e ingresos"],
+                ["proceso", "📊 Tengo un proceso comercial y financiero definido"],
+                ["medido", "📈 Mido resultados y rentabilidad"]
+            ]
+        }, {
+            id: "tecnologia",
+            title: "🤖 ¿Qué herramientas digitales o IA usas?",
+            type: "checkbox",
+            options: [
+                ["basicas", "🖥️ Herramientas digitales básicas"],
+                ["gestion", "📊 Herramientas de gestión"],
+                ["ia_prueba", "🧪 He probado IA ocasionalmente"],
+                ["ia_regular", "🤖 Uso IA regularmente"],
+                ["ia_integrada", "⚙️ La IA forma parte habitual de mi trabajo"],
+                ["ninguna", "❌ Prácticamente ninguna"]
+            ]
+        }, {
+            id: "dependencia",
+            title: "🔑 ¿Qué tan dependiente es tu actividad de ti?",
+            type: "radio",
+            options: [
+                ["muy_alta", "🚨 Si no trabajo, prácticamente todo se detiene"],
+                ["alta", "⚠️ La mayoría depende de mí"],
+                ["media", "🔶 Algunas actividades pueden delegarse"],
+                ["baja", "✅ Tengo procesos que permiten cierta autonomía"]
+            ]
+        }, {
+            id: "prioridad",
+            title: "🎯 Si pudieras mejorar UNA sola cosa en 3 meses, ¿qué sería?",
+            type: "radio",
+            options: [
+                ["clientes", "🎯 Conseguir más clientes"],
+                ["ventas", "💰 Vender mejor"],
+                ["tiempo", "⏳ Tener más tiempo"],
+                ["organizacion", "📋 Organizar mejor mi actividad"],
+                ["finanzas", "📊 Mejorar mis ingresos/rentabilidad"],
+                ["digital", "💻 Mejorar mi gestión digital"],
+                ["ia", "🤖 Aprovechar mejor la IA"]
+            ]
+        }],
+
+        estatal: [{
+            id: "funcion",
+            title: "🏛️ ¿Cuál es tu función principal?",
+            type: "radio",
+            options: [
+                ["administrativa", "📋 Gestión administrativa"],
+                ["tecnica", "🔧 Función técnica o especializada"],
+                ["atencion", "👥 Atención al ciudadano"],
+                ["finanzas", "💰 Finanzas / presupuesto"],
+                ["rrhh", "👤 Recursos humanos"],
+                ["compras", "📦 Compras / contrataciones"],
+                ["gestion", "📊 Dirección / gestión"],
+                ["control", "🔍 Fiscalización / control"]
+            ]
+        }, {
+            id: "problema",
+            title: "⚠️ ¿Cuál es tu principal desafío?",
+            type: "radio",
+            options: [
+                ["tramites", "📄 Exceso de trámites"],
+                ["procesos", "⏳ Procesos lentos o complejos"],
+                ["documentos", "📄 Exceso de documentación"],
+                ["sistemas", "💻 Sistemas que no se comunican"],
+                ["coordinacion", "🤝 Coordinación entre áreas"],
+                ["informacion", "🔍 Falta o dificultad para encontrar información"],
+                ["carga", "📈 Exceso de carga de trabajo"],
+                ["otro", "🔧 Otro"]
+            ]
+        }, {
+            id: "tiempo",
+            title: "⏰ ¿Qué tareas consumen más tiempo?",
+            type: "checkbox",
+            options: [
+                ["documentos", "📄 Elaboración/revisión de documentos"],
+                ["tramites", "📋 Trámites y procedimientos"],
+                ["correos", "✉️ Correos y comunicaciones"],
+                ["reuniones", "🤝 Reuniones y coordinación"],
+                ["informacion", "🔍 Buscar y organizar información"],
+                ["reportes", "📊 Elaborar informes/reportes"],
+                ["atencion", "👥 Atención y seguimiento de casos"]
+            ]
+        }, {
+            id: "informacion",
+            title: "🗂️ ¿Cómo organizas documentos e información?",
+            type: "radio",
+            options: [
+                ["dispersa", "📂 Está distribuida en diferentes lugares"],
+                ["archivos", "📁 Archivos y carpetas"],
+                ["sistemas", "💻 Sistemas institucionales"],
+                ["centralizada", "📦 Está bastante organizada y centralizada"],
+                ["integrada", "🔗 Conectada entre sistemas/áreas"]
+            ]
+        }, {
+            id: "procesos",
+            title: "🔁 ¿Cómo funcionan los procesos que realizas?",
+            type: "radio",
+            options: [
+                ["manual", "📝 Son principalmente manuales"],
+                ["documentados", "📋 Están definidos mediante procedimientos"],
+                ["digitales", "💻 Buena parte se gestiona digitalmente"],
+                ["integrados", "🔗 Sistemas conectados entre sí"],
+                ["optimizados", "⚙️ Procesos bastante optimizados"]
+            ]
+        }, {
+            id: "coordinacion",
+            title: "🤝 ¿Qué tan fácil es coordinarte con otras áreas?",
+            type: "radio",
+            options: [
+                ["dificil", "🚨 Difícil, genera retrasos frecuentes"],
+                ["regular", "🔶 Funciona, pero con esfuerzo"],
+                ["aceptable", "✅ Generalmente funciona bien"],
+                ["buena", "🌟 Buena coordinación y flujo de información"]
+            ]
+        }, {
+            id: "tecnologia",
+            title: "💻 ¿Qué herramientas tecnológicas usas?",
+            type: "checkbox",
+            options: [
+                ["ofimatica", "📝 Herramientas ofimáticas"],
+                ["sistemas", "💻 Sistemas institucionales"],
+                ["colaboracion", "🤝 Herramientas colaborativas"],
+                ["datos", "📊 Herramientas de análisis/datos"],
+                ["ia", "🤖 Inteligencia Artificial"],
+                ["ninguna", "❌ Muy pocas herramientas digitales"]
+            ]
+        }, {
+            id: "ia",
+            title: "🤖 ¿Cómo usas la Inteligencia Artificial?",
+            type: "radio",
+            options: [
+                ["ninguna", "❌ No uso IA"],
+                ["prueba", "🧪 La he probado ocasionalmente"],
+                ["tareas", "📋 La uso para algunas tareas"],
+                ["trabajo", "💻 La uso regularmente en mi trabajo"],
+                ["procesos", "⚙️ La uso dentro de procesos concretos"]
+            ]
+        }, {
+            id: "manual",
+            title: "📝 ¿Qué tanto depende tu trabajo de actividades manuales?",
+            type: "radio",
+            options: [
+                ["muy_alto", "📈 Gran parte de mi jornada"],
+                ["alto", "📊 Una parte importante"],
+                ["medio", "🔶 Algunas actividades"],
+                ["bajo", "✅ Muy pocas actividades"]
+            ]
+        }, {
+            id: "prioridad",
+            title: "🎯 Si pudieras mejorar UNA sola cosa en 3 meses, ¿qué sería?",
+            type: "radio",
+            options: [
+                ["procesos", "📋 Simplificar procesos"],
+                ["tiempo", "⏳ Ahorrar tiempo"],
+                ["documentos", "📄 Mejorar la gestión documental"],
+                ["coordinacion", "🤝 Mejorar la coordinación"],
+                ["informacion", "🔍 Gestionar mejor la información"],
+                ["digital", "💻 Mejorar la gestión digital"],
+                ["ia", "🤖 Aprovechar mejor la IA"]
+            ]
+        }]
+    };
+
+    // ==========================================================
+    // ESTADO
+    // ==========================================================
+    let route = null;
+    let currentIndex = 0;
+    let answers = {};
+
+    // ==========================================================
+    // DOM (dentro del modal)
+    // ==========================================================
+    const questionCard = document.getElementById("questionCard");
+    const questionContent = document.getElementById("questionContent");
+    const nextButton = document.getElementById("nextButton");
+    const backButton = document.getElementById("backButton");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const progressPercent = document.getElementById("progressPercent");
+    const resultCard = document.getElementById("resultCard");
+    const resultType = document.getElementById("resultType");
+    const resultJSON = document.getElementById("resultJSON");
+
+    function scrollToTopModal() {
+        const modalContent = document.querySelector('.modal-content');
+        if (modalContent) modalContent.scrollTop = 0;
+    }
+
+    function updateProgress(percent, label) {
+        progressBar.style.width = percent + "%";
+        progressPercent.textContent = percent + "%";
+        progressText.textContent = label || `${percent}% completado`;
+    }
+
+    // ==========================================================
+    // MOSTRAR INICIO
+    // ==========================================================
+    function showStart() {
+        route = null;
+        currentIndex = 0;
+        answers = {};
+
+        questionContent.innerHTML = `
+            <div class="question-number">🚀 INICIO</div>
+            <h2 class="question-title">¿Qué deseas diagnosticar?</h2>
+            <p class="question-help">Selecciona la opción que mejor describe tu situación.</p>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="mainType" value="empresa">
+                    <span>🏢 Mi empresa / Emprendimiento / Negocio</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="mainType" value="profesional">
+                    <span>👤 Mi actividad profesional</span>
+                </label>
+            </div>
+        `;
+
+        backButton.classList.add("hidden");
+        nextButton.textContent = "Continuar →";
+        updateProgress(0, "Inicio");
+        scrollToTopModal();
+    }
+
+    // ==========================================================
+    // MOSTRAR CONTEXTO PROFESIONAL
+    // ==========================================================
+    function showProfessionalContext() {
+        questionContent.innerHTML = `
+            <div class="question-number">🔍 CONTEXTO</div>
+            <h2 class="question-title">¿En qué contexto trabajas?</h2>
+            <p class="question-help">Esto permite adaptar el diagnóstico a tu realidad.</p>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="professionalType" value="independiente">
+                    <span>👤 Profesional independiente</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="professionalType" value="estatal">
+                    <span>🏛️ Trabajo para el Estado / Empresa Privada </span>
+                </label>
+            </div>
+        `;
+
+        backButton.classList.remove("hidden");
+        nextButton.textContent = "Continuar →";
+        updateProgress(8, "Contexto profesional");
+        scrollToTopModal();
+    }
+
+    // ==========================================================
+    // RENDERIZAR PREGUNTA
+    // ==========================================================
+    function renderQuestion() {
+        const list = QUESTIONS[route];
+        const question = list[currentIndex];
+        const number = currentIndex + 1;
+        const total = list.length;
+
+        let html = `
+            <div class="question-number">📌 PREGUNTA ${number} DE ${total}</div>
+            <h2 class="question-title">${question.title}</h2>
+        `;
+
+        if (question.help) {
+            html += `<p class="question-help">${question.help}</p>`;
+        }
+
+        if (question.type === "textarea") {
+            html += `
+                <textarea id="answerText" placeholder="${question.placeholder || ""}">${answers[question.id] || ""}</textarea>
+            `;
+        }
+
+        if (question.type === "radio" || question.type === "checkbox") {
+            const multiple = question.type === "checkbox";
+            html += `<div class="options">`;
+            question.options.forEach(([value, label]) => {
+                const checked = multiple
+                    ? (Array.isArray(answers[question.id]) && answers[question.id].includes(value))
+                    : answers[question.id] === value;
+                html += `
+                    <label class="option">
+                        <input type="${multiple ? "checkbox" : "radio"}" name="answer" value="${value}" ${checked ? "checked" : ""}>
+                        <span>${label}</span>
+                    </label>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        questionContent.innerHTML = html;
+
+        const percent = Math.round((number / total) * 100);
+        updateProgress(percent, `Pregunta ${number} de ${total}`);
+
+        backButton.classList.remove("hidden");
+        nextButton.textContent = number === total ? "✅ Finalizar" : "Continuar →";
+        scrollToTopModal();
+    }
+
+    // ==========================================================
+    // OBTENER RESPUESTA
+    // ==========================================================
+    function getCurrentAnswer() {
+        if (!route) return null;
+        const question = QUESTIONS[route][currentIndex];
+
+        if (question.type === "textarea") {
+            const el = document.getElementById("answerText");
+            if (!el) return null;
+            const val = el.value.trim();
+            if (!val) {
+                el.classList.add("error");
+                alert("✏️ Escribe una respuesta breve para continuar.");
+                el.focus();
+                return null;
+            }
+            el.classList.remove("error");
+            return val;
+        }
+
+        if (question.type === "radio") {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (!selected) {
+                alert("⚠️ Selecciona una opción para continuar.");
+                return null;
+            }
+            return selected.value;
+        }
+
+        if (question.type === "checkbox") {
+            const selected = Array.from(document.querySelectorAll('input[name="answer"]:checked')).map(i => i.value);
+            if (selected.length === 0) {
+                alert("⚠️ Selecciona al menos una opción.");
+                return null;
+            }
+            return selected;
+        }
+
+        return null;
+    }
+
+    function saveCurrentAnswer() {
+        const question = QUESTIONS[route][currentIndex];
+        const value = getCurrentAnswer();
+        if (value === null) return false;
+        answers[question.id] = value;
+        return true;
+    }
+
+    // ==========================================================
+    // FINALIZAR
+    // ==========================================================
+    function finishDiagnostic() {
+        const typeMap = {
+            empresa: "Empresa / Negocio",
+            independiente: "Profesional Independiente",
+            estatal: "Profesional (Estado)"
+        };
+        const typeName = typeMap[route] || route;
+
+        const finalData = {
+            diagnostico: "Diagnóstico 360° PRO",
+            tipo: typeName,
+            fecha: new Date().toISOString(),
+            respuestas: answers
+        };
+
+        console.log("📊 DIAGNÓSTICO COMPLETADO:", finalData);
+
+        questionCard.style.display = "none";
+        document.getElementById("progressArea").style.display = "none";
+        resultCard.style.display = "block";
+        resultType.textContent = typeName;
+        resultJSON.textContent = JSON.stringify(finalData, null, 2);
+        scrollToTopModal();
+    }
+
+    // ==========================================================
+    // REINICIAR DIAGNÓSTICO
+    // ==========================================================
+    function resetDiagnostico() {
+        resultCard.style.display = "none";
+        document.getElementById("progressArea").style.display = "block";
+        questionCard.style.display = "block";
+        showStart();
+    }
+
+    // ==========================================================
+    // CERRAR MODAL
+    // ==========================================================
+    function cerrarModalDiagnostico() {
+        const modal = document.getElementById('diagnosticoModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        // Resetear el diagnóstico al cerrar
+        setTimeout(resetDiagnostico, 300);
+    }
+
+    // ==========================================================
+    // EVENTOS
+    // ==========================================================
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('diagnosticoModal');
+        const openBtn = document.getElementById('openDiagnosticoModal');
+        const closeBtn = document.getElementById('closeDiagnosticoModal');
+        const closeResultBtn = document.getElementById('closeResultBtn');
+        const resetBtn = document.getElementById('resetDiagnosticoBtn');
+
+        function abrirModal() {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            // Reiniciar diagnóstico al abrir
+            setTimeout(resetDiagnostico, 100);
+        }
+
+        if (openBtn) openBtn.addEventListener('click', abrirModal);
+        if (closeBtn) closeBtn.addEventListener('click', cerrarModalDiagnostico);
+        if (closeResultBtn) closeResultBtn.addEventListener('click', cerrarModalDiagnostico);
+        if (resetBtn) resetBtn.addEventListener('click', resetDiagnostico);
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) cerrarModalDiagnostico();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModalDiagnostico();
+        });
+
+        // ===== EVENTOS DE NAVEGACIÓN =====
+        nextButton.addEventListener("click", function() {
+            // INICIO
+            if (!route) {
+                const selected = document.querySelector('input[name="mainType"]:checked');
+                if (!selected) {
+                    alert("⚠️ Selecciona qué deseas diagnosticar.");
+                    return;
+                }
+                if (selected.value === "empresa") {
+                    route = "empresa";
+                    currentIndex = 0;
+                    renderQuestion();
+                } else {
+                    route = "contexto";
+                    showProfessionalContext();
+                }
+                return;
+            }
+
+            // CONTEXTO
+            if (route === "contexto") {
+                const selected = document.querySelector('input[name="professionalType"]:checked');
+                if (!selected) {
+                    alert("⚠️ Selecciona tu contexto profesional.");
+                    return;
+                }
+                route = selected.value;
+                currentIndex = 0;
+                renderQuestion();
+                return;
+            }
+
+            // PREGUNTA
+            if (!saveCurrentAnswer()) return;
+
+            if (currentIndex < QUESTIONS[route].length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                finishDiagnostic();
+            }
+        });
+
+        backButton.addEventListener("click", function() {
+            if (route === "empresa" && currentIndex === 0) {
+                showStart();
+                return;
+            }
+            if ((route === "independiente" || route === "estatal") && currentIndex === 0) {
+                route = "contexto";
+                showProfessionalContext();
+                return;
+            }
+            if (route === "contexto") {
+                showStart();
+                return;
+            }
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        });
+    });
+    </script>
 
 </body>
 </html>
