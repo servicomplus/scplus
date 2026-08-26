@@ -391,6 +391,12 @@
         </div>
     </section>
 
+<!-- ===== ANIMACIÓN LOTTIE - ROBOT SALUDANDO ===== -->
+<div style="display: flex; justify-content: center; align-items: center; padding: 16px 0 8px 0;">
+    <div id="lottieRobot" style="width: 160px; height: 160px; max-width: 100%;"></div>
+</div>
+
+
     <!-- ============================================================ -->
     <!-- FORMULARIO CON PESTAÑAS                                     -->
     <!-- ============================================================ -->
@@ -983,6 +989,24 @@
             });
         });
     </script>
+
+<!-- ===== LOTTIE WEB ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('lottieRobot');
+    if (container) {
+        lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'img/RobotSaludando.json'
+        });
+    }
+});
+</script>
 
 </body>
 </html>
