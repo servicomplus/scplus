@@ -13,13 +13,12 @@
     <meta property="og:url" content="https://servicomp-plus.com/asesor.html">
     <meta property="og:type" content="website">
     
-<!-- Favicon -->
-<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png" />
-<link rel="manifest" href="img/site.webmanifest" />
-<link rel="icon" type="image/x-icon" href="img/favicon.ico" />
-
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png" />
+    <link rel="manifest" href="img/site.webmanifest" />
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -373,11 +372,39 @@
             color: var(--secondary);
         }
 
-        .diagnostico-card .btn-group {
-            display: flex;
-            flex-wrap: wrap;
+        /* ===== BOTÓN DE DIAGNÓSTICO MEJORADO ===== */
+        .btn-diagnostico {
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
             gap: 12px;
+            padding: 16px 48px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 50px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(26, 58, 92, 0.25);
+            font-family: var(--font-family);
+            letter-spacing: 0.3px;
+        }
+
+        .btn-diagnostico:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(26, 58, 92, 0.35);
+        }
+
+        .btn-diagnostico:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 14px rgba(26, 58, 92, 0.2);
+        }
+
+        .btn-diagnostico i {
+            font-size: 18px;
         }
 
         /* ===== MODAL DIAGNÓSTICO ===== */
@@ -772,9 +799,11 @@
             .diagnostico-card .features span {
                 font-size: 11px;
             }
-            .diagnostico-card .btn-group .btn {
+
+            .btn-diagnostico {
+                padding: 14px 32px;
+                font-size: 0.95rem;
                 width: 100%;
-                justify-content: center;
             }
 
             .modal-content {
@@ -841,6 +870,11 @@
             }
             .paso-card p {
                 font-size: 12px;
+            }
+
+            .btn-diagnostico {
+                padding: 12px 24px;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -917,7 +951,6 @@
             </div>
 
             <div class="sectores-grid">
-
                 <!-- ===== HOSPITALIDAD Y TURISMO ===== -->
                 <div class="sector-card">
                     <div class="icon">🏨</div>
@@ -1162,7 +1195,6 @@
                     <h4>Contabilidad</h4>
                     <p>Libro caja, balance, flujo de caja, impuestos</p>
                 </div>
-
             </div>
         </div>
     </section>
@@ -1219,11 +1251,10 @@
                     <span><i class="fa-regular fa-circle-check"></i> Identificación de oportunidades</span>
                     <span><i class="fa-regular fa-circle-check"></i> Propuesta de mejora</span>
                 </div>
-                <!-- ===== BOTÓN PARA ABRIR MODAL ===== -->
-                <div class="btn-group" style="justify-content: center; margin-top: 8px;">
-                    <button id="openDiagnosticoModal" class="btn btn-primary btn-lg" style="display: inline-flex; align-items: center; gap: 10px;">
+                <div style="display: flex; justify-content: center; margin-top: 12px;">
+                    <button id="openDiagnosticoModal" class="btn-diagnostico">
                         <i class="fa-regular fa-clipboard"></i>
-                        Iniciar Diagnóstico
+                        Iniciar Diagnóstico Gratis
                     </button>
                 </div>
             </div>
@@ -1236,7 +1267,7 @@
     <div id="diagnosticoModal" class="modal-overlay">
         <div class="modal-content">
             
-            <!-- ===== HEADER DEL MODAL (cerrado) ===== -->
+            <!-- ===== HEADER DEL MODAL ===== -->
             <div style="position: sticky; top: 0; z-index: 10; background: var(--white); padding: 16px 24px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius-xl) var(--radius-xl) 0 0;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="font-size: 24px;">📊</span>
@@ -1247,29 +1278,26 @@
                         <p style="font-size: 11px; color: var(--gray-500); margin: 0;">Responde y obtén un análisis personalizado</p>
                     </div>
                 </div>
-                <!-- ===== BOTÓN CERRAR MEJORADO ===== -->
-<button id="closeDiagnosticoModal" 
-        style="background: none; 
-               border: none; 
-               font-size: 28px; 
-               cursor: pointer; 
-               color: var(--gray-400); 
-               transition: var(--transition); 
-               padding: 4px 8px; 
-               border-radius: 50%;
-               width: 40px;
-               height: 40px;
-               display: flex;
-               align-items: center;
-               justify-content: center;">
-    <i class="fa-regular fa-circle-xmark" style="font-size: 24px;"></i>
-</button>
+                <button id="closeDiagnosticoModal" 
+                        style="background: none; 
+                               border: none; 
+                               font-size: 28px; 
+                               cursor: pointer; 
+                               color: var(--gray-400); 
+                               transition: var(--transition); 
+                               padding: 4px 8px; 
+                               border-radius: 50%;
+                               width: 40px;
+                               height: 40px;
+                               display: flex;
+                               align-items: center;
+                               justify-content: center;">
+                    <i class="fa-regular fa-circle-xmark" style="font-size: 24px;"></i>
+                </button>
             </div>
 
             <!-- ===== CONTENIDO DEL DIAGNÓSTICO ===== -->
             <div style="padding: 20px 24px 24px;">
-
-
 
                 <!-- PROGRESS -->
                 <div class="progress-area" id="progressArea">
@@ -1303,7 +1331,6 @@
                         <pre id="resultJSON"></pre>
                     </details>
                     
-                    <!-- Botón de acción después del resultado -->
                     <div style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button id="resetDiagnosticoBtn" class="btn btn-outline" style="border-color: var(--gray-300); color: var(--gray-600); background: transparent; padding: 0.5rem 1.25rem; border-radius: var(--radius); font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: var(--transition); font-family: var(--font-family);">
                             <i class="fa-regular fa-rotate-left"></i> Reiniciar
@@ -1333,7 +1360,7 @@
     <!-- ============================================================ -->
     <script>
     // ==========================================================
-    // DATOS DEL FORMULARIO
+    // DATOS DEL FORMULARIO - ACTUALIZADOS CON CHECKBOX
     // ==========================================================
     const QUESTIONS = {
         empresa: [{
@@ -1345,8 +1372,8 @@
         }, {
             id: "problema",
             title: "⚠️ ¿Cuál es el principal desafío que enfrentas hoy?",
-            help: "Selecciona el que más resuene con tu situación actual.",
-            type: "radio",
+            help: "Selecciona todas las opciones que apliquen.",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["clientes", "🎯 Conseguir más clientes"],
                 ["ventas", "💰 Vender más"],
@@ -1390,18 +1417,19 @@
             id: "informacion",
             title: "🗂️ ¿Cómo organizan la información?",
             help: "Clientes, documentos, datos importantes…",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["dispersa", "📂 Está dispersa en diferentes lugares"],
                 ["manual", "📁 Archivos, carpetas y hojas de cálculo"],
                 ["sistemas", "💻 Utilizamos sistemas específicos"],
                 ["centralizada", "📦 Está bastante centralizada"],
-                ["integrada", "🔗 Está conectada entre áreas"]
+                ["integrada", "🔗 Está conectada entre áreas"],
+                ["todo_manual", "📝 Todo es manual"] // ✅ NUEVA OPCIÓN
             ]
         }, {
             id: "procesos",
             title: "🔁 ¿Cómo funcionan los procesos internos?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["personas", "👤 Dependen mucho de personas clave"],
                 ["informales", "📝 Hay formas habituales, no documentadas"],
@@ -1412,9 +1440,9 @@
         }, {
             id: "ventas",
             title: "📈 ¿Cómo gestionan las ventas?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
-                ["informal", "📝 De manera informal"],
+                ["informal", "📝 De manera informal (manual)"],
                 ["seguimiento", "📊 Hacemos seguimiento básico"],
                 ["proceso", "📋 Tenemos un proceso comercial definido"],
                 ["medicion", "📈 Medimos resultados"],
@@ -1436,7 +1464,7 @@
         }, {
             id: "dependencia",
             title: "🔑 ¿Qué tan dependiente es el negocio de personas clave?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["muy_alta", "🚨 Sin ellas, gran parte se detiene"],
                 ["alta", "⚠️ Muchas decisiones dependen de ellas"],
@@ -1469,7 +1497,7 @@
         }, {
             id: "problema",
             title: "⚠️ ¿Cuál es tu principal desafío profesional?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["clientes", "🎯 Conseguir clientes"],
                 ["ventas", "💰 Convertir oportunidades en clientes"],
@@ -1509,12 +1537,13 @@
         }, {
             id: "informacion",
             title: "🗂️ ¿Cómo organizas la información?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["dispersa", "📂 Está dispersa en diferentes lugares"],
                 ["manual", "📁 Archivos, carpetas y hojas de cálculo"],
                 ["sistemas", "💻 Utilizo sistemas específicos"],
-                ["centralizada", "📦 Tengo la información bastante centralizada"]
+                ["centralizada", "📦 Tengo la información bastante centralizada"],
+                ["todo_manual", "📝 Todo es manual"] // ✅ NUEVA OPCIÓN
             ]
         }, {
             id: "servicio",
@@ -1529,9 +1558,9 @@
         }, {
             id: "gestion",
             title: "📊 ¿Cómo gestionas oportunidades e ingresos?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
-                ["informal", "📝 De manera informal"],
+                ["informal", "📝 De manera informal (manual)"],
                 ["registro", "📋 Registro clientes, propuestas e ingresos"],
                 ["proceso", "📊 Tengo un proceso comercial y financiero definido"],
                 ["medido", "📈 Mido resultados y rentabilidad"]
@@ -1576,7 +1605,7 @@
         estatal: [{
             id: "funcion",
             title: "🏛️ ¿Cuál es tu función principal?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["administrativa", "📋 Gestión administrativa"],
                 ["tecnica", "🔧 Función técnica o especializada"],
@@ -1590,7 +1619,7 @@
         }, {
             id: "problema",
             title: "⚠️ ¿Cuál es tu principal desafío?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["tramites", "📄 Exceso de trámites"],
                 ["procesos", "⏳ Procesos lentos o complejos"],
@@ -1617,13 +1646,14 @@
         }, {
             id: "informacion",
             title: "🗂️ ¿Cómo organizas documentos e información?",
-            type: "radio",
+            type: "checkbox", // ✅ CAMBIADO A CHECKBOX
             options: [
                 ["dispersa", "📂 Está distribuida en diferentes lugares"],
                 ["archivos", "📁 Archivos y carpetas"],
                 ["sistemas", "💻 Sistemas institucionales"],
                 ["centralizada", "📦 Está bastante organizada y centralizada"],
-                ["integrada", "🔗 Conectada entre sistemas/áreas"]
+                ["integrada", "🔗 Conectada entre sistemas/áreas"],
+                ["todo_manual", "📝 Todo es manual"] // ✅ NUEVA OPCIÓN
             ]
         }, {
             id: "procesos",
@@ -1772,7 +1802,7 @@
                 </label>
                 <label class="option">
                     <input type="radio" name="professionalType" value="estatal">
-                    <span>🏛️ Trabajo para el Estado / Empresa Privada </span>
+                    <span>🏛️ Trabajo para el Estado / Empresa Privada</span>
                 </label>
             </div>
         `;
@@ -1929,7 +1959,6 @@
         const modal = document.getElementById('diagnosticoModal');
         modal.classList.remove('active');
         document.body.style.overflow = '';
-        // Resetear el diagnóstico al cerrar
         setTimeout(resetDiagnostico, 300);
     }
 
@@ -1947,7 +1976,6 @@
         function abrirModal() {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
-            // Reiniciar diagnóstico al abrir
             setTimeout(resetDiagnostico, 100);
         }
 
