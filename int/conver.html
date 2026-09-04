@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Procesamiento Hacker Matrix</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        overflow: hidden;
+        font-family: Consolas, monospace;
+        color: #0f0;
+        text-align: center;
+    }
+
+    /* Fondo Matrix */
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: black;
+    }
+
+    h1 {
+        margin-top: 40px;
+        font-size: 28px;
+        text-shadow: 0 0 10px #0f0;
+    }
+
+    input, button {
+        margin: 15px;
+        padding: 12px 20px;
+        background: #000;
+        color: #0f0;
+        border: 1px solid #0f0;
+        font-size: 16px;
+        text-shadow: 0 0 5px #0f0;
+    }
+
+    button:hover {
+        background: #0f0;
+        color: #000;
+        cursor: pointer;
+        box-shadow: 0 0 20px #0f0;
+        transform: scale(1.05);
+    }
+
+    /* Panel Hacking */
+    #hacking {
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.85);
+        color: #0f0;
+        border: 1px solid #0f0;
+        text-align: left;
+        font-size: 16px;
+        display: none;
+        margin-top: 30px;
+        box-shadow: 0 0 15px #0f0;
+    }
+
+    /* Botón Refresh */
+    #refreshBtn {
+        margin: 10px;
+        padding: 12px 25px;
+        background: #000;
+        color: #0f0;
+        border: 1px solid #0f0;
+        font-size: 16px;
+        text-shadow: 0 0 5px #0f0;
+        transition: 0.2s;
+    }
+
+    #refreshBtn:hover {
+        background: #0f0;
+        color: #000;
+        cursor: pointer;
+        transform: scale(1.1);
+        box-shadow: 0 0 20px #0f0;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<h1>MATRIX SYSTEM - PROCESAMIENTO ACTIVADO</h1>
+
+<input type="file" id="archivo" accept=".xlsx,.xls,.xlsm" />
+<br>
+<button onclick="procesar()">Procesar Archivo</button>
+
+<!-- BOTÓN REFRESH HACKER -->
+<button id="refreshBtn" onclick="refreshPage()">⟳ REFRESH / F5</button>
+
+<div id="hacking"></div>
+
+<script>
+// ---------------------------------------------------------
+// 🟢 ANIMACIÓN MATRIX
+// ---------------------------------------------------------
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*'.split('');
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+let drops = [];
+
+for (let i = 0; i < columns; i++) drops[i] = Math.random() * canvas.height;
+
+function drawMatrix() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        drops[i]++;
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.95)
+            drops[i] = 0;
+    }
+}
+setInterval(drawMatrix, 35);
+
+
+// ---------------------------------------------------------
+// 🟢 PANEL HACKER LOG
+// ---------------------------------------------------------
+function log(text) {
+    const panel = document.getElementById("hacking");
+    panel.style.display = "block";
+    panel.innerHTML += "> " + text + "<br>";
+    panel.scrollTop = panel.scrollHeight;
+}
+
+
+// ---------------------------------------------------------
+// 🟢 MACRO TRADUCIDA DESDE VBA
+// ---------------------------------------------------------
+function aplicarMacro(json) {
+    log("Ejecutando macro inicial...");
+
+    json = json.map(row => { row.splice(4, 4); return row; }); 
+    json = json.map(row => { row.splice(5, 1); return row; });
+
+    json = json.map(row =>
+        row.map(val => String(val ?? "")
+            .replace(/CODIGO/g, "")
+            .replace(/mini-código: /g, "")
+            .replace(/ US \$/g, "")
+            .replace(/>20/g, "20")
+        )
+    );
+
+    json = json.filter(row => row[0] !== "" && row[0] != null);
+
+    log("Macro completada ✔");
+    return json;
+}
+
+
+// ---------------------------------------------------------
+// 🟢 PROCESAMIENTO FINAL 2x2
+// ---------------------------------------------------------
+function procesar() {
+    const input = document.getElementById("archivo");
+    if (!input.files.length) return alert("Bro, selecciona un archivo Excel.");
+
+    document.getElementById("hacking").innerHTML = "";
+    log("Archivo recibido. Decodificando...");
+
+    const archivo = input.files[0];
+    const lector = new FileReader();
+
+    lector.onload = function(e) {
+        log("Leyendo datos...");
+        const datos = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(datos, { type: "array" });
+
+        log("Extrayendo hoja...");
+        const hoja = workbook.Sheets[workbook.SheetNames[0]];
+        let json = XLSX.utils.sheet_to_json(hoja, { header: 1 });
+
+        log("Aplicando macro...");
+        json = aplicarMacro(json);
+
+        log("Procesando 2x2 MATRIX MODE...");
+
+        const preciosInvalidos = [99, 999, 999.99, 9999, 9999999.99];
+
+        let salida = [];
+        let filaSalida = 0;
+
+        for (let i = 0; i < json.length; i += 2) {
+            const f1 = json[i];
+            const f2 = json[i + 1];
+            if (!f2) break;
+
+            let stock = Number(String(f1[2]).replace(",", "").trim());
+            let precio = Number(String(f1[3]).replace(",", "").trim());
+
+            // 🟢 SI EL PRECIO ES INVALIDO → STOCK = 0
+            if (preciosInvalidos.includes(precio)) {
+                stock = 0;
+            }
+
+            salida[filaSalida++] = [
+                f1[0], f1[1], stock, precio,
+                f1[4],
+                f2[0], f2[1]
+            ];
+        }
+
+        log("Generando archivo final...");
+
+        const ahora = new Date();
+        const fecha = ahora.toISOString().slice(0,10);
+        const hora = ahora.toTimeString().slice(0,8).replace(/:/g, "-");
+        const nombre = `lima_${fecha}_${hora}.xlsx`;
+
+        const wbNuevo = XLSX.utils.book_new();
+        const wsNuevo = XLSX.utils.aoa_to_sheet(salida);
+        XLSX.utils.book_append_sheet(wbNuevo, wsNuevo, "Combinado");
+
+        XLSX.writeFile(wbNuevo, nombre);
+
+        log("✔ Archivo generado correctamente");
+        log("✔ SERVICOMP MATRIX SYSTEM READY");
+    };
+
+    lector.readAsArrayBuffer(archivo);
+}
+
+
+// ---------------------------------------------------------
+// 🟢 FUNCIÓN REFRESH / F5
+// ---------------------------------------------------------
+function refreshPage() {
+    log("Reiniciando sistema...");
+    setTimeout(() => location.reload(), 400);
+}
+</script>
+
+</body>
+</html>
