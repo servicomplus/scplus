@@ -626,6 +626,204 @@
             display: inline-block;
         }
 
+        /* ============================================================
+           MODAL DE IMAGEN PROFESIONAL
+           ============================================================ */
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 15, 25, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+
+        .image-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.9) translateY(10px);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .image-modal.active .image-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .image-modal-img-wrapper {
+            position: relative;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            max-width: 90vw;
+            max-height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .image-modal-img-wrapper img {
+            max-width: 100%;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-modal-img-wrapper img.loading {
+            opacity: 0.5;
+        }
+
+        .image-modal-spinner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.8);
+            border-radius: 12px;
+            z-index: 2;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .image-modal-spinner.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-modal-spinner i {
+            font-size: 28px;
+            color: #1a3a5c;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #1a3a5c;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .image-modal-close:hover {
+            background: #dc3545;
+            color: #ffffff;
+            transform: rotate(90deg) scale(1.05);
+        }
+
+        .image-modal-caption {
+            margin-top: 14px;
+            text-align: center;
+            color: #ffffff;
+            max-width: 90vw;
+        }
+
+        .image-modal-caption .caption-codigo {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #93c5fd;
+            text-transform: uppercase;
+        }
+
+        .image-modal-caption .caption-nombre {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        .image-modal-caption .caption-precio {
+            font-size: 16px;
+            font-weight: 800;
+            color: #34d399;
+            margin-top: 4px;
+        }
+
+        .image-modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+
+        .image-modal-nav:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .image-modal-nav.prev { left: -60px; }
+        .image-modal-nav.next { right: -60px; }
+
+        .image-modal-nav:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        @media (max-width: 900px) {
+            .image-modal-nav.prev { left: 8px; }
+            .image-modal-nav.next { right: 8px; }
+            .image-modal-close { top: -8px; right: -8px; width: 32px; height: 32px; font-size: 14px; }
+        }
+
+        @media (max-width: 480px) {
+            .image-modal { padding: 10px; }
+            .image-modal-img-wrapper { padding: 6px; border-radius: 8px; }
+            .image-modal-img-wrapper img { max-height: 60vh; }
+            .image-modal-nav { width: 36px; height: 36px; font-size: 13px; }
+            .image-modal-nav.prev { left: 4px; }
+            .image-modal-nav.next { right: 4px; }
+        }
+
         @media print {
             body { background: white; }
             .documento-cotizador { box-shadow: none; border: none; margin: 0; padding: 20px; }
@@ -675,6 +873,34 @@
 <body>
 
     <div id="copyFeedback" class="copy-tooltip"><i class="fa-regular fa-check-circle mr-2"></i> Copiado al portapapeles</div>
+
+    <!-- ============================================================
+         MODAL DE IMAGEN
+         ============================================================ -->
+    <div class="image-modal" id="imageModal" role="dialog" aria-modal="true" aria-label="Visor de imagen de producto">
+        <div class="image-modal-content" id="imageModalContent">
+            <button class="image-modal-close" id="imageModalClose" title="Cerrar (Esc)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button class="image-modal-nav prev" id="imageModalPrev" title="Anterior (←)">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="image-modal-nav next" id="imageModalNext" title="Siguiente (→)">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <div class="image-modal-img-wrapper">
+                <div class="image-modal-spinner" id="imageModalSpinner">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+                <img id="imageModalImg" src="" alt="Producto" draggable="false">
+            </div>
+            <div class="image-modal-caption">
+                <div class="caption-codigo" id="imageModalCodigo"></div>
+                <div class="caption-nombre" id="imageModalNombre"></div>
+                <div class="caption-precio" id="imageModalPrecio"></div>
+            </div>
+        </div>
+    </div>
 
     <div class="documento-cotizador" id="cotizadorDocumento">
         
@@ -806,6 +1032,184 @@
             return `${año}${mes}${dia}`;
         }
 
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // ============================================================
+        // MODAL DE IMAGEN - LÓGICA PROFESIONAL
+        // ============================================================
+        const ImageModal = (function() {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('imageModalImg');
+            const spinner = document.getElementById('imageModalSpinner');
+            const closeBtn = document.getElementById('imageModalClose');
+            const prevBtn = document.getElementById('imageModalPrev');
+            const nextBtn = document.getElementById('imageModalNext');
+            const codigoEl = document.getElementById('imageModalCodigo');
+            const nombreEl = document.getElementById('imageModalNombre');
+            const precioEl = document.getElementById('imageModalPrecio');
+
+            let currentIndex = -1;
+            let items = [];
+            let isOpen = false;
+            let lastFocusedElement = null;
+
+            // Precarga de imágenes
+            function preloadImage(url) {
+                return new Promise((resolve) => {
+                    const image = new Image();
+                    image.onload = () => resolve(url);
+                    image.onerror = () => resolve(null);
+                    image.src = url;
+                });
+            }
+
+            function showSpinner() {
+                spinner.classList.add('active');
+            }
+
+            function hideSpinner() {
+                spinner.classList.remove('active');
+            }
+
+            function loadImage(url, alt) {
+                return new Promise((resolve) => {
+                    showSpinner();
+                    img.classList.add('loading');
+                    const newImg = new Image();
+                    newImg.onload = () => {
+                        img.src = url;
+                        img.alt = alt || 'Producto';
+                        img.classList.remove('loading');
+                        hideSpinner();
+                        resolve(true);
+                    };
+                    newImg.onerror = () => {
+                        img.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23cbd5e1%22 stroke-width=%221%22%3E%3Crect x=%223%22 y=%223%22 width=%2218%22 height=%2218%22 rx=%222%22/%3E%3Ccircle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/%3E%3Cpath d=%22M21 15l-5-5L5 21%22/%3E%3C/svg%3E';
+                        img.alt = 'Imagen no disponible';
+                        img.classList.remove('loading');
+                        hideSpinner();
+                        resolve(false);
+                    };
+                    newImg.src = url;
+                });
+            }
+
+            function updateUI() {
+                const item = items[currentIndex];
+                if (!item) return;
+
+                codigoEl.textContent = item.codigo || '';
+                nombreEl.textContent = item.descripcion || '';
+                precioEl.textContent = formatearMoneda(item.precio);
+
+                // Actualizar estados de botones
+                prevBtn.disabled = currentIndex <= 0;
+                nextBtn.disabled = currentIndex >= items.length - 1;
+
+                // Ocultar navegación si solo hay 1 item
+                const showNav = items.length > 1;
+                prevBtn.style.display = showNav ? 'flex' : 'none';
+                nextBtn.style.display = showNav ? 'flex' : 'none';
+
+                loadImage(item.fotos, item.descripcion);
+
+                // Precargar adyacentes
+                if (currentIndex > 0) preloadImage(items[currentIndex - 1].fotos);
+                if (currentIndex < items.length - 1) preloadImage(items[currentIndex + 1].fotos);
+            }
+
+            function open(index, list) {
+                if (!list || list.length === 0) return;
+                items = list.filter(p => p.fotos && p.fotos.length > 0);
+                if (items.length === 0) return;
+
+                // Encontrar índice en items filtrados
+                const targetCode = list[index]?.codigo;
+                currentIndex = items.findIndex(p => p.codigo === targetCode);
+                if (currentIndex === -1) currentIndex = 0;
+
+                lastFocusedElement = document.activeElement;
+                isOpen = true;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                updateUI();
+
+                // Focus trap
+                closeBtn.focus();
+            }
+
+            function close() {
+                if (!isOpen) return;
+                isOpen = false;
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    img.src = '';
+                }, 300);
+                if (lastFocusedElement && lastFocusedElement.focus) {
+                    lastFocusedElement.focus();
+                }
+            }
+
+            function next() {
+                if (currentIndex < items.length - 1) {
+                    currentIndex++;
+                    updateUI();
+                }
+            }
+
+            function prev() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateUI();
+                }
+            }
+
+            // Event listeners
+            closeBtn.addEventListener('click', close);
+            nextBtn.addEventListener('click', next);
+            prevBtn.addEventListener('click', prev);
+
+            // Cerrar al hacer clic fuera del contenido
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) close();
+            });
+
+            // Teclado
+            document.addEventListener('keydown', (e) => {
+                if (!isOpen) return;
+                switch (e.key) {
+                    case 'Escape': close(); break;
+                    case 'ArrowLeft': prev(); break;
+                    case 'ArrowRight': next(); break;
+                }
+            });
+
+            // Touch swipe
+            let touchStartX = 0;
+            let touchEndX = 0;
+            modal.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            modal.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) next();
+                    else prev();
+                }
+            }, { passive: true });
+
+            return { open, close, next, prev };
+        })();
+
         // ============================================================
         // CARGAR DATOS
         // ============================================================
@@ -826,7 +1230,6 @@
                         detalles: normalizarTexto(row.detalles) || '',
                         precio: normalizarNumero(row.precio),
                         fotos: normalizarTexto(row.fotos) || '',
-                        // Campos adicionales para compatibilidad
                         mini: normalizarTexto(row.codigo),
                         stock: Math.floor(normalizarNumero(row.cant)) || 0,
                         tipoCambio: 0,
@@ -835,7 +1238,7 @@
                     }))
                     .filter(p => p.stock > 0 && p.codigo);
 
-                // ===== Cargar productos iniciales (todos los que tienen cantidad > 0) =====
+                // ===== Cargar productos iniciales =====
                 productosCotizacion = allProducts
                     .filter(p => p.cantidad > 0)
                     .map(p => ({
@@ -909,7 +1312,7 @@
                 html += `
                     <tr>
                         <td>
-                            <div class="img-wrapper-mini" onclick="${tieneFoto ? `window.open('${fotoUrl}','_blank')` : ''}" title="${tieneFoto ? 'Ver foto' : 'Sin foto'}">
+                            <div class="img-wrapper-mini" onclick="ImageModal.open(${productosCotizacion.indexOf(p)}, productosCotizacion)" title="${tieneFoto ? 'Ver foto' : 'Sin foto'}">
                                 <i class="fa-solid fa-camera placeholder-icon"></i>
                                 ${tieneFoto ? `<img src="${fotoUrl}" 
                                      class="product-img-mini" 
@@ -958,7 +1361,6 @@
         function renderizarCatalogo() {
             const grid = document.getElementById('catalogoGrid');
 
-            // Mostrar todos los productos que no están ya en la cotización
             const codigosEnCotizacion = new Set(productosCotizacion.map(p => p.codigo));
             const productosDisponibles = allProducts.filter(p => !codigosEnCotizacion.has(p.codigo));
 
@@ -982,15 +1384,18 @@
                 return;
             }
 
-            grid.innerHTML = productosDisponibles.map(p => {
+            grid.innerHTML = productosDisponibles.map((p, idx) => {
                 const fotoUrl = p.fotos || '';
                 const codigoDisplay = p.codigo;
                 const tieneFoto = fotoUrl && fotoUrl.length > 0;
                 const stockClass = p.stock <= 2 ? 'stock-critical' : p.stock <= 5 ? 'stock-low' : 'stock-ok';
 
+                // Necesitamos el índice real en el array original para el modal
+                const originalIndex = allProducts.indexOf(p);
+
                 return `
                     <div class="tarjeta-producto">
-                        <div class="img-wrapper" onclick="${tieneFoto ? `window.open('${fotoUrl}', '_blank')` : ''}">
+                        <div class="img-wrapper" onclick="ImageModal.open(${originalIndex}, allProducts)">
                             <i class="fa-solid fa-camera placeholder-icon"></i>
                             ${tieneFoto ? `<img src="${fotoUrl}" 
                                  class="product-img" 
@@ -1011,7 +1416,7 @@
                                 <span class="precio">${formatearMoneda(p.precio)}</span>
                                 <span class="stock ${stockClass}" style="font-size:8px;margin-left:6px;">${p.stock}</span>
                             </div>
-                            <button class="btn-agregar" onclick="agregarProducto('${p.codigo}')" title="Agregar a cotización">
+                            <button class="btn-agregar" onclick="event.stopPropagation(); agregarProducto('${p.codigo}')" title="Agregar a cotización">
                                 <i class="fa-solid fa-plus"></i>
                             </button>
                         </div>
@@ -1045,7 +1450,6 @@
                 return;
             }
 
-            // Buscar en el catálogo completo
             const encontrado = allProducts.find(p => p.codigo === codigo);
             if (!encontrado) {
                 Swal.fire('Error', 'Producto no encontrado', 'error');
