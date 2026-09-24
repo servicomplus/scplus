@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="referrer" content="no-referrer">
+    <title>ServiComp+ | Cotizador en Vivo</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .live-badge {
+            background: #10b981;
+            color: white;
+            padding: 2px 14px 2px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 6px;
+            vertical-align: middle;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .pulse-icon {
+            font-size: 7px;
+            color: #fff;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.6); }
+        }
+
+        .documento-cotizador {
+            background: #ffffff;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 30px 35px;
+            border-radius: 8px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e8eaed;
+        }
+
+        .header-documento {
+            border-bottom: 3px solid #1a3a5c;
+            padding-bottom: 15px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-documento .empresa {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-documento .empresa img {
+            height: 50px;
+            width: auto;
+        }
+
+        .header-documento .empresa h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a3a5c;
+            letter-spacing: -0.5px;
+        }
+
+        .header-documento .empresa h1 span {
+            color: #dc3545;
+        }
+
+        .header-documento .numero-cotizacion {
+            text-align: right;
+        }
+
+        .header-documento .numero-cotizacion .label {
+            font-size: 9px;
+            color: #6c757d;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-documento .numero-cotizacion .numero {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a3a5c;
+        }
+
+        .info-cabecera {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            font-size: 12px;
+            color: #495057;
+            border: 1px solid #e9ecef;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .info-cabecera span i {
+            margin-right: 6px;
+            color: #1a3a5c;
+        }
+
+        .datos-cliente {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .datos-cliente .campo label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .datos-cliente .campo input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #dee2e6;
+            padding: 4px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            background: transparent;
+            transition: border-color 0.2s;
+        }
+
+        .datos-cliente .campo input:focus {
+            outline: none;
+            border-bottom-color: #1a3a5c;
+        }
+
+        .tabla-productos {
+            margin-bottom: 20px;
+        }
+
+        .tabla-productos .titulo-seccion {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .tabla-productos table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .tabla-productos table thead th {
+            background: #f8f9fa;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tabla-productos table thead th:last-child {
+            text-align: center;
+        }
+
+        .tabla-productos table tbody td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f1f3f5;
+            vertical-align: middle;
+        }
+
+        .tabla-productos table tbody td:last-child {
+            text-align: center;
+        }
+
+        .tabla-productos table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .img-wrapper-mini {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .img-wrapper-mini:hover {
+            transform: scale(1.05);
+            border-color: #1a3a5c;
+            box-shadow: 0 2px 8px rgba(26,58,92,0.15);
+        }
+
+        .img-wrapper-mini .placeholder-icon {
+            position: absolute;
+            color: #d1d5db;
+            font-size: 18px;
+            z-index: 1;
+        }
+
+        .img-wrapper-mini .product-img-mini {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .img-wrapper-mini .product-img-mini.loaded {
+            opacity: 1;
+        }
+
+        .img-wrapper-mini .view-label-mini {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 6px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .img-wrapper-mini:hover .view-label-mini {
+            opacity: 1;
+        }
+
+        .producto-codigo {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 12px;
+            color: #1a3a5c;
+        }
+
+        .producto-nombre {
+            font-size: 12px;
+            color: #495057;
+            max-width: 200px;
+        }
+
+        .producto-detalles {
+            font-size: 11px;
+            color: #6c757d;
+            display: block;
+            margin-top: 2px;
+            max-width: 200px;
+            line-height: 1.3;
+        }
+        .producto-detalles .bullet {
+            margin-right: 4px;
+            color: #adb5bd;
+        }
+
+        .btn-accion {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #adb5bd;
+            transition: color 0.2s;
+            padding: 4px 6px;
+            font-size: 14px;
+        }
+
+        .btn-accion:hover {
+            color: #dc3545;
+        }
+
+        .cantidad-label {
+            font-weight: 700;
+            font-size: 14px;
+            color: #1a1a1a;
+            text-align: center;
+            display: block;
+        }
+
+        .resumen-cotizacion {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .resumen-cotizacion .fila {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 13px;
+        }
+
+        .resumen-cotizacion .fila .label {
+            color: #6c757d;
+        }
+
+        .resumen-cotizacion .fila .valor {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .resumen-cotizacion .fila.total {
+            border-top: 2px solid #dee2e6;
+            padding-top: 10px;
+            margin-top: 6px;
+        }
+
+        .resumen-cotizacion .fila.total .label {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1a3a5c;
+        }
+
+        .resumen-cotizacion .fila.total .valor {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a3a5c;
+        }
+
+        .resumen-cotizacion .fila .envio-input {
+            border: none;
+            border-bottom: 2px solid #dee2e6;
+            width: 80px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+            color: #1a1a1a;
+            padding: 2px 4px;
+        }
+
+        .resumen-cotizacion .fila .envio-input:focus {
+            outline: none;
+            border-bottom-color: #1a3a5c;
+        }
+
+        .acciones-cotizacion {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .acciones-cotizacion button {
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #1da851;
+            transform: translateY(-1px);
+        }
+
+        .btn-pdf {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-imprimir {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-imprimir:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .catalogo-productos {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px dashed #dee2e6;
+        }
+
+        .catalogo-productos .titulo {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a3a5c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .grid-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .tarjeta-producto {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tarjeta-producto:hover {
+            border-color: #1a3a5c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .tarjeta-producto .img-wrapper {
+            background: #fafbfc;
+            border-radius: 4px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .tarjeta-producto .img-wrapper .placeholder-icon {
+            position: absolute;
+            z-index: 1;
+            color: #e5e7eb;
+            font-size: 32px;
+        }
+
+        .tarjeta-producto .img-wrapper .product-img {
+            position: relative;
+            z-index: 2;
+            max-height: 80px;
+            max-width: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tarjeta-producto .img-wrapper .product-img.loaded {
+            opacity: 1;
+        }
+
+        .tarjeta-producto .img-wrapper .view-label {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 7px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 5;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .tarjeta-producto:hover .img-wrapper .view-label {
+            opacity: 1;
+        }
+
+        .tarjeta-producto .codigo {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            color: #1a3a5c;
+        }
+
+        .tarjeta-producto .nombre {
+            font-size: 11px;
+            color: #495057;
+            margin: 2px 0 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .tarjeta-producto .precio {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1a3a5c;
+        }
+
+        .tarjeta-producto .btn-agregar {
+            background: #1a3a5c;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tarjeta-producto .btn-agregar:hover {
+            transform: scale(1.1);
+            background: #2c5282;
+        }
+
+        .btn-limpiar {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-limpiar:hover {
+            text-decoration: underline;
+        }
+
+        .vacio {
+            text-align: center;
+            padding: 30px 0;
+            color: #adb5bd;
+        }
+
+        .vacio i {
+            font-size: 30px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .vacio p {
+            font-size: 13px;
+        }
+
+        .copy-tooltip {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        .copy-tooltip.show { opacity: 1; }
+
+        .marca-badge {
+            background: #e9ecef;
+            color: #495057;
+            font-size: 8px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* ============================================================
+           MODAL DE IMAGEN PROFESIONAL
+           ============================================================ */
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 15, 25, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+
+        .image-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.9) translateY(10px);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .image-modal.active .image-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .image-modal-img-wrapper {
+            position: relative;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            max-width: 90vw;
+            max-height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .image-modal-img-wrapper img {
+            max-width: 100%;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-modal-img-wrapper img.loading {
+            opacity: 0.5;
+        }
+
+        .image-modal-spinner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.8);
+            border-radius: 12px;
+            z-index: 2;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .image-modal-spinner.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-modal-spinner i {
+            font-size: 28px;
+            color: #1a3a5c;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #1a3a5c;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .image-modal-close:hover {
+            background: #dc3545;
+            color: #ffffff;
+            transform: rotate(90deg) scale(1.05);
+        }
+
+        .image-modal-caption {
+            margin-top: 14px;
+            text-align: center;
+            color: #ffffff;
+            max-width: 90vw;
+        }
+
+        .image-modal-caption .caption-codigo {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #93c5fd;
+            text-transform: uppercase;
+        }
+
+        .image-modal-caption .caption-nombre {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        .image-modal-caption .caption-precio {
+            font-size: 16px;
+            font-weight: 800;
+            color: #34d399;
+            margin-top: 4px;
+        }
+
+        .image-modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+
+        .image-modal-nav:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .image-modal-nav.prev { left: -60px; }
+        .image-modal-nav.next { right: -60px; }
+
+        .image-modal-nav:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        @media (max-width: 900px) {
+            .image-modal-nav.prev { left: 8px; }
+            .image-modal-nav.next { right: 8px; }
+            .image-modal-close { top: -8px; right: -8px; width: 32px; height: 32px; font-size: 14px; }
+        }
+
+        @media (max-width: 480px) {
+            .image-modal { padding: 10px; }
+            .image-modal-img-wrapper { padding: 6px; border-radius: 8px; }
+            .image-modal-img-wrapper img { max-height: 60vh; }
+            .image-modal-nav { width: 36px; height: 36px; font-size: 13px; }
+            .image-modal-nav.prev { left: 4px; }
+            .image-modal-nav.next { right: 4px; }
+        }
+
+        @media print {
+            body { background: white; }
+            .documento-cotizador { box-shadow: none; border: none; margin: 0; padding: 20px; }
+            .no-print { display: none !important; }
+            .tarjeta-producto { break-inside: avoid; }
+        }
+
+        @media (max-width: 768px) {
+            .documento-cotizador { padding: 15px; margin: 10px; }
+            .header-documento { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .header-documento .numero-cotizacion { text-align: left; width: 100%; }
+            .datos-cliente { grid-template-columns: 1fr; }
+            .grid-productos { grid-template-columns: repeat(2, 1fr); }
+            .acciones-cotizacion { grid-template-columns: 1fr; }
+            .resumen-cotizacion .fila.total .valor { font-size: 18px; }
+            
+            .tabla-productos {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .tabla-productos table {
+                font-size: 11px;
+                min-width: 500px;
+            }
+            .tabla-productos table thead th {
+                font-size: 8px;
+                padding: 4px 6px;
+            }
+            .tabla-productos table tbody td {
+                padding: 4px 6px;
+            }
+            .img-wrapper-mini { width: 30px; height: 30px; }
+            .img-wrapper-mini .placeholder-icon { font-size: 14px; }
+            .producto-nombre { max-width: 120px; font-size: 10px; }
+            .producto-detalles { max-width: 120px; font-size: 9px; }
+            .info-cabecera { flex-direction: column; gap: 4px; font-size: 11px; }
+        }
+
+        @media (max-width: 480px) {
+            .grid-productos { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .tarjeta-producto { padding: 8px; }
+            .tarjeta-producto .img-wrapper { height: 80px; }
+            .tarjeta-producto .precio { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="copyFeedback" class="copy-tooltip"><i class="fa-regular fa-check-circle mr-2"></i> Copiado al portapapeles</div>
+
+    <!-- ============================================================
+         MODAL DE IMAGEN
+         ============================================================ -->
+    <div class="image-modal" id="imageModal" role="dialog" aria-modal="true" aria-label="Visor de imagen de producto">
+        <div class="image-modal-content" id="imageModalContent">
+            <button class="image-modal-close" id="imageModalClose" title="Cerrar (Esc)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button class="image-modal-nav prev" id="imageModalPrev" title="Anterior (←)">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="image-modal-nav next" id="imageModalNext" title="Siguiente (→)">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <div class="image-modal-img-wrapper">
+                <div class="image-modal-spinner" id="imageModalSpinner">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+                <img id="imageModalImg" src="" alt="Producto" draggable="false">
+            </div>
+            <div class="image-modal-caption">
+                <div class="caption-codigo" id="imageModalCodigo"></div>
+                <div class="caption-nombre" id="imageModalNombre"></div>
+                <div class="caption-precio" id="imageModalPrecio"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="documento-cotizador" id="cotizadorDocumento">
+        
+        <!-- HEADER -->
+        <div class="header-documento">
+            <div class="empresa">
+                <img src="https://scperu.github.io/store/logo.png" alt="ServiComp+" onerror="this.style.display='none'">
+                <div>
+                    <h1>ServiComp<span>+</span></h1>
+                    <span class="live-badge">
+                        <i class="fa-solid fa-circle pulse-icon"></i> EN VIVO
+                    </span>
+                </div>
+            </div>
+            <div class="numero-cotizacion">
+                <div class="label">Cotización N°</div>
+                <div class="numero" id="cotizacionNumero">20260706</div>
+            </div>
+        </div>
+
+        <!-- INFO CABECERA -->
+        <div class="info-cabecera">
+            <span><i class="fa-regular fa-calendar"></i> <span id="fechaDisplay">Cargando...</span></span>
+            <span><i class="fa-regular fa-clock"></i> <span id="horaDisplay">Cargando...</span></span>
+        </div>
+
+        <!-- DATOS CLIENTE -->
+        <div class="datos-cliente">
+            <div class="campo">
+                <label><i class="fa-regular fa-user"></i> Cliente</label>
+                <input type="text" id="clienteNombre" placeholder="Nombre del cliente">
+            </div>
+            <div class="campo">
+                <label><i class="fa-regular fa-id-card"></i> RUC / DNI</label>
+                <input type="text" id="clienteDocumento" placeholder="RUC o DNI">
+            </div>
+        </div>
+
+        <!-- TABLA DE PRODUCTOS -->
+        <div class="tabla-productos">
+            <div class="titulo-seccion">
+                <button class="btn-limpiar" id="limpiarBtn"><i class="fa-regular fa-trash-can"></i> Limpiar</button>
+            </div>
+            <div id="tablaProductosContainer">
+                <div class="vacio">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+                    <p>Cargando productos...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="resumen-cotizacion">
+            <div class="fila">
+                <span class="label">Productos distintos</span>
+                <span class="valor" id="resumenDistintos">0</span>
+            </div>
+            <div class="fila">
+                <span class="label">Unidades totales</span>
+                <span class="valor" id="resumenUnidades">0</span>
+            </div>
+            <div class="fila">
+                <span class="label">Subtotal</span>
+                <span class="valor" id="resumenSubtotal">S/ 0</span>
+            </div>
+            <div class="fila">
+                <span class="label"><i class="fa-solid fa-truck"></i> Envío</span>
+                <span class="valor">
+                    S/ <input type="number" id="envioInput" class="envio-input" value="19" step="1" min="0">
+                </span>
+            </div>
+            <div class="fila total">
+                <span class="label">TOTAL</span>
+                <span class="valor" id="resumenTotal">S/ 0</span>
+            </div>
+        </div>
+
+        <!-- ACCIONES -->
+        <div class="acciones-cotizacion no-print">
+            <button class="btn-whatsapp" id="whatsappBtn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+            <button class="btn-pdf" id="pdfBtn"><i class="fa-regular fa-file-pdf"></i> PDF</button>
+            <button class="btn-imprimir" id="imprimirBtn"><i class="fa-regular fa-print"></i> Imprimir</button>
+        </div>
+
+        <!-- CATÁLOGO DE PRODUCTOS -->
+        <div class="catalogo-productos no-print">
+            <div class="titulo"><i class="fa-regular fa-list"></i> Catálogo de Servicios</div>
+            <div id="catalogoGrid" class="grid-productos">
+                <div class="text-center text-gray-400 py-8 col-span-full">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+                    <p class="text-sm mt-2">Cargando servicios disponibles...</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIGURACIÓN
+        // ============================================================
+        const SHEET_ID = "1nJBrtDv-_YS1VHkX6G_Wvc8fDk2YCZWWLelIWuSmFbI";
+        const SHEET_SERVICIOS = "servicios";
+
+        let productosCotizacion = [];
+        let allProducts = [];
+
+        // ============================================================
+        // UTILIDADES
+        // ============================================================
+        function formatearMoneda(monto) {
+            return `S/ ${Math.floor(Number(monto) || 0).toLocaleString('es-PE')}`;
+        }
+
+        function normalizarTexto(valor) {
+            return String(valor || '').trim();
+        }
+
+        function normalizarNumero(valor) {
+            const limpio = String(valor || '').replace(/,/g, '').replace(/[^\d.-]/g, '');
+            return Number(limpio) || 0;
+        }
+
+        function generarNumeroCotizacion() {
+            const ahora = new Date();
+            const año = ahora.getFullYear();
+            const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+            const dia = String(ahora.getDate()).padStart(2, '0');
+            return `${año}${mes}${dia}`;
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // ============================================================
+        // MODAL DE IMAGEN - LÓGICA PROFESIONAL
+        // ============================================================
+        const ImageModal = (function() {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('imageModalImg');
+            const spinner = document.getElementById('imageModalSpinner');
+            const closeBtn = document.getElementById('imageModalClose');
+            const prevBtn = document.getElementById('imageModalPrev');
+            const nextBtn = document.getElementById('imageModalNext');
+            const codigoEl = document.getElementById('imageModalCodigo');
+            const nombreEl = document.getElementById('imageModalNombre');
+            const precioEl = document.getElementById('imageModalPrecio');
+
+            let currentIndex = -1;
+            let items = [];
+            let isOpen = false;
+            let lastFocusedElement = null;
+
+            // Precarga de imágenes
+            function preloadImage(url) {
+                return new Promise((resolve) => {
+                    const image = new Image();
+                    image.onload = () => resolve(url);
+                    image.onerror = () => resolve(null);
+                    image.src = url;
+                });
+            }
+
+            function showSpinner() {
+                spinner.classList.add('active');
+            }
+
+            function hideSpinner() {
+                spinner.classList.remove('active');
+            }
+
+            function loadImage(url, alt) {
+                return new Promise((resolve) => {
+                    showSpinner();
+                    img.classList.add('loading');
+                    const newImg = new Image();
+                    newImg.onload = () => {
+                        img.src = url;
+                        img.alt = alt || 'Producto';
+                        img.classList.remove('loading');
+                        hideSpinner();
+                        resolve(true);
+                    };
+                    newImg.onerror = () => {
+                        img.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23cbd5e1%22 stroke-width=%221%22%3E%3Crect x=%223%22 y=%223%22 width=%2218%22 height=%2218%22 rx=%222%22/%3E%3Ccircle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/%3E%3Cpath d=%22M21 15l-5-5L5 21%22/%3E%3C/svg%3E';
+                        img.alt = 'Imagen no disponible';
+                        img.classList.remove('loading');
+                        hideSpinner();
+                        resolve(false);
+                    };
+                    newImg.src = url;
+                });
+            }
+
+            function updateUI() {
+                const item = items[currentIndex];
+                if (!item) return;
+
+                codigoEl.textContent = item.codigo || '';
+                nombreEl.textContent = item.descripcion || '';
+                precioEl.textContent = formatearMoneda(item.precio);
+
+                // Actualizar estados de botones
+                prevBtn.disabled = currentIndex <= 0;
+                nextBtn.disabled = currentIndex >= items.length - 1;
+
+                // Ocultar navegación si solo hay 1 item
+                const showNav = items.length > 1;
+                prevBtn.style.display = showNav ? 'flex' : 'none';
+                nextBtn.style.display = showNav ? 'flex' : 'none';
+
+                loadImage(item.fotos, item.descripcion);
+
+                // Precargar adyacentes
+                if (currentIndex > 0) preloadImage(items[currentIndex - 1].fotos);
+                if (currentIndex < items.length - 1) preloadImage(items[currentIndex + 1].fotos);
+            }
+
+            function open(index, list) {
+                if (!list || list.length === 0) return;
+                items = list.filter(p => p.fotos && p.fotos.length > 0);
+                if (items.length === 0) return;
+
+                // Encontrar índice en items filtrados
+                const targetCode = list[index]?.codigo;
+                currentIndex = items.findIndex(p => p.codigo === targetCode);
+                if (currentIndex === -1) currentIndex = 0;
+
+                lastFocusedElement = document.activeElement;
+                isOpen = true;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                updateUI();
+
+                // Focus trap
+                closeBtn.focus();
+            }
+
+            function close() {
+                if (!isOpen) return;
+                isOpen = false;
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    img.src = '';
+                }, 300);
+                if (lastFocusedElement && lastFocusedElement.focus) {
+                    lastFocusedElement.focus();
+                }
+            }
+
+            function next() {
+                if (currentIndex < items.length - 1) {
+                    currentIndex++;
+                    updateUI();
+                }
+            }
+
+            function prev() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateUI();
+                }
+            }
+
+            // Event listeners
+            closeBtn.addEventListener('click', close);
+            nextBtn.addEventListener('click', next);
+            prevBtn.addEventListener('click', prev);
+
+            // Cerrar al hacer clic fuera del contenido
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) close();
+            });
+
+            // Teclado
+            document.addEventListener('keydown', (e) => {
+                if (!isOpen) return;
+                switch (e.key) {
+                    case 'Escape': close(); break;
+                    case 'ArrowLeft': prev(); break;
+                    case 'ArrowRight': next(); break;
+                }
+            });
+
+            // Touch swipe
+            let touchStartX = 0;
+            let touchEndX = 0;
+            modal.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            modal.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) next();
+                    else prev();
+                }
+            }, { passive: true });
+
+            return { open, close, next, prev };
+        })();
+
+        // ============================================================
+        // CARGAR DATOS
+        // ============================================================
+        async function cargarDatos() {
+            try {
+                const urlServicios = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_SERVICIOS}`;
+                const resServicios = await fetch(urlServicios);
+                if (!resServicios.ok) throw new Error('Error al cargar servicios');
+
+                const raw = await resServicios.json();
+
+                allProducts = raw
+                    .map(row => ({
+                        codigo: normalizarTexto(row.codigo),
+                        descripcion: normalizarTexto(row.descripcion),
+                        cantidad: Math.floor(normalizarNumero(row.cant)),
+                        marca: normalizarTexto(row.marca) || 'GENÉRICO',
+                        detalles: normalizarTexto(row.detalles) || '',
+                        precio: normalizarNumero(row.precio),
+                        fotos: normalizarTexto(row.fotos) || '',
+                        mini: normalizarTexto(row.codigo),
+                        stock: Math.floor(normalizarNumero(row.cant)) || 0,
+                        tipoCambio: 0,
+                        sede: '',
+                        specs: ''
+                    }))
+                    .filter(p => p.stock > 0 && p.codigo);
+
+                // ===== Cargar productos iniciales =====
+                productosCotizacion = allProducts
+                    .filter(p => p.cantidad > 0)
+                    .map(p => ({
+                        ...p,
+                        cantidad: p.cantidad
+                    }));
+
+                // ===== Fecha y hora =====
+                const ahora = new Date();
+                document.getElementById('fechaDisplay').textContent = ahora.toLocaleDateString('es-PE', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                document.getElementById('horaDisplay').textContent = ahora.toLocaleTimeString('es-PE', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                document.getElementById('cotizacionNumero').textContent = generarNumeroCotizacion();
+
+                renderizarTablaProductos();
+                renderizarCatalogo();
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Error', 'No se pudo cargar los datos: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // RENDERIZAR TABLA PRINCIPAL
+        // ============================================================
+        function renderizarTablaProductos() {
+            const container = document.getElementById('tablaProductosContainer');
+
+            if (productosCotizacion.length === 0) {
+                container.innerHTML = `
+                    <div class="vacio">
+                        <i class="fa-regular fa-list"></i>
+                        <p>No hay productos en la cotización</p>
+                        <p style="font-size:11px;color:#ced4da;">Agrega desde el catálogo de servicios</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:50px;"></th>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th style="text-align:right;width:100px;">Precio</th>
+                            <th style="text-align:center;width:80px;">Cant</th>
+                            <th style="text-align:right;width:100px;">Total</th>
+                            <th style="text-align:center;width:50px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            for (let p of productosCotizacion) {
+                const total = p.precio * p.cantidad;
+                const fotoUrl = p.fotos || '';
+                const codigoDisplay = p.codigo;
+                const tieneFoto = fotoUrl && fotoUrl.length > 0;
+
+                html += `
+                    <tr>
+                        <td>
+                            <div class="img-wrapper-mini" onclick="ImageModal.open(${productosCotizacion.indexOf(p)}, productosCotizacion)" title="${tieneFoto ? 'Ver foto' : 'Sin foto'}">
+                                <i class="fa-solid fa-camera placeholder-icon"></i>
+                                ${tieneFoto ? `<img src="${fotoUrl}" 
+                                     class="product-img-mini" 
+                                     alt="${codigoDisplay}"
+                                     loading="lazy"
+                                     onload="this.classList.add('loaded')"
+                                     onerror="this.style.display='none'">` : ''}
+                                ${tieneFoto ? '<span class="view-label-mini"><i class="fa-regular fa-eye"></i> Ver</span>' : ''}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="producto-codigo">${codigoDisplay}</span>
+                            ${p.marca && p.marca !== 'GENÉRICO' ? `<span class="marca-badge">${p.marca}</span>` : ''}
+                        </td>
+                        <td>
+                            <span class="producto-nombre" title="${p.descripcion}">${p.descripcion}</span>
+                            ${p.detalles ? `<span class="producto-detalles"><span class="bullet">•</span> ${p.detalles}</span>` : ''}
+                        </td>
+                        <td style="text-align:right;font-weight:600;color:#1a3a5c;">${formatearMoneda(p.precio)}</td>
+                        <td style="text-align:center;">
+                            <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                                <button class="btn-accion" onclick="cambiarCantidad('${p.codigo}', -1)" style="color:#1a3a5c;font-weight:700;font-size:16px;">−</button>
+                                <span class="cantidad-label" style="min-width:24px;">${p.cantidad}</span>
+                                <button class="btn-accion" onclick="cambiarCantidad('${p.codigo}', 1)" style="color:#1a3a5c;font-weight:700;font-size:16px;">+</button>
+                            </div>
+                        </td>
+                        <td style="text-align:right;font-weight:700;color:#1a3a5c;">${formatearMoneda(total)}</td>
+                        <td style="text-align:center;">
+                            <button class="btn-accion" onclick="eliminarProducto('${p.codigo}')" title="Eliminar">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+            
+            actualizarResumen();
+        }
+
+        // ============================================================
+        // RENDERIZAR CATÁLOGO INFERIOR
+        // ============================================================
+        function renderizarCatalogo() {
+            const grid = document.getElementById('catalogoGrid');
+
+            const codigosEnCotizacion = new Set(productosCotizacion.map(p => p.codigo));
+            const productosDisponibles = allProducts.filter(p => !codigosEnCotizacion.has(p.codigo));
+
+            if (productosDisponibles.length === 0 && productosCotizacion.length > 0) {
+                grid.innerHTML = `
+                    <div class="text-center text-gray-400 py-8 col-span-full">
+                        <i class="fa-regular fa-check-circle text-2xl"></i>
+                        <p class="text-sm mt-2">Todos los servicios están en la cotización</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (productosDisponibles.length === 0) {
+                grid.innerHTML = `
+                    <div class="text-center text-gray-400 py-8 col-span-full">
+                        <i class="fa-regular fa-folder-open text-2xl"></i>
+                        <p class="text-sm mt-2">No hay servicios disponibles</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = productosDisponibles.map((p, idx) => {
+                const fotoUrl = p.fotos || '';
+                const codigoDisplay = p.codigo;
+                const tieneFoto = fotoUrl && fotoUrl.length > 0;
+                const stockClass = p.stock <= 2 ? 'stock-critical' : p.stock <= 5 ? 'stock-low' : 'stock-ok';
+
+                // Necesitamos el índice real en el array original para el modal
+                const originalIndex = allProducts.indexOf(p);
+
+                return `
+                    <div class="tarjeta-producto">
+                        <div class="img-wrapper" onclick="ImageModal.open(${originalIndex}, allProducts)">
+                            <i class="fa-solid fa-camera placeholder-icon"></i>
+                            ${tieneFoto ? `<img src="${fotoUrl}" 
+                                 class="product-img" 
+                                 alt="${codigoDisplay}"
+                                 loading="lazy"
+                                 onload="this.classList.add('loaded')"
+                                 onerror="this.style.display='none'">` : ''}
+                            ${tieneFoto ? '<span class="view-label"><i class="fa-regular fa-eye"></i> Ver</span>' : ''}
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <span class="codigo">${codigoDisplay}</span>
+                            ${p.marca && p.marca !== 'GENÉRICO' ? `<span class="marca-badge">${p.marca}</span>` : ''}
+                        </div>
+                        <div class="nombre">${p.descripcion}</div>
+                        ${p.detalles ? `<div class="producto-detalles" style="font-size:9px;"><span class="bullet">•</span> ${p.detalles}</div>` : ''}
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+                            <div>
+                                <span class="precio">${formatearMoneda(p.precio)}</span>
+                                <span class="stock ${stockClass}" style="font-size:8px;margin-left:6px;">${p.stock}</span>
+                            </div>
+                            <button class="btn-agregar" onclick="event.stopPropagation(); agregarProducto('${p.codigo}')" title="Agregar a cotización">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // FUNCIONES DE COTIZACIÓN
+        // ============================================================
+        function agregarProducto(codigo) {
+            let producto = productosCotizacion.find(p => p.codigo === codigo);
+            
+            if (producto) {
+                if (producto.cantidad + 1 > producto.stock) {
+                    Swal.fire('Stock insuficiente', `Solo hay ${producto.stock} unidades disponibles`, 'warning');
+                    return;
+                }
+                producto.cantidad += 1;
+                renderizarTablaProductos();
+                Swal.fire({
+                    title: '✓ Agregado',
+                    text: `${producto.descripcion.substring(0, 30)} x${producto.cantidad}`,
+                    icon: 'success',
+                    toast: true,
+                    timer: 800,
+                    showConfirmButton: false,
+                    position: 'top-end'
+                });
+                return;
+            }
+
+            const encontrado = allProducts.find(p => p.codigo === codigo);
+            if (!encontrado) {
+                Swal.fire('Error', 'Producto no encontrado', 'error');
+                return;
+            }
+
+            if (encontrado.stock < 1) {
+                Swal.fire('Sin stock', 'Este producto no tiene stock disponible', 'warning');
+                return;
+            }
+
+            const nuevoProducto = {
+                ...encontrado,
+                cantidad: 1
+            };
+            productosCotizacion.push(nuevoProducto);
+            renderizarTablaProductos();
+            renderizarCatalogo();
+
+            Swal.fire({
+                title: '✓ Agregado',
+                text: `${encontrado.descripcion.substring(0, 30)} x1`,
+                icon: 'success',
+                toast: true,
+                timer: 800,
+                showConfirmButton: false,
+                position: 'top-end'
+            });
+        }
+
+        function cambiarCantidad(codigo, delta) {
+            const producto = productosCotizacion.find(p => p.codigo === codigo);
+            if (!producto) return;
+            
+            const nuevaCantidad = producto.cantidad + delta;
+            if (nuevaCantidad < 1) return;
+            if (nuevaCantidad > producto.stock) {
+                Swal.fire('Stock insuficiente', `Solo hay ${producto.stock} unidades disponibles`, 'warning');
+                return;
+            }
+            
+            producto.cantidad = nuevaCantidad;
+            renderizarTablaProductos();
+        }
+
+        function eliminarProducto(codigo) {
+            const producto = productosCotizacion.find(p => p.codigo === codigo);
+            if (!producto) return;
+            
+            Swal.fire({
+                title: `¿Eliminar ${producto.descripcion.substring(0, 30)}?`,
+                text: 'Se eliminará este producto de la cotización',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    const index = productosCotizacion.indexOf(producto);
+                    if (index > -1) {
+                        productosCotizacion.splice(index, 1);
+                    }
+                    renderizarTablaProductos();
+                    renderizarCatalogo();
+                }
+            });
+        }
+
+        function limpiarCotizacion() {
+            if (productosCotizacion.length === 0) return;
+            
+            Swal.fire({
+                title: '¿Limpiar cotización?',
+                text: 'Se eliminarán todos los productos de la cotización',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, limpiar',
+                cancelButtonText: 'Cancelar'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    productosCotizacion = [];
+                    renderizarTablaProductos();
+                    renderizarCatalogo();
+                    document.getElementById('clienteNombre').value = '';
+                    document.getElementById('clienteDocumento').value = '';
+                }
+            });
+        }
+
+        // ============================================================
+        // ACTUALIZAR RESUMEN
+        // ============================================================
+        function actualizarResumen() {
+            let distintos = productosCotizacion.filter(p => p.cantidad > 0).length;
+            let unidades = 0;
+            let subtotal = 0;
+
+            for (let p of productosCotizacion) {
+                unidades += p.cantidad;
+                subtotal += p.precio * p.cantidad;
+            }
+
+            const envio = normalizarNumero(document.getElementById('envioInput').value);
+            const total = subtotal + envio;
+
+            document.getElementById('resumenDistintos').textContent = distintos;
+            document.getElementById('resumenUnidades').textContent = unidades;
+            document.getElementById('resumenSubtotal').textContent = formatearMoneda(subtotal);
+            document.getElementById('resumenTotal').textContent = formatearMoneda(total);
+        }
+
+        // ============================================================
+        // EXPORTAR FUNCIONES
+        // ============================================================
+        function copiarWhatsApp() {
+            const productosConCantidad = productosCotizacion.filter(p => p.cantidad > 0);
+            
+            if (productosConCantidad.length === 0) {
+                Swal.fire('Sin productos', 'No hay productos en la cotización', 'info');
+                return;
+            }
+
+            const cliente = document.getElementById('clienteNombre').value.trim() || 'Cliente';
+            const documento = document.getElementById('clienteDocumento').value.trim() || '---';
+
+            let lines = [];
+            lines.push('📋 *COTIZACIÓN - SERVICOMP+*');
+            lines.push('━━━━━━━━━━━━━━━━━━');
+            lines.push('');
+            lines.push(`👤 *Cliente:* ${cliente}`);
+            lines.push(`📄 *RUC/DNI:* ${documento}`);
+            lines.push(`📅 ${new Date().toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`);
+            lines.push('');
+            lines.push('⭐ *PRODUCTOS:*');
+            lines.push('━━━━━━━━━━━━━━━━━━');
+
+            let subtotal = 0;
+            for (let p of productosConCantidad) {
+                const total = p.precio * p.cantidad;
+                subtotal += total;
+                lines.push(`*${p.codigo}* - ${p.descripcion.substring(0, 45)}`);
+                if (p.marca && p.marca !== 'GENÉRICO') {
+                    lines.push(`└ Marca: ${p.marca}`);
+                }
+                if (p.detalles && p.detalles.length > 0) {
+                    lines.push(`└ • ${p.detalles}`);
+                }
+                lines.push(`└ Cant: ${p.cantidad} | Total: ${formatearMoneda(total)}`);
+                lines.push('');
+            }
+
+            const envio = normalizarNumero(document.getElementById('envioInput').value);
+            const total = subtotal + envio;
+
+            lines.push('━━━━━━━━━━━━━━━━━━');
+            lines.push(`📊 *Subtotal:* ${formatearMoneda(subtotal)}`);
+            lines.push(`🚚 *Envío:* ${formatearMoneda(envio)}`);
+            lines.push(`💰 *TOTAL:* ${formatearMoneda(total)}`);
+            lines.push('━━━━━━━━━━━━━━━━━━');
+            lines.push('✨ ¡Gracias por su cotización!');
+
+            const texto = lines.join('\n');
+            navigator.clipboard.writeText(texto);
+
+            const tooltip = document.getElementById('copyFeedback');
+            tooltip.textContent = '✓ Copiado al portapapeles';
+            tooltip.classList.add('show');
+            setTimeout(() => tooltip.classList.remove('show'), 2000);
+
+            Swal.fire('✓ Copiado', 'Texto listo para WhatsApp', 'success');
+        }
+
+        function exportarPDF() {
+            const productosConCantidad = productosCotizacion.filter(p => p.cantidad > 0);
+            
+            if (productosConCantidad.length === 0) {
+                Swal.fire('Sin productos', 'No hay productos en la cotización', 'info');
+                return;
+            }
+
+            const elemento = document.getElementById('cotizadorDocumento');
+            const fecha = new Date().toLocaleDateString('es-PE');
+            
+            html2pdf()
+                .set({
+                    margin: 0.5,
+                    filename: `cotizacion_${fecha}.pdf`,
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'in', format: 'a4' }
+                })
+                .from(elemento)
+                .save();
+        }
+
+        function imprimirCotizacion() {
+            window.print();
+        }
+
+        // ============================================================
+        // EVENTOS
+        // ============================================================
+        document.getElementById('limpiarBtn').addEventListener('click', limpiarCotizacion);
+        document.getElementById('envioInput').addEventListener('input', actualizarResumen);
+        document.getElementById('whatsappBtn').addEventListener('click', copiarWhatsApp);
+        document.getElementById('pdfBtn').addEventListener('click', exportarPDF);
+        document.getElementById('imprimirBtn').addEventListener('click', imprimirCotizacion);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await cargarDatos();
+        });
+    </script>
+
+</body>
+</html>
