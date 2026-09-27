@@ -6,9 +6,7 @@
             <a href="index.html" class="logo">
                 <img src="img/logo.png" alt="ServiComp+" class="logo-img" 
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                <span class="logo-fallback" style="display:none;background:#1a3a5c;color:white;padding:0.25rem 0.5rem;border-radius:8px;font-weight:800;font-size:1.1rem;">
-                    SC
-                </span>
+                <span class="logo-fallback">SC</span>
                 <span class="logo-text">
                     ServiComp<span class="logo-plus">+</span>
                 </span>
@@ -16,15 +14,15 @@
 
             <!-- NAVEGACIÓN DESKTOP -->
             <nav class="nav-desktop">
-                <a href="index.html">Inicio</a>
-                <a href="servicios.html">Servicios</a>
-                <a href="tienda.html">Tienda</a>
-                <a href="software.html">Software</a>
-                <a href="asesor.html">Automatización</a>
-                <a href="cotizacion.html">Cotización</a>
+                <a href="index.html" data-page="index">Inicio</a>
+                <a href="servicios.html" data-page="servicios">Servicios</a>
+                <a href="tienda.html" data-page="tienda">Tienda</a>
+                <a href="software.html" data-page="software">Software</a>
+                <a href="asesor.html" data-page="asesor">Automatización</a>
+                <a href="cotizacion.html" data-page="cotizacion">Cotización</a>
             </nav>
 
-            <!-- ACCIONES - SIN CONTACTO -->
+            <!-- ACCIONES -->
             <div class="nav-actions">
                 <button id="mobileToggle" class="mobile-toggle" aria-label="Menú">
                     <i class="fa-solid fa-bars"></i>
@@ -34,7 +32,7 @@
         </div>
     </div>
 
-    <!-- MENÚ MÓVIL - SIN CONTACTO -->
+    <!-- MENÚ MÓVIL -->
     <div id="mobileMenu">
         <a href="index.html">Inicio</a>
         <a href="servicios.html">Servicios</a>
@@ -42,7 +40,5 @@
         <a href="software.html">Software</a>
         <a href="asesor.html">Asesoría</a>
         <a href="cotizacion.html">Cotización</a>
-        <!-- ELIMINA ESTA LÍNEA 👇 -->
-        <!-- <a href="contacto.html" class="btn btn-primary">Contacto</a> -->
     </div>
 </header>
