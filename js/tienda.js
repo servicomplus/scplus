@@ -1,6 +1,6 @@
 /* ================================================================ */
 /* SERVICOMP+ - TIENDA.JS                                           */
-/* Versión 3.1 - Carrito a la izquierda, WhatsApp solo componente   */
+/* Versión 3.2 - Colores por categoría (badge + botón +)            */
 /* ================================================================ */
 
 (function () {
@@ -23,6 +23,63 @@
       { selector: '#whatsapp-placeholder', file: 'components/whatsapp.html' }
     ]
   };
+
+  // ================================================================
+  // PALETA DE COLORES POR CATEGORÍA (10 colores + default)
+  // ================================================================
+  const COLORES_CATEGORIA = {
+    'LAPTOPS':          { bg: '#dbeafe', text: '#1d4ed8' },
+    'LAPTOP':           { bg: '#dbeafe', text: '#1d4ed8' },
+    'COMPUTADORAS':     { bg: '#dbeafe', text: '#1d4ed8' },
+    'PC':               { bg: '#dbeafe', text: '#1d4ed8' },
+    'ALL IN ONE':       { bg: '#dbeafe', text: '#1d4ed8' },
+
+    'MONITORES':        { bg: '#e0e7ff', text: '#4338ca' },
+    'MONITOR':          { bg: '#e0e7ff', text: '#4338ca' },
+
+    'COMPONENTES':      { bg: '#e6f7ed', text: '#059669' },
+    'HARDWARE':         { bg: '#e6f7ed', text: '#059669' },
+
+    'ALMACENAMIENTO':   { bg: '#f3e8ff', text: '#7c3aed' },
+    'DISCOS':           { bg: '#f3e8ff', text: '#7c3aed' },
+    'SSD':              { bg: '#f3e8ff', text: '#7c3aed' },
+
+    'REDES':            { bg: '#fee2e2', text: '#b91c1c' },
+    'NETWORKING':       { bg: '#fee2e2', text: '#b91c1c' },
+
+    'PERIFERICOS':      { bg: '#fef3c7', text: '#b45309' },
+    'MOUSE':            { bg: '#fef3c7', text: '#b45309' },
+    'TECLADOS':         { bg: '#fef3c7', text: '#b45309' },
+
+    'IMPRESORAS':       { bg: '#cffafe', text: '#0891b2' },
+    'IMPRESORA':        { bg: '#cffafe', text: '#0891b2' },
+    'TINTAS':           { bg: '#cffafe', text: '#0891b2' },
+    'TONER':            { bg: '#cffafe', text: '#0891b2' },
+
+    'AUDIO':            { bg: '#ffe4e6', text: '#be123c' },
+    'PARLANTES':        { bg: '#ffe4e6', text: '#be123c' },
+
+    'SOFTWARE':         { bg: '#ede9fe', text: '#6d28d9' },
+    'LICENCIAS':        { bg: '#ede9fe', text: '#6d28d9' },
+
+    'ACCESORIOS':       { bg: '#fce7f3', text: '#be185d' },
+    'CABLES':           { bg: '#fce7f3', text: '#be185d' },
+
+    'DEFAULT':          { bg: '#eef3f9', text: '#0f2b47' }
+  };
+
+  function getColorCategoria(categoria) {
+    if (!categoria) return COLORES_CATEGORIA.DEFAULT;
+    const cat = String(categoria).trim().toUpperCase();
+    if (COLORES_CATEGORIA[cat]) return COLORES_CATEGORIA[cat];
+    // Búsqueda parcial
+    for (const key in COLORES_CATEGORIA) {
+      if (key !== 'DEFAULT' && cat.includes(key)) {
+        return COLORES_CATEGORIA[key];
+      }
+    }
+    return COLORES_CATEGORIA.DEFAULT;
+  }
 
   // ================================================================
   // ESTADO
@@ -253,11 +310,11 @@
             <tr>
               <th style="width:56px;"></th>
               <th>Código</th>
-              <th>Descripción</th>
+              <th>Producto</th>
               <th>Marca</th>
               <th class="centro">Stock</th>
-              <th class="num">P. Público</th>
-              <th class="centro">Acción</th>
+              <th class="num">Precio</th>
+              <th class="centro">Agregar</th>
             </tr>
           </thead>
           <tbody id="tbodyProducts"></tbody>
@@ -291,6 +348,7 @@
     const st = normalizaStock(d.stock);
     const enCarrito = CARRITO.find((x) => x.codigo === d.codigo);
     const img = getImagenDeltron(d.codigo);
+    const color = getColorCategoria(d.categoria);
 
     return `
       <tr data-codigo="${esc(d.codigo)}">
@@ -309,7 +367,7 @@
         </td>
         <td class="desc-cell">${esc(d.descripcion)}</td>
         <td>
-          <span class="brand-badge">
+          <span class="brand-badge" style="background:${color.bg}; color:${color.text}; border-color:${color.text}33;">
             <i class="fa-solid fa-tag"></i> ${esc(d.marca || '—')}
           </span>
         </td>
@@ -322,6 +380,7 @@
         <td class="centro">
           <button class="btn-add-row ${enCarrito ? 'added' : ''}"
                   data-add="${esc(d.codigo)}"
+                  style="${enCarrito ? '' : `background: linear-gradient(135deg, ${color.text} 0%, ${color.text}cc 100%); box-shadow: 0 3px 8px ${color.text}40;`}"
                   title="${enCarrito ? 'Agregar otra unidad' : 'Agregar al carrito'}">
             <i class="fa-solid fa-${enCarrito ? 'check' : 'plus'}"></i>
           </button>
@@ -342,6 +401,7 @@
     const st = normalizaStock(d.stock);
     const enCarrito = CARRITO.find((x) => x.codigo === d.codigo);
     const img = getImagenDeltron(d.codigo);
+    const color = getColorCategoria(d.categoria);
 
     return `
       <div class="product-card-mobile" data-codigo="${esc(d.codigo)}">
@@ -363,9 +423,13 @@
           </div>
         </div>
         <div class="pcm-footer">
-          <span class="pcm-brand"><i class="fa-solid fa-tag"></i> ${esc(d.marca || '—')}</span>
+          <span class="pcm-brand" style="color:${color.text};">
+            <i class="fa-solid fa-tag"></i> ${esc(d.marca || '—')}
+          </span>
           <span class="pcm-price"><span class="currency">S/</span>${fmt0(d.precio_publico)}</span>
-          <button class="pcm-add ${enCarrito ? 'added' : ''}" data-add="${esc(d.codigo)}">
+          <button class="pcm-add ${enCarrito ? 'added' : ''}"
+                  data-add="${esc(d.codigo)}"
+                  style="${enCarrito ? '' : `background: linear-gradient(135deg, ${color.text} 0%, ${color.text}cc 100%); box-shadow: 0 3px 10px ${color.text}40;`}">
             <i class="fa-solid fa-${enCarrito ? 'check' : 'plus'}"></i>
           </button>
         </div>
@@ -520,6 +584,7 @@
 
     actualizarTotales();
 
+    // Refrescar botones "+" en tabla y cards (respetando color de categoría)
     $$('.products-table tbody tr, .product-card-mobile').forEach((el) => {
       const cod = el.dataset.codigo;
       if (!cod) return;
@@ -527,6 +592,19 @@
       const btn = el.querySelector('.btn-add-row, .pcm-add');
       if (btn) {
         btn.classList.toggle('added', !!enC);
+        if (enC) {
+          // Si está en carrito: verde
+          btn.style.background = '';
+          btn.style.boxShadow = '';
+        } else {
+          // Si no está: color de categoría
+          const prod = DATA.find((d) => d.codigo === cod);
+          if (prod) {
+            const color = getColorCategoria(prod.categoria);
+            btn.style.background = `linear-gradient(135deg, ${color.text} 0%, ${color.text}cc 100%)`;
+            btn.style.boxShadow = `0 3px 8px ${color.text}40`;
+          }
+        }
         btn.innerHTML = `<i class="fa-solid fa-${enC ? 'check' : 'plus'}"></i>`;
       }
     });
@@ -714,7 +792,6 @@
 
     await cargarComponentes();
 
-    // Marcar link activo en el header
     const activeLink = document.querySelector('.nav-desktop a[data-page="tienda"]');
     if (activeLink) activeLink.classList.add('active');
 
