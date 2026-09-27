@@ -1,6 +1,6 @@
 /* ================================================================ */
 /* SERVICOMP+ - TIENDA CSS                                          */
-/* Versión 3.1 - Carrito a la izquierda, sin WhatsApp duplicado     */
+/* Versión 3.3 - Colores por categoría + Hover tipo F (lift+borde)  */
 /* ================================================================ */
 
 /* ===== TOKENS TIENDA ===== */
@@ -11,8 +11,6 @@
   --primary-glow: rgba(15,43,71,0.15);
   --secondary: #10b981;
   --secondary-dark: #059669;
-  --gold: #d4a574;
-  --gold-light: #f4e8d8;
   --danger: #dc3545;
 
   --radius: 10px;
@@ -192,16 +190,34 @@
 .products-table thead th.num { text-align: right; }
 .products-table thead th.centro { text-align: center; }
 
+/* Anchos de columna ajustados */
+.products-table th:nth-child(1) { width: 56px; }        /* thumb */
+.products-table th:nth-child(2) { width: 160px; }       /* código */
+.products-table th:nth-child(3) { width: auto; }        /* producto */
+.products-table th:nth-child(4) { width: 200px; }       /* marca */
+.products-table th:nth-child(5) { width: 90px; }        /* stock */
+.products-table th:nth-child(6) { width: 110px; }       /* precio */
+.products-table th:nth-child(7) { width: 90px; }        /* agregar */
+
+/* ===== FILAS CON EFECTO F (lift + borde + gradiente) ===== */
 .products-table tbody tr {
   border-bottom: 1px solid var(--gray-100, #f1f5f9);
-  transition: var(--transition);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 .products-table tbody tr:last-child { border-bottom: none; }
 .products-table tbody tr:nth-child(even) { background: rgba(248, 250, 252, 0.5); }
 .products-table tbody tr:hover {
-  background: linear-gradient(90deg, rgba(238,243,249,0.7) 0%, rgba(238,243,249,0.3) 100%);
-  box-shadow: inset 3px 0 0 var(--primary);
+  transform: translateX(2px);
+  background: linear-gradient(90deg,
+    rgba(238,243,249,0.9) 0%,
+    rgba(238,243,249,0.3) 100%);
+  box-shadow:
+    inset 3px 0 0 var(--primary),
+    0 2px 8px rgba(15,43,71,0.06);
+  z-index: 1;
 }
+
 .products-table tbody td {
   padding: 14px 16px;
   vertical-align: middle;
@@ -283,17 +299,14 @@
   font-weight: 600;
   line-height: 1.4;
   font-size: 12px;
-  max-width: 480px;
   letter-spacing: -0.01em;
 }
 
-/* Brand */
+/* ===== BADGE DE MARCA (COLOR DINÁMICO) ===== */
 .brand-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: linear-gradient(135deg, #eef3f9 0%, #e2ecf7 100%);
-  color: var(--primary);
   font-weight: 700;
   font-size: 10px;
   letter-spacing: 0.04em;
@@ -302,9 +315,9 @@
   border: 1px solid rgba(15,43,71,0.08);
   white-space: nowrap;
   text-transform: uppercase;
-  box-shadow: 0 1px 2px rgba(15,43,71,0.04);
+  transition: var(--transition);
 }
-.brand-badge i { font-size: 8px; opacity: 0.7; }
+.brand-badge i { font-size: 8px; opacity: 0.75; }
 
 /* Stock */
 .stock-pill {
@@ -359,7 +372,7 @@
   margin-right: 2px;
 }
 
-/* Add button */
+/* ===== BOTÓN "+" (COLOR DINÁMICO) ===== */
 .btn-add-row {
   display: inline-flex;
   align-items: center;
@@ -377,10 +390,11 @@
 }
 .btn-add-row:hover {
   transform: scale(1.1) translateY(-1px);
-  box-shadow: 0 6px 16px var(--primary-glow);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 16px rgba(15,43,71,0.25);
 }
 .btn-add-row.added {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%) !important;
   box-shadow: 0 3px 8px rgba(16,185,129,0.25);
 }
 
@@ -396,7 +410,7 @@
   padding: 14px;
   border: 1px solid rgba(226, 232, 240, 0.7);
   box-shadow: var(--shadow-sm);
-  transition: var(--transition);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
@@ -410,6 +424,13 @@
   transition: opacity 0.2s;
 }
 .product-card-mobile:hover::before { opacity: 1; }
+.product-card-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 16px rgba(15,43,71,0.08),
+    0 2px 4px rgba(15,43,71,0.04);
+  border-color: rgba(15,43,71,0.15);
+}
 
 .pcm-main {
   display: flex;
@@ -509,9 +530,8 @@
   border-top: 1px solid var(--gray-100, #f1f5f9);
 }
 .pcm-brand {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  color: var(--gray-500, #64748b);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   display: flex;
@@ -548,7 +568,7 @@
 }
 .pcm-add:active { transform: scale(0.92); }
 .pcm-add.added {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%) !important;
   box-shadow: 0 3px 10px rgba(16,185,129,0.3);
 }
 
@@ -894,8 +914,8 @@
 .fab-cart {
   position: fixed;
   bottom: 28px;
-  left: 28px;           /* ← izquierda */
-  right: auto;          /* ← anulamos right */
+  left: 28px;
+  right: auto;
   z-index: 100;
   width: 60px;
   height: 60px;
@@ -973,7 +993,7 @@
 
   .fab-cart {
     bottom: 20px;
-    left: 20px;         /* ← izquierda en móvil */
+    left: 20px;
     right: auto;
     width: 54px;
     height: 54px;
