@@ -1437,7 +1437,7 @@ function compartirWhatsApp() {
   const texto = `Hola ${c.cliente}, aquí está tu cotización de ServiComp+:\n\n` +
                 `Código: *${c.id}*\n` +
                 `Total: S/ ${fmt2(c.total)}\n\n` +
-                `Ingresa a cotizacion.html y pega este código para verla.\n\n` +
+                `Ingresa a https://servicomplus.com/int/cotizador y pega este código para verla.\n\n` +
                 `Válida por 2 días.`;
   window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
 }
