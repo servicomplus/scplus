@@ -10,7 +10,7 @@
   // CONFIGURACIÓN
   // ================================================================
   const CONFIG = {
-    URL_SHEET: 'URL_SHEET: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv',',
+    URL_SHEET: 'URL_SHEET: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv',
     WHATSAPP: '51973952322',
     POR_TANDA: 30,
     SEDE_DEFAULT: 'LIMA',
