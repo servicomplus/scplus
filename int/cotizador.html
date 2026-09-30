@@ -66,7 +66,6 @@
   .info-cabecera span i { margin-right: 6px; color: #1a3a5c; }
   .info-cabecera b { color: #1a3a5c; }
 
-  /* 🆕 Badge de sede */
   .sede-badge {
     background: #1a3a5c; color: white;
     padding: 3px 10px; border-radius: 20px;
@@ -397,7 +396,6 @@
 // ============================================================
 // CONFIGURACIÓN
 // ============================================================
-// ✅ Unificada con el WebApp del cotizador de ventas
 const URL_WEBAPP = 'https://script.google.com/macros/s/AKfycbyvExQLNzzJdYfhyHIF96l5xPTFe7E8r1kGbCt8Lsvrrf37AnLX5BfAaOj3c5RPfBQ/exec';
 const WHATSAPP_CONTACTO = '51973952322';
 const ENVIO_DEFAULT = 19;
@@ -433,73 +431,41 @@ function getImagenDeltron(codigo) {
 }
 
 // ============================================================
-// CARGAR TC REAL
+// ✅ CARGA INICIAL — TODO EN PARALELO
 // ============================================================
-async function cargarTC() {
-  try {
-    const r = await fetch(URL_WEBAPP + '?accion=obtenerTC&t=' + Date.now());
-    const data = await r.json();
-    if (data.ok && data.tc > 0) {
-      TC_ACTUAL = data.tc;
-      document.getElementById('tcDisplay').textContent = 'S/ ' + TC_ACTUAL.toFixed(2);
-    } else {
-      document.getElementById('tcDisplay').textContent = '—';
-    }
-  } catch (e) {
-    document.getElementById('tcDisplay').textContent = '—';
+async function cargarTodo() {
+  // 🔥 TC y lista de cotizaciones EN PARALELO
+  const [rTC, rLista] = await Promise.all([
+    fetch(URL_WEBAPP + '?accion=obtenerTC&t=' + Date.now())
+      .then(r => r.json()).catch(() => ({ ok: false })),
+    fetch(URL_WEBAPP + '?accion=listarCotizaciones&t=' + Date.now())
+      .then(r => r.json()).catch(() => ({ ok: false }))
+  ]);
+
+  if (rTC.ok && rTC.tc > 0) {
+    TC_ACTUAL = rTC.tc;
+    document.getElementById('tcDisplay').textContent = 'S/ ' + TC_ACTUAL.toFixed(2);
   }
-}
 
-// ============================================================
-// CARGAR ÚLTIMA COTIZACIÓN
-// ============================================================
-async function cargarUltimaCotizacion() {
-  try {
-    const r = await fetch(URL_WEBAPP + '?accion=listarCotizaciones&t=' + Date.now());
-    const data = await r.json();
-
-    if (!data.ok || !data.cotizaciones || data.cotizaciones.length === 0) {
-      mostrarVacio('Aún no hay cotizaciones', 'Cuando generes una desde el catálogo, aparecerá aquí automáticamente.');
-      return;
-    }
-
-    const ordenadas = data.cotizaciones.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-    const ultima = ordenadas[0];
-
-    await cargarCotizacionPorId(ultima.id, true);
-  } catch (e) {
-    mostrarVacio('No se pudo cargar la última cotización', e.message);
-  }
-}
-
-// ============================================================
-// BUSCAR POR CÓDIGO
-// ============================================================
-async function buscarCotizacion() {
-  const input = document.getElementById('codigoInput');
-  const codigo = input.value.trim().toUpperCase();
-
-  if (!codigo) {
-    Swal.fire('Campo vacío', 'Ingresa tu código de cotización.', 'warning');
+  if (!rLista.ok || !rLista.cotizaciones || rLista.cotizaciones.length === 0) {
+    mostrarVacio('Aún no hay cotizaciones', 'Cuando generes una desde el catálogo, aparecerá aquí automáticamente.');
     return;
   }
 
-  let idFinal = codigo;
-  if (!codigo.startsWith('COT-') && /^[A-Z0-9]{6,12}$/.test(codigo)) {
-    idFinal = 'COT-' + codigo;
-  }
-
-  await cargarCotizacionPorId(idFinal, false);
+  const ordenadas = rLista.cotizaciones.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+  await cargarCotizacionCompleta(ordenadas[0].id, true);
 }
 
 // ============================================================
-// CARGA POR ID
+// ✅ CARGA POR ID — UNA SOLA LLAMADA
 // ============================================================
-async function cargarCotizacionPorId(idFinal, esAutoCarga) {
+async function cargarCotizacionCompleta(idFinal, esAutoCarga) {
   const btn = document.getElementById('btnBuscar');
-  const original = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> BUSCANDO...';
+  const original = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> BUSCANDO...';
+  }
 
   document.getElementById('contenido').innerHTML = `
     <div class="estado">
@@ -509,15 +475,24 @@ async function cargarCotizacionPorId(idFinal, esAutoCarga) {
   `;
 
   try {
-    // 1) Cotización
-    const rCot = await fetch(URL_WEBAPP + '?accion=obtenerCotizacion&id=' + encodeURIComponent(idFinal) + '&t=' + Date.now());
-    const dCot = await rCot.json();
-    if (!dCot.ok) throw new Error(dCot.error || 'Cotización no encontrada');
+    const r = await fetch(
+      URL_WEBAPP + '?accion=obtenerCotizacionCompleta&id=' + encodeURIComponent(idFinal) + '&t=' + Date.now()
+    );
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'Cotización no encontrada');
 
-    const cot = dCot.cotizacion;
+    const cot = d.data.cotizacion;
+    const productos = d.data.productos || [];
+    const tc = d.data.tc;
+
+    if (tc > 0) {
+      TC_ACTUAL = tc;
+      document.getElementById('tcDisplay').textContent = 'S/ ' + TC_ACTUAL.toFixed(2);
+    }
+
     if (!cot.codigos || cot.codigos.length === 0) throw new Error('Esta cotización no tiene productos.');
+    if (productos.length === 0) throw new Error('Los productos de esta cotización ya no están disponibles.');
 
-    // 🆕 Mostrar la sede de la cotización
     const sedeDisplay = document.getElementById('sedeDisplay');
     if (cot.sede) {
       sedeDisplay.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + esc(cot.sede);
@@ -525,26 +500,6 @@ async function cargarCotizacionPorId(idFinal, esAutoCarga) {
       sedeDisplay.innerHTML = '<i class="fa-solid fa-location-dot"></i> —';
     }
 
-    // 2) Productos (precios EN VIVO, respetando la sede)
-    document.getElementById('contenido').innerHTML = `
-      <div class="estado">
-        <div class="spinner"></div>
-        <p>Cargando productos...</p>
-      </div>
-    `;
-
-    const urlProd = URL_WEBAPP + '?accion=obtenerProductos&codigos=' +
-                    encodeURIComponent(cot.codigos.join(',')) +
-                    (cot.sede ? '&sede=' + encodeURIComponent(cot.sede) : '') +
-                    '&t=' + Date.now();
-    const rProd = await fetch(urlProd);
-    const dProd = await rProd.json();
-    if (!dProd.ok) throw new Error(dProd.error || 'Error al cargar productos');
-
-    const productos = dProd.productos || [];
-    if (productos.length === 0) throw new Error('Los productos de esta cotización ya no están disponibles.');
-
-    // 🆕 Cantidades de la cotización
     const cantidades = cot.cantidades || productos.map(() => 1);
 
     COTIZACION_ACTUAL = cot;
@@ -574,9 +529,31 @@ async function cargarCotizacionPorId(idFinal, esAutoCarga) {
     `;
     if (!esAutoCarga) Swal.fire('Error', e.message, 'error');
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = original;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = original;
+    }
   }
+}
+
+// ============================================================
+// BUSCAR POR CÓDIGO
+// ============================================================
+async function buscarCotizacion() {
+  const input = document.getElementById('codigoInput');
+  const codigo = input.value.trim().toUpperCase();
+
+  if (!codigo) {
+    Swal.fire('Campo vacío', 'Ingresa tu código de cotización.', 'warning');
+    return;
+  }
+
+  let idFinal = codigo;
+  if (!codigo.startsWith('COT-') && /^[A-Z0-9]{6,12}$/.test(codigo)) {
+    idFinal = 'COT-' + codigo;
+  }
+
+  await cargarCotizacionCompleta(idFinal, false);
 }
 
 // ============================================================
@@ -777,9 +754,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  cargarTC();
-  cargarUltimaCotizacion();
+  // ✅ UNA sola entrada que hace todo en paralelo
+  cargarTodo();
 });
 </script>
+
 </body>
 </html>
