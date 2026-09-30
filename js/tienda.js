@@ -1,6 +1,6 @@
 /* ================================================================ */
 /* SERVICOMP+ - TIENDA.JS                                           */
-/* Versión 3.2 - Colores por categoría (badge + botón +)            */
+/* Versión 3.3 - Multi-sede con vaciado al cambiar + tildes OK      */
 /* ================================================================ */
 
 (function () {
@@ -10,7 +10,8 @@
   // CONFIGURACIÓN
   // ================================================================
   const CONFIG = {
-    URL_SHEET: 'URL_SHEET: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv',
+    // ✅ URL corregida (antes tenía "URL_SHEET: " pegado dentro del string)
+    URL_SHEET: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv',
     WHATSAPP: '51973952322',
     POR_TANDA: 30,
     SEDE_DEFAULT: 'LIMA',
@@ -25,7 +26,7 @@
   };
 
   // ================================================================
-  // PALETA DE COLORES POR CATEGORÍA (10 colores + default)
+  // PALETA DE COLORES POR CATEGORÍA
   // ================================================================
   const COLORES_CATEGORIA = {
     'LAPTOPS':          { bg: '#dbeafe', text: '#1d4ed8' },
@@ -72,7 +73,6 @@
     if (!categoria) return COLORES_CATEGORIA.DEFAULT;
     const cat = String(categoria).trim().toUpperCase();
     if (COLORES_CATEGORIA[cat]) return COLORES_CATEGORIA[cat];
-    // Búsqueda parcial
     for (const key in COLORES_CATEGORIA) {
       if (key !== 'DEFAULT' && cat.includes(key)) {
         return COLORES_CATEGORIA[key];
@@ -88,6 +88,7 @@
   let DATA_FILTRADA = [];
   let VISIBLES = 0;
   let CARRITO = [];
+  let SEDE_ACTUAL = '';
   let observerLoadMore = null;
   let debounceTimer = null;
   let toastTimer = null;
@@ -104,6 +105,30 @@
     : Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // ✅ Limpia tildes y caracteres raros (igual que en Code.gs)
+  function limpiarTexto(txt) {
+    if (!txt) return '';
+    return String(txt)
+      .replace(/\uFFFD/g, '')
+      .replace(/�/g, '')
+      .replace(/[ÁÀÄÂ]/g, 'A')
+      .replace(/[ÉÈËÊ]/g, 'E')
+      .replace(/[ÍÌÏÎ]/g, 'I')
+      .replace(/[ÓÒÖÔ]/g, 'O')
+      .replace(/[ÚÙÜÛ]/g, 'U')
+      .replace(/[áàäâ]/g, 'a')
+      .replace(/[éèëê]/g, 'e')
+      .replace(/[íìïî]/g, 'i')
+      .replace(/[óòöô]/g, 'o')
+      .replace(/[úùüû]/g, 'u')
+      .replace(/[Ñ]/g, 'N')
+      .replace(/[ñ]/g, 'n')
+      .replace(/[¿¡]/g, '')
+      .replace(/°/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
 
   // ================================================================
   // 1. CARGA DE COMPONENTES
@@ -136,7 +161,23 @@
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const buffer = await r.arrayBuffer();
       const texto = new TextDecoder('utf-8').decode(buffer);
-      DATA = parsearCSV(texto);
+      const todasLasFilas = parsearCSV(texto);
+
+      // 🆕 Llenar dropdown de sedes con las disponibles en el CSV
+      llenarSedeDropdown(todasLasFilas);
+
+      // 🆕 Determinar sede actual (guardada en localStorage o primera disponible)
+      const sedesDisponibles = [...new Set(todasLasFilas.map(d => d.sede).filter(Boolean))];
+      const guardada = localStorage.getItem('servicomp_tienda_sede_v1');
+      SEDE_ACTUAL = (guardada && sedesDisponibles.includes(guardada))
+        ? guardada
+        : (sedesDisponibles.find(s => s === CONFIG.SEDE_DEFAULT) || sedesDisponibles[0] || '');
+
+      const sedeSel = $('#sedeSelect');
+      if (sedeSel) sedeSel.value = SEDE_ACTUAL;
+
+      // 🆕 Filtrar solo la sede actual
+      DATA = todasLasFilas.filter(d => d.sede === SEDE_ACTUAL);
 
       llenarFiltros();
       pintarFechaYTC();
@@ -149,6 +190,38 @@
           <p>Error al cargar: ${esc(e.message)}</p>
         </div>`;
     }
+  }
+
+  // 🆕 Llena el dropdown de sedes
+  function llenarSedeDropdown(filas) {
+    const sedes = [...new Set(filas.map(d => d.sede).filter(Boolean))].sort();
+    const sel = $('#sedeSelect');
+    if (!sel) return;
+    sel.innerHTML = sedes.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+  }
+
+  // 🆕 Cambiar de sede con confirmación si hay carrito
+  function cambiarSede(nuevaSede) {
+    if (!nuevaSede || nuevaSede === SEDE_ACTUAL) return;
+
+    if (CARRITO.length > 0) {
+      const ok = confirm(
+        'Al cambiar a la sede ' + nuevaSede + ' se vaciará el carrito.\n\n' +
+        '¿Continuar?'
+      );
+      if (!ok) {
+        const sel = $('#sedeSelect');
+        if (sel) sel.value = SEDE_ACTUAL;
+        return;
+      }
+      CARRITO = [];
+      guardarCarrito();
+    }
+
+    SEDE_ACTUAL = nuevaSede;
+    localStorage.setItem('servicomp_tienda_sede_v1', SEDE_ACTUAL);
+    actualizarCarritoUI();
+    cargarDatos();
   }
 
   function parsearCSV(texto) {
@@ -176,12 +249,12 @@
     return filas.slice(1)
       .filter((f) => f.length >= 20 && f[idx('CODIGO')])
       .map((f) => ({
-        sede: f[idx('SEDE')] || '',
-        codigo: f[idx('CODIGO')] || '',
-        categoria: f[idx('CATEGORIA')] || '',
-        descripcion: (f[idx('DESCRIPCION_CORTA')] || '').toUpperCase(),
+        sede: String(f[idx('SEDE')] || '').trim().toUpperCase(),
+        codigo: (f[idx('CODIGO')] || '').trim(),
+        categoria: limpiarTexto(f[idx('CATEGORIA')] || ''),
+        descripcion: limpiarTexto(f[idx('DESCRIPCION_CORTA')] || '').toUpperCase(),
         stock: f[idx('STOCK')] || '',
-        marca: f[idx('MARCA')] || '',
+        marca: limpiarTexto(f[idx('MARCA')] || ''),
         tc_real: parseFloat(f[idx('TC_REAL')]) || 0,
         precio_publico: parseFloat(f[idx('PRECIO_PUBLICO')]) || null
       }))
@@ -241,14 +314,8 @@
   // 3. FILTROS
   // ================================================================
   function llenarFiltros() {
-    const sedes = [...new Set(DATA.map((d) => d.sede).filter(Boolean))].sort();
     const cats = [...new Set(DATA.map((d) => d.categoria).filter(Boolean))].sort();
     const marcas = [...new Set(DATA.map((d) => d.marca).filter(Boolean))].sort();
-
-    const sedeSel = $('#sedeSelect');
-    sedeSel.innerHTML = sedes.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
-    const opcionLima = [...sedeSel.options].find((o) => o.value.toUpperCase() === CONFIG.SEDE_DEFAULT);
-    if (opcionLima) sedeSel.value = opcionLima.value;
 
     $('#catSelect').innerHTML = '<option value="">Todas las categorías</option>' +
       cats.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
@@ -263,7 +330,6 @@
 
   function render() {
     const q = $('#searchInput').value.toLowerCase().trim();
-    const fSede = $('#sedeSelect').value;
     const fCat = $('#catSelect').value;
     const fMarca = $('#marcaSelect').value;
     const orden = $('#ordenSelect').value;
@@ -271,7 +337,6 @@
     const terminos = q ? q.split(/\s+/).filter(Boolean) : [];
 
     DATA_FILTRADA = DATA.filter((d) => {
-      if (fSede && d.sede !== fSede) return false;
       if (fCat && d.categoria !== fCat) return false;
       if (fMarca && d.marca !== fMarca) return false;
       if (terminos.length > 0) {
@@ -495,6 +560,12 @@
     const prod = DATA.find((d) => d.codigo === codigo);
     if (!prod) { mostrarToast('Producto no encontrado'); return; }
 
+    // 🛡️ Validación: solo productos de la sede actual
+    if (prod.sede !== SEDE_ACTUAL) {
+      mostrarToast('⚠️ Este producto no es de la sede ' + SEDE_ACTUAL);
+      return;
+    }
+
     const existe = CARRITO.find((x) => x.codigo === codigo);
     if (existe) existe.cantidad += 1;
     else CARRITO.push({
@@ -502,6 +573,7 @@
       descripcion: prod.descripcion,
       marca: prod.marca,
       precio_publico: prod.precio_publico,
+      sede: prod.sede,               // 🆕 guardar sede
       cantidad: 1
     });
 
@@ -567,7 +639,10 @@
       body.innerHTML = CARRITO.map((item) => `
         <div class="cart-item">
           <div class="item-info">
-            <div class="item-code">${esc(item.codigo)}</div>
+            <div class="item-code">
+              ${esc(item.codigo)}
+              ${item.sede ? `<span class="item-sede">· ${esc(item.sede)}</span>` : ''}
+            </div>
             <div class="item-name">${esc(item.descripcion)}</div>
             <div class="item-price">S/ ${fmt2(item.precio_publico)}</div>
           </div>
@@ -584,7 +659,7 @@
 
     actualizarTotales();
 
-    // Refrescar botones "+" en tabla y cards (respetando color de categoría)
+    // Refrescar botones "+" en tabla y cards
     $$('.products-table tbody tr, .product-card-mobile').forEach((el) => {
       const cod = el.dataset.codigo;
       if (!cod) return;
@@ -593,11 +668,9 @@
       if (btn) {
         btn.classList.toggle('added', !!enC);
         if (enC) {
-          // Si está en carrito: verde
           btn.style.background = '';
           btn.style.boxShadow = '';
         } else {
-          // Si no está: color de categoría
           const prod = DATA.find((d) => d.codigo === cod);
           if (prod) {
             const color = getColorCategoria(prod.categoria);
@@ -637,7 +710,8 @@
 
     const texto =
       `¡Hola ServiComp+! 👋\n\n` +
-      `Soy *${cliente}* y quiero cotizar:\n\n` +
+      `Soy *${cliente}* y quiero cotizar:\n` +
+      `Sede: *${SEDE_ACTUAL}*\n\n` +
       `*Productos:*\n${lineas}\n\n` +
       `*Subtotal:* S/ ${fmt2(subtotal)}\n` +
       `*Envío:* S/ ${fmt2(envio)}\n` +
@@ -685,6 +759,7 @@
         <div style="background:#f8fafc;padding:14px 18px;border-radius:8px;margin-bottom:24px;border:1px solid #eef2f6;">
           <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;font-weight:800;margin-bottom:4px;">Cliente</div>
           <div style="font-size:15px;font-weight:700;color:#0f172a;">${esc(cliente)}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:6px;">Sede: <b style="color:#0f2b47;">${esc(SEDE_ACTUAL)}</b></div>
         </div>
 
         <table style="width:100%;border-collapse:collapse;">
@@ -746,10 +821,15 @@
   function bindEventos() {
     const search = $('#searchInput');
     if (search) search.addEventListener('input', renderDebounced);
-    ['sedeSelect', 'catSelect', 'marcaSelect', 'ordenSelect'].forEach((id) => {
+
+    ['catSelect', 'marcaSelect', 'ordenSelect'].forEach((id) => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('change', render);
     });
+
+    // 🆕 Sede: manejo especial con confirmación
+    const sedeSel = $('#sedeSelect');
+    if (sedeSel) sedeSel.addEventListener('change', (e) => cambiarSede(e.target.value));
 
     const envio = $('#envioInput');
     if (envio) envio.addEventListener('input', actualizarTotales);
@@ -797,7 +877,7 @@
 
     await cargarDatos();
 
-    console.log('✅ ServiComp+ Tienda inicializada');
+    console.log('✅ ServiComp+ Tienda inicializada (v3.3 multi-sede)');
   }
 
   if (document.readyState === 'loading') {
