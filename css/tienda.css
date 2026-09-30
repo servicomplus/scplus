@@ -1006,3 +1006,16 @@
   .pcm-desc { font-size: 12.5px; }
   .pcm-price { font-size: 15px; }
 }
+
+/* Etiqueta de sede en items del carrito */
+.item-sede {
+  font-size: 9px;
+  color: #94a3b8;
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
