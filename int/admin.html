@@ -17,6 +17,10 @@
     border-bottom: 1px solid #334155;
     position: sticky; top: 0; z-index: 10;
   }
+  .header-top {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 16px; flex-wrap: wrap;
+  }
   h1 { margin: 0 0 4px; font-size: 18px; }
   .sub { color: #94a3b8; font-size: 12.5px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .status {
@@ -40,6 +44,31 @@
     font-size: 11px; font-weight: 700;
     font-family: ui-monospace, monospace;
   }
+
+  /* 🆕 Selector de sede en el header */
+  .sede-selector {
+    display: flex; align-items: center; gap: 8px;
+    background: #0f172a;
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+  }
+  .sede-selector label {
+    font-size: 11px; color: #94a3b8;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+  .sede-selector select {
+    background: #1e293b; color: #4ade80;
+    border: 1px solid #334155;
+    padding: 6px 10px; border-radius: 6px;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer;
+  }
+  .sede-selector select:focus {
+    outline: none; border-color: #3b82f6;
+  }
+
   .container { padding: 16px 24px; max-width: 1800px; margin: 0 auto; }
   .row {
     display: flex; gap: 8px; flex-wrap: wrap;
@@ -324,6 +353,12 @@
   }
   .cart-header h2 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
   .cart-header h2 i { color: #4ade80; }
+  .cart-header .cart-sede {
+    font-size: 11px; color: #94a3b8;
+    background: #1e293b; padding: 3px 8px;
+    border-radius: 4px; font-weight: 700;
+    text-transform: uppercase;
+  }
   .cart-close {
     background: transparent; color: #94a3b8;
     font-size: 20px; padding: 4px 8px; border-radius: 6px;
@@ -494,6 +529,14 @@
     font-size: 24px; font-weight: 700; color: #4ade80;
     letter-spacing: 0.06em;
   }
+  .cot-id-box .sede-tag {
+    display: inline-block; margin-top: 8px;
+    font-size: 11px; color: #94a3b8;
+    background: #1e293b; padding: 3px 10px;
+    border-radius: 20px; font-weight: 700;
+    text-transform: uppercase;
+    border: 1px solid #334155;
+  }
 
   .modal-actions {
     display: grid; grid-template-columns: 1fr 1fr;
@@ -512,7 +555,6 @@
   .btn-copiar:hover { background: #4f46e5; }
   .btn-print { background: #6366f1; }
   .btn-print:hover { background: #4f46e5; }
-  /* 🆕 Botón CSV */
   .btn-csv { background: #0891b2; }
   .btn-csv:hover { background: #0e7490; }
   .btn-close-modal {
@@ -549,11 +591,22 @@
 </head>
 <body>
 <header>
-  <h1>📦 Catálogo Deltron <span style="font-size:11px;color:#64748b;font-weight:400">· Cotizador</span></h1>
-  <div class="sub">
-    <span class="status"><span class="status-dot"></span> En línea</span>
-    <span>· actualizado <span id="ultima-act">cargando...</span></span>
-    <span id="tc-badge" class="tc-badge">TC: --</span>
+  <div class="header-top">
+    <div>
+      <h1>📦 Catálogo Deltron <span style="font-size:11px;color:#64748b;font-weight:400">· Cotizador</span></h1>
+      <div class="sub">
+        <span class="status"><span class="status-dot"></span> En línea</span>
+        <span>· actualizado <span id="ultima-act">cargando...</span></span>
+        <span id="tc-badge" class="tc-badge">TC: --</span>
+      </div>
+    </div>
+    <!-- 🆕 Selector de sede -->
+    <div class="sede-selector">
+      <label for="sedeHeader"><i class="fa-solid fa-location-dot"></i> Sede</label>
+      <select id="sedeHeader" onchange="cambiarSede(this.value)">
+        <option value="">Cargando...</option>
+      </select>
+    </div>
   </div>
 </header>
 
@@ -564,7 +617,6 @@
   <div id="panel" style="display:none">
     <div class="row">
       <input type="text" id="q" placeholder="🔍 Buscar: ssd 240 teamgroup..." oninput="renderDebounced()">
-      <select id="sede" onchange="render()" style="display:none"></select>
       <select id="cat" onchange="render()"><option value="">Todas las categorías</option></select>
       <select id="marca" onchange="render()"><option value="">Todas las marcas</option></select>
       <select id="orden" onchange="render()">
@@ -582,7 +634,6 @@
     <div class="stats">
       <div>Productos: <b id="s_total">0</b></div>
       <div>Mostrando: <b id="s_show">0</b></div>
-      <div>Sedes: <b id="s_sede">0</b></div>
       <div>Categorías: <b id="s_cat">0</b></div>
       <div>Marcas: <b id="s_marca">0</b></div>
     </div>
@@ -625,7 +676,10 @@
 
 <aside class="cart-panel" id="cartPanel">
   <div class="cart-header">
-    <h2><i class="fa-solid fa-cart-shopping"></i> Cotización</h2>
+    <h2>
+      <i class="fa-solid fa-cart-shopping"></i> Cotización
+      <span class="cart-sede" id="cartSedeTag">—</span>
+    </h2>
     <button class="cart-close" onclick="cerrarCarrito()" title="Cerrar">
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -689,6 +743,7 @@
       <div class="cot-id-box">
         <div class="label">Código de cotización</div>
         <div class="id" id="modalId">COT-XXXXXXX</div>
+        <div class="sede-tag" id="modalSede">LIMA</div>
       </div>
 
       <div class="modal-actions">
@@ -704,7 +759,6 @@
         <button class="btn-print" onclick="imprimirDesdeModal()">
           <i class="fa-solid fa-print"></i> Imprimir
         </button>
-        <!-- 🆕 Botón CSV -->
         <button class="btn-csv" onclick="descargarCSVCompras()">
           <i class="fa-solid fa-file-csv"></i> Descargar CSV
         </button>
@@ -730,7 +784,7 @@
 const URL_SHEET  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv';
 const URL_WEBAPP = 'https://script.google.com/macros/s/AKfycbyvExQLNzzJdYfhyHIF96l5xPTFe7E8r1kGbCt8Lsvrrf37AnLX5BfAaOj3c5RPfBQ/exec';
 const POR_TANDA = 24;
-const SEDE_DEFAULT = 'LIMA';
+const KEY_SEDE = 'servicomp_sede_v1';
 const KEY_CARRITO = 'servicomp_carrito_v1';
 
 const CATEGORIAS_EXCLUIDAS = [
@@ -744,8 +798,7 @@ let DATA = [];
 let DATA_FILTRADA = [];
 let VISIBLES = 0;
 let CARRITO = [];
-
-// 🆕 Guardamos el último snapshot de compras para el CSV
+let SEDE_ACTUAL = '';
 let ULTIMA_COT = null;
 
 // ============================================================
@@ -777,7 +830,26 @@ async function cargarDatos() {
     const r = await fetch(URL_SHEET + '&t=' + Date.now());
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const texto = await r.text();
-    DATA = parsearCSV(texto);
+    const todasLasFilas = parsearCSV(texto);
+
+    // Llenar dropdown de sedes con las que tienen datos
+    llenarSedeDropdown(todasLasFilas);
+
+    // Si no hay sede elegida, tomar la guardada o la primera disponible
+    if (!SEDE_ACTUAL) {
+      const guardada = localStorage.getItem(KEY_SEDE);
+      const sedesDisponibles = [...new Set(todasLasFilas.map(d => d.sede))];
+      SEDE_ACTUAL = (guardada && sedesDisponibles.includes(guardada))
+        ? guardada
+        : (sedesDisponibles[0] || '');
+      document.getElementById('sedeHeader').value = SEDE_ACTUAL;
+    }
+
+    // Filtrar solo la sede actual y stock > 0
+    DATA = todasLasFilas.filter(d =>
+      d.sede === SEDE_ACTUAL &&
+      !esStockCero(d.stock)
+    );
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('panel').style.display = 'block';
@@ -790,12 +862,52 @@ async function cargarDatos() {
     }
 
     document.getElementById('ultima-act').textContent = new Date().toLocaleString('es-PE');
+    actualizarSedeTags();
     render();
   } catch (e) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error').style.display = 'block';
     document.getElementById('error').textContent = '❌ Error: ' + e.message;
   }
+}
+
+// 🆕 Llena el dropdown de sede con las que existen en el CSV
+function llenarSedeDropdown(filas) {
+  const sedes = [...new Set(filas.map(d => d.sede).filter(Boolean))].sort();
+  const sel = document.getElementById('sedeHeader');
+  sel.innerHTML = sedes.map(s =>
+    `<option value="${esc(s)}">${esc(s)}</option>`
+  ).join('');
+}
+
+// 🆕 Cambia de sede (con confirmación si hay carrito)
+function cambiarSede(nuevaSede) {
+  if (!nuevaSede || nuevaSede === SEDE_ACTUAL) return;
+
+  if (CARRITO.length > 0) {
+    const ok = confirm(
+      'Al cambiar a la sede ' + nuevaSede + ' se vaciará el carrito.\n\n' +
+      '¿Continuar?'
+    );
+    if (!ok) {
+      // Restaurar el valor previo
+      document.getElementById('sedeHeader').value = SEDE_ACTUAL;
+      return;
+    }
+    CARRITO = [];
+    guardarCarritoEnStorage();
+  }
+
+  SEDE_ACTUAL = nuevaSede;
+  localStorage.setItem(KEY_SEDE, SEDE_ACTUAL);
+  actualizarCarritoUI();
+  actualizarSedeTags();
+  cargarDatos();
+}
+
+// 🆕 Actualiza etiquetas de sede
+function actualizarSedeTags() {
+  document.getElementById('cartSedeTag').textContent = SEDE_ACTUAL || '—';
 }
 
 function parsearCSV(texto) {
@@ -821,7 +933,7 @@ function parsearCSV(texto) {
   const idx = (name) => headers.indexOf(name);
 
   return filas.slice(1).filter(f => f.length >= 20 && f[idx('CODIGO')]).map(f => ({
-    sede: f[idx('SEDE')] || '',
+    sede: String(f[idx('SEDE')] || '').trim().toUpperCase(),
     codigo: f[idx('CODIGO')] || '',
     categoria: f[idx('CATEGORIA')] || '',
     descripcion: f[idx('DESCRIPCION_CORTA')] || '',
@@ -844,8 +956,7 @@ function parsearCSV(texto) {
   .filter(d => !esMarcaExcluida(d.marca))
   .filter(d => !empiezaConZZ(d.codigo))
   .filter(d => !esPrecioBasura(d.precio_usd))
-  .filter(d => d.precio_usd && d.precio_usd > 0)
-  .filter(d => String(d.sede).trim().toUpperCase() === 'LIMA');  // 🆕 SOLO LIMA
+  .filter(d => d.precio_usd && d.precio_usd > 0);
 }
 
 function esStockCero(stock) {
@@ -888,16 +999,8 @@ function getFichaPHP(codigo) {
 // FILTROS
 // ============================================================
 function llenarFiltros() {
-  const sedes = [...new Set(DATA.map(d => d.sede).filter(Boolean))].sort();
   const cats = [...new Set(DATA.map(d => d.categoria).filter(Boolean))].sort();
   const marcas = [...new Set(DATA.map(d => d.marca).filter(Boolean))].sort();
-
-  document.getElementById('sede').innerHTML = sedes
-    .map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
-
-  const sedeSelect = document.getElementById('sede');
-  const opcionLima = [...sedeSelect.options].find(o => o.value.toUpperCase() === SEDE_DEFAULT);
-  if (opcionLima) sedeSelect.value = opcionLima.value;
 
   document.getElementById('cat').innerHTML = '<option value="">Todas las categorías</option>' +
     cats.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
@@ -905,7 +1008,6 @@ function llenarFiltros() {
     marcas.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
 
   document.getElementById('s_total').textContent = DATA.length;
-  document.getElementById('s_sede').textContent = sedes.length;
   document.getElementById('s_cat').textContent = cats.length;
   document.getElementById('s_marca').textContent = marcas.length;
 }
@@ -918,7 +1020,6 @@ function renderDebounced() {
 
 function render() {
   const q = document.getElementById('q').value.toLowerCase().trim();
-  const fSede = document.getElementById('sede').value;
   const fCat = document.getElementById('cat').value;
   const fMarca = document.getElementById('marca').value;
   const orden = document.getElementById('orden').value;
@@ -926,7 +1027,6 @@ function render() {
   const terminos = q ? q.split(/\s+/).filter(Boolean) : [];
 
   DATA_FILTRADA = DATA.filter(d => {
-    if (fSede && d.sede !== fSede) return false;
     if (fCat && d.categoria !== fCat) return false;
     if (fMarca && d.marca !== fMarca) return false;
     if (terminos.length > 0) {
@@ -998,9 +1098,8 @@ function cargarMas() {
       <span class="label">Total:</span> <span class="total">S/ ${fmt2(d.precio_publico)}</span>
     `;
 
-    const enCarrito = CARRITO.find(x => x.codigo === d.codigo);
+    const enCarrito = CARRITO.find(x => x.codigo === d.codigo && x.sede === d.sede);
 
-    // 🆕 Pasamos sede al agregar
     const btnAddHtml = `<button class="btn-add" onclick='agregarAlCarrito(${JSON.stringify({
       codigo: d.codigo, descripcion: d.descripcion, marca: d.marca,
       precio_publico: d.precio_publico, sede: d.sede
@@ -1008,7 +1107,6 @@ function cargarMas() {
         <i class="fa-solid ${enCarrito ? 'fa-check' : 'fa-plus'}"></i> ${enCarrito ? 'En carrito (' + enCarrito.cantidad + ')' : 'Agregar'}
       </button>`;
 
-    // FILA
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="thumb-cell">
@@ -1045,7 +1143,6 @@ function cargarMas() {
     `;
     fragT.appendChild(tr);
 
-    // TARJETA
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
@@ -1100,7 +1197,6 @@ function cargarMas() {
   }
 }
 
-// Scroll infinito
 document.getElementById('tableWrap').addEventListener('scroll', function() {
   const { scrollTop, scrollHeight, clientHeight } = this;
   if (scrollTop + clientHeight >= scrollHeight - 100) cargarMas();
@@ -1168,7 +1264,7 @@ function toggleVista() {
 }
 
 // ============================================================
-// TOOLTIP GLOBAL
+// TOOLTIP
 // ============================================================
 const tooltipGlobal = document.getElementById('tooltip-global');
 
@@ -1205,14 +1301,14 @@ function guardarCarritoEnStorage() {
   try { localStorage.setItem(KEY_CARRITO, JSON.stringify(CARRITO)); } catch(e) {}
 }
 
-// 🆕 Validación de sede en agregar
 function agregarAlCarrito(prod) {
-  if (String(prod.sede || '').trim().toUpperCase() !== SEDE_DEFAULT) {
-    mostrarToast('⚠️ Solo se cotizan productos de ' + SEDE_DEFAULT);
+  // Validación: debe ser de la sede actual
+  if (String(prod.sede || '').trim().toUpperCase() !== SEDE_ACTUAL) {
+    mostrarToast('⚠️ Este producto no pertenece a ' + SEDE_ACTUAL);
     return;
   }
 
-  const existe = CARRITO.find(x => x.codigo === prod.codigo);
+  const existe = CARRITO.find(x => x.codigo === prod.codigo && x.sede === prod.sede);
   if (existe) {
     existe.cantidad += 1;
   } else {
@@ -1221,7 +1317,7 @@ function agregarAlCarrito(prod) {
       descripcion: prod.descripcion,
       marca: prod.marca,
       precio_publico: prod.precio_publico,
-      sede: prod.sede,       // 🆕
+      sede: prod.sede,
       cantidad: 1
     });
   }
@@ -1300,7 +1396,7 @@ function actualizarCarritoUI() {
     body.innerHTML = CARRITO.map(item => `
       <div class="cart-item">
         <div class="cart-item-info">
-          <div class="cart-item-code">${esc(item.codigo)}</div>
+          <div class="cart-item-code">${esc(item.codigo)} · <span style="color:#4ade80">${esc(item.sede)}</span></div>
           <div class="cart-item-desc">${esc(item.descripcion)}</div>
           <div class="cart-item-price">S/ ${fmt2(item.precio_publico)}</div>
         </div>
@@ -1360,16 +1456,17 @@ async function generarCotizacion() {
     const envio = parseFloat(document.getElementById('envioInput').value) || 0;
     const { subtotal, total } = calcularTotales();
 
-    // 🆕 Snapshot del carrito para el CSV
     const snapshot = CARRITO.map(x => ({
       codigo: x.codigo,
       descripcion: x.descripcion,
-      cantidad: x.cantidad
+      cantidad: x.cantidad,
+      sede: x.sede
     }));
 
     const payload = {
       accion: 'crearCotizacion',
       cliente: cliente,
+      sede: SEDE_ACTUAL,
       envio: envio,
       subtotal: subtotal,
       total: total,
@@ -1380,12 +1477,11 @@ async function generarCotizacion() {
         marca: x.marca,
         precio: x.precio_publico,
         cantidad: x.cantidad,
-        sede: x.sede,                        // 🆕
+        sede: x.sede,
         subtotal: x.precio_publico * x.cantidad
       }))
     };
 
-    // POST (no-cors: el server procesa, el navegador no lee la respuesta)
     try {
       await fetch(URL_WEBAPP, {
         method: 'POST',
@@ -1395,7 +1491,6 @@ async function generarCotizacion() {
       });
     } catch (e) { /* ignorar */ }
 
-    // Esperar y verificar por GET
     await new Promise(r => setTimeout(r, 1500));
 
     const rGet = await fetch(URL_WEBAPP + '?accion=listarCotizaciones&t=' + Date.now());
@@ -1412,30 +1507,29 @@ async function generarCotizacion() {
     const cot = recientes[0];
     if (!cot) throw new Error('No se encontró la cotización recién creada. Prueba de nuevo.');
 
-    // 🆕 Guardamos snapshot + datos para el CSV
     ULTIMA_COT = {
       id: cot.id,
       cliente: cliente,
+      sede: cot.sede || SEDE_ACTUAL,
       total: total,
       fecha: new Date(),
       items: snapshot
     };
-    // compatibilidad con funciones previas
     window.__ultimaCot = {
       id: cot.id,
       cliente: cliente,
+      sede: cot.sede || SEDE_ACTUAL,
       total: total
     };
 
-    // Vaciar carrito
     CARRITO = [];
     guardarCarritoEnStorage();
     document.getElementById('clienteNombre').value = '';
     actualizarCarritoUI();
     cerrarCarrito();
 
-    // Mostrar modal
     document.getElementById('modalId').textContent = cot.id;
+    document.getElementById('modalSede').textContent = cot.sede || SEDE_ACTUAL;
     document.getElementById('modalOverlay').classList.add('open');
 
   } catch (e) {
@@ -1447,7 +1541,7 @@ async function generarCotizacion() {
 }
 
 // ============================================================
-// MODAL — ACCIONES
+// MODAL
 // ============================================================
 function cerrarModal() {
   document.getElementById('modalOverlay').classList.remove('open');
@@ -1475,6 +1569,7 @@ function compartirWhatsApp() {
   if (!c) return;
   const texto = `Hola ${c.cliente}, aquí está tu cotización de ServiComp+:\n\n` +
                 `Código: *${c.id}*\n` +
+                `Sede: ${c.sede}\n` +
                 `Total: S/ ${fmt2(c.total)}\n\n` +
                 `Ingresa a https://servicomplus.com/int/cotizador y pega este código para verla.\n\n` +
                 `Válida por 2 días.`;
@@ -1488,6 +1583,7 @@ function compartirEmail() {
   const cuerpo = `Hola ${c.cliente},\n\n` +
                  `Tu cotización está lista:\n\n` +
                  `Código: ${c.id}\n` +
+                 `Sede: ${c.sede}\n` +
                  `Total: S/ ${fmt2(c.total)}\n\n` +
                  `Ingresa a cotizacion.html y pega el código.\n\n` +
                  `Válida por 2 días.\n\n` +
@@ -1500,7 +1596,7 @@ function imprimirDesdeModal() {
 }
 
 // ============================================================
-// 🆕 DESCARGAR CSV (solo código y cantidad)
+// DESCARGAR CSV (código, cantidad, sede)
 // ============================================================
 function descargarCSVCompras() {
   if (!ULTIMA_COT || !ULTIMA_COT.items || ULTIMA_COT.items.length === 0) {
@@ -1509,17 +1605,16 @@ function descargarCSVCompras() {
   }
 
   const filas = [];
-  filas.push(['CODIGO', 'CANTIDAD']);
+  filas.push(['CODIGO', 'CANTIDAD', 'SEDE']);
   for (const it of ULTIMA_COT.items) {
     filas.push([
       csvEscape(it.codigo),
-      it.cantidad
+      it.cantidad,
+      csvEscape(it.sede || ULTIMA_COT.sede)
     ]);
   }
 
-  // BOM UTF-8 para que Excel abra bien los acentos
   const contenido = '\uFEFF' + filas.map(r => r.join(',')).join('\r\n');
-
   const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1540,7 +1635,6 @@ function descargarCSVCompras() {
   mostrarToast('📥 CSV descargado: ' + nombreArchivo);
 }
 
-// Escapa comas, comillas y saltos de línea en un campo CSV
 function csvEscape(v) {
   const s = String(v == null ? '' : v);
   if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
