@@ -512,6 +512,9 @@
   .btn-copiar:hover { background: #4f46e5; }
   .btn-print { background: #6366f1; }
   .btn-print:hover { background: #4f46e5; }
+  /* 🆕 Botón CSV */
+  .btn-csv { background: #0891b2; }
+  .btn-csv:hover { background: #0e7490; }
   .btn-close-modal {
     background: #334155; width: 100%;
     padding: 11px; grid-column: span 2;
@@ -561,7 +564,7 @@
   <div id="panel" style="display:none">
     <div class="row">
       <input type="text" id="q" placeholder="🔍 Buscar: ssd 240 teamgroup..." oninput="renderDebounced()">
-      <select id="sede" onchange="render()"></select>
+      <select id="sede" onchange="render()" style="display:none"></select>
       <select id="cat" onchange="render()"><option value="">Todas las categorías</option></select>
       <select id="marca" onchange="render()"><option value="">Todas las marcas</option></select>
       <select id="orden" onchange="render()">
@@ -701,6 +704,10 @@
         <button class="btn-print" onclick="imprimirDesdeModal()">
           <i class="fa-solid fa-print"></i> Imprimir
         </button>
+        <!-- 🆕 Botón CSV -->
+        <button class="btn-csv" onclick="descargarCSVCompras()">
+          <i class="fa-solid fa-file-csv"></i> Descargar CSV
+        </button>
         <button class="btn-close-modal" onclick="cerrarModal()">
           Cerrar
         </button>
@@ -737,6 +744,9 @@ let DATA = [];
 let DATA_FILTRADA = [];
 let VISIBLES = 0;
 let CARRITO = [];
+
+// 🆕 Guardamos el último snapshot de compras para el CSV
+let ULTIMA_COT = null;
 
 // ============================================================
 // HELPERS
@@ -834,7 +844,8 @@ function parsearCSV(texto) {
   .filter(d => !esMarcaExcluida(d.marca))
   .filter(d => !empiezaConZZ(d.codigo))
   .filter(d => !esPrecioBasura(d.precio_usd))
-  .filter(d => d.precio_usd && d.precio_usd > 0);
+  .filter(d => d.precio_usd && d.precio_usd > 0)
+  .filter(d => String(d.sede).trim().toUpperCase() === 'LIMA');  // 🆕 SOLO LIMA
 }
 
 function esStockCero(stock) {
@@ -988,7 +999,12 @@ function cargarMas() {
     `;
 
     const enCarrito = CARRITO.find(x => x.codigo === d.codigo);
-    const btnAddHtml = `<button class="btn-add" onclick='agregarAlCarrito(${JSON.stringify({codigo:d.codigo, descripcion:d.descripcion, marca:d.marca, precio_publico:d.precio_publico})})' title="Agregar al carrito">
+
+    // 🆕 Pasamos sede al agregar
+    const btnAddHtml = `<button class="btn-add" onclick='agregarAlCarrito(${JSON.stringify({
+      codigo: d.codigo, descripcion: d.descripcion, marca: d.marca,
+      precio_publico: d.precio_publico, sede: d.sede
+    })})' title="Agregar al carrito">
         <i class="fa-solid ${enCarrito ? 'fa-check' : 'fa-plus'}"></i> ${enCarrito ? 'En carrito (' + enCarrito.cantidad + ')' : 'Agregar'}
       </button>`;
 
@@ -1189,7 +1205,13 @@ function guardarCarritoEnStorage() {
   try { localStorage.setItem(KEY_CARRITO, JSON.stringify(CARRITO)); } catch(e) {}
 }
 
+// 🆕 Validación de sede en agregar
 function agregarAlCarrito(prod) {
+  if (String(prod.sede || '').trim().toUpperCase() !== SEDE_DEFAULT) {
+    mostrarToast('⚠️ Solo se cotizan productos de ' + SEDE_DEFAULT);
+    return;
+  }
+
   const existe = CARRITO.find(x => x.codigo === prod.codigo);
   if (existe) {
     existe.cantidad += 1;
@@ -1199,6 +1221,7 @@ function agregarAlCarrito(prod) {
       descripcion: prod.descripcion,
       marca: prod.marca,
       precio_publico: prod.precio_publico,
+      sede: prod.sede,       // 🆕
       cantidad: 1
     });
   }
@@ -1337,6 +1360,13 @@ async function generarCotizacion() {
     const envio = parseFloat(document.getElementById('envioInput').value) || 0;
     const { subtotal, total } = calcularTotales();
 
+    // 🆕 Snapshot del carrito para el CSV
+    const snapshot = CARRITO.map(x => ({
+      codigo: x.codigo,
+      descripcion: x.descripcion,
+      cantidad: x.cantidad
+    }));
+
     const payload = {
       accion: 'crearCotizacion',
       cliente: cliente,
@@ -1350,6 +1380,7 @@ async function generarCotizacion() {
         marca: x.marca,
         precio: x.precio_publico,
         cantidad: x.cantidad,
+        sede: x.sede,                        // 🆕
         subtotal: x.precio_publico * x.cantidad
       }))
     };
@@ -1381,6 +1412,15 @@ async function generarCotizacion() {
     const cot = recientes[0];
     if (!cot) throw new Error('No se encontró la cotización recién creada. Prueba de nuevo.');
 
+    // 🆕 Guardamos snapshot + datos para el CSV
+    ULTIMA_COT = {
+      id: cot.id,
+      cliente: cliente,
+      total: total,
+      fecha: new Date(),
+      items: snapshot
+    };
+    // compatibilidad con funciones previas
     window.__ultimaCot = {
       id: cot.id,
       cliente: cliente,
@@ -1419,7 +1459,6 @@ function copiarCodigoCotizacion() {
 
   copiarAlPortapapeles(id, 'Código copiado: ' + id);
 
-  // ✅ Feedback visual en el botón
   const btn = document.getElementById('btnCopiarCodigo');
   if (!btn) return;
   const htmlOriginal = btn.innerHTML;
@@ -1458,6 +1497,56 @@ function compartirEmail() {
 
 function imprimirDesdeModal() {
   window.print();
+}
+
+// ============================================================
+// 🆕 DESCARGAR CSV (solo código y cantidad)
+// ============================================================
+function descargarCSVCompras() {
+  if (!ULTIMA_COT || !ULTIMA_COT.items || ULTIMA_COT.items.length === 0) {
+    mostrarToast('⚠️ No hay datos para exportar');
+    return;
+  }
+
+  const filas = [];
+  filas.push(['CODIGO', 'CANTIDAD']);
+  for (const it of ULTIMA_COT.items) {
+    filas.push([
+      csvEscape(it.codigo),
+      it.cantidad
+    ]);
+  }
+
+  // BOM UTF-8 para que Excel abra bien los acentos
+  const contenido = '\uFEFF' + filas.map(r => r.join(',')).join('\r\n');
+
+  const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+
+  const fecha = new Date();
+  const yyyy = fecha.getFullYear();
+  const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+  const dd = String(fecha.getDate()).padStart(2, '0');
+  const nombreArchivo = 'cotizacion_' + ULTIMA_COT.id + '_' + yyyy + '-' + mm + '-' + dd + '.csv';
+
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  mostrarToast('📥 CSV descargado: ' + nombreArchivo);
+}
+
+// Escapa comas, comillas y saltos de línea en un campo CSV
+function csvEscape(v) {
+  const s = String(v == null ? '' : v);
+  if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
 }
 
 // ============================================================
