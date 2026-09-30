@@ -18,7 +18,6 @@
     margin: 0;
     -webkit-font-smoothing: antialiased;
   }
-
   .documento {
     background: #ffffff;
     max-width: 900px;
@@ -28,7 +27,6 @@
     box-shadow: 0 2px 20px rgba(0,0,0,0.08);
     border: 1px solid #e8eaed;
   }
-
   .header-doc {
     border-bottom: 3px solid #1a3a5c;
     padding-bottom: 15px;
@@ -54,7 +52,6 @@
   .header-doc .numero-cot .numero {
     font-size: 20px; font-weight: 800; color: #1a3a5c;
   }
-
   .info-cabecera {
     display: flex; justify-content: space-between;
     background: #f8f9fa; padding: 10px 15px;
@@ -65,7 +62,6 @@
   }
   .info-cabecera span i { margin-right: 6px; color: #1a3a5c; }
   .info-cabecera b { color: #1a3a5c; }
-
   .sede-badge {
     background: #1a3a5c; color: white;
     padding: 3px 10px; border-radius: 20px;
@@ -75,7 +71,6 @@
     display: inline-flex; align-items: center; gap: 5px;
   }
   .sede-badge i { font-size: 10px; }
-
   .datos-cliente {
     display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
     margin-bottom: 20px; padding: 12px 15px;
@@ -91,23 +86,15 @@
     font-size: 14px; font-weight: 600; color: #1a1a1a;
     padding: 4px 0;
   }
-
   .live-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #d1fae5;
-    color: #065f46;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #d1fae5; color: #065f46;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
     letter-spacing: 0.5px;
   }
   .live-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
+    width: 7px; height: 7px; border-radius: 50%;
     background: #10b981;
     animation: pulse-dot 1.5s ease-in-out infinite;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
@@ -116,7 +103,6 @@
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.4; transform: scale(0.75); }
   }
-
   .buscador {
     background: #f8f9fa; border: 1px solid #e9ecef;
     border-radius: 6px; padding: 15px 20px;
@@ -128,21 +114,15 @@
     display: flex; align-items: center; gap: 8px;
   }
   .buscador .titulo i { color: #10b981; }
-  .buscador .input-group {
-    display: flex; gap: 10px; flex-wrap: wrap;
-  }
+  .buscador .input-group { display: flex; gap: 10px; flex-wrap: wrap; }
   .buscador .input-group input {
     flex: 1; min-width: 200px;
     padding: 10px 12px;
     border: 1px solid #dee2e6; border-radius: 4px;
-    font-size: 13px;
-    font-family: 'Courier New', monospace;
-    background: white;
-    transition: border-color 0.2s;
+    font-size: 13px; font-family: 'Courier New', monospace;
+    background: white; transition: border-color 0.2s;
   }
-  .buscador .input-group input:focus {
-    outline: none; border-color: #1a3a5c;
-  }
+  .buscador .input-group input:focus { outline: none; border-color: #1a3a5c; }
   .buscador .input-group button {
     padding: 10px 24px; border: none; border-radius: 4px;
     font-size: 12px; font-weight: 700; cursor: pointer;
@@ -167,14 +147,8 @@
     font-family: 'Courier New', monospace;
     font-size: 10px; color: #1a3a5c;
   }
-
-  .estado {
-    text-align: center; padding: 50px 20px; color: #6c757d;
-  }
-  .estado i {
-    font-size: 40px; margin-bottom: 12px;
-    display: block; color: #cbd5e1;
-  }
+  .estado { text-align: center; padding: 50px 20px; color: #6c757d; }
+  .estado i { font-size: 40px; margin-bottom: 12px; display: block; color: #cbd5e1; }
   .estado h3 { margin: 0 0 6px; color: #1a3a5c; font-size: 16px; }
   .estado p { font-size: 13px; margin: 0; }
   .spinner {
@@ -185,11 +159,8 @@
     margin: 0 auto 12px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-
   .tabla-productos { margin-bottom: 20px; }
-  .tabla-productos table {
-    width: 100%; border-collapse: collapse; font-size: 13px;
-  }
+  .tabla-productos table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .tabla-productos thead th {
     background: #f8f9fa; padding: 8px 10px;
     text-align: left; font-size: 10px; font-weight: 700;
@@ -210,51 +181,38 @@
   }
   .tabla-productos tbody td.centro { text-align: center; font-weight: 700; }
   .tabla-productos tbody tr:hover { background: #f8f9fa; }
-
   .producto-codigo {
     font-family: 'Courier New', monospace;
     font-weight: 700; font-size: 12px; color: #1a3a5c;
     text-transform: uppercase;
   }
   .producto-nombre {
-    font-size: 11.5px;
-    color: #495057;
+    font-size: 11.5px; color: #495057;
     text-transform: uppercase;
-    letter-spacing: -0.01em;
-    line-height: 1.35;
+    letter-spacing: -0.01em; line-height: 1.35;
     font-weight: 500;
   }
   .producto-marca {
-    font-size: 9.5px;
-    color: #6c757d;
-    margin-top: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-weight: 600;
+    font-size: 9.5px; color: #6c757d;
+    margin-top: 3px; text-transform: uppercase;
+    letter-spacing: 0.04em; font-weight: 600;
   }
-
   .foto-cell { width: 54px; padding: 4px !important; }
   .foto-link {
     display: flex; align-items: center; justify-content: center;
     width: 44px; height: 44px;
     background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 4px;
+    border: 1px solid #e9ecef; border-radius: 4px;
     overflow: hidden;
     transition: transform .15s, border-color .15s, box-shadow .15s;
-    text-decoration: none;
-    position: relative;
+    text-decoration: none; position: relative;
   }
   .foto-link:hover {
     transform: scale(1.08);
     border-color: #1a3a5c;
     box-shadow: 0 2px 8px rgba(26,58,92,0.15);
   }
-  .foto-link img {
-    width: 100%; height: 100%;
-    object-fit: contain;
-    padding: 3px;
-  }
+  .foto-link img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
   .foto-cell.sin-foto .foto-link::before {
     content: '\f03e';
     font-family: 'Font Awesome 6 Free';
@@ -262,7 +220,6 @@
     color: #cbd5e1;
     font-size: 18px;
   }
-
   .resumen {
     background: #f8f9fa; border: 1px solid #e9ecef;
     border-radius: 6px; padding: 15px 20px;
@@ -284,7 +241,6 @@
   .resumen .fila.total .valor {
     font-size: 22px; font-weight: 800; color: #1a3a5c;
   }
-
   .acciones {
     display: grid; grid-template-columns: 1fr 1fr 1fr;
     gap: 10px; margin-top: 20px;
@@ -302,7 +258,6 @@
   .btn-pdf:hover { background: #c82333; transform: translateY(-1px); }
   .btn-print { background: #6c757d; color: white; }
   .btn-print:hover { background: #5a6268; transform: translateY(-1px); }
-
   @media (max-width: 768px) {
     .documento { padding: 15px; margin: 10px; }
     .header-doc { flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -319,7 +274,6 @@
     .foto-cell { width: 40px; }
     .foto-link { width: 32px; height: 32px; }
   }
-
   @media print {
     body { background: white; }
     .documento { box-shadow: none; border: none; margin: 0; padding: 20px; }
@@ -330,7 +284,6 @@
 <body>
 
 <div class="documento" id="documento">
-
   <div class="header-doc">
     <div class="empresa">
       <img src="logo.png" alt="ServiComp+" onerror="this.style.display='none'">
@@ -356,9 +309,7 @@
     <div class="campo">
       <label><i class="fa-regular fa-id-card"></i> Estado</label>
       <div class="valor">
-        <span class="live-badge">
-          <span class="live-dot"></span> EN VIVO
-        </span>
+        <span class="live-badge"><span class="live-dot"></span> EN VIVO</span>
       </div>
     </div>
   </div>
@@ -389,21 +340,19 @@
       <p>Cargando cotización...</p>
     </div>
   </div>
-
 </div>
 
 <script>
 // ============================================================
 // CONFIGURACIÓN
 // ============================================================
-const URL_WEBAPP = 'https://script.google.com/macros/s/AKfycbyvExQLNzzJdYfhyHIF96l5xPTFe7E8r1kGbCt8Lsvrrf37AnLX5BfAaOj3c5RPfBQ/exec';
+const URL_CSV_COTIZACIONES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=1562213448&single=true&output=csv';
 const WHATSAPP_CONTACTO = '51973952322';
 const ENVIO_DEFAULT = 19;
 
 let COTIZACION_ACTUAL = null;
-let PRODUCTOS_ACTUALES = [];
-let CANTIDADES_ACTUALES = [];
-let TC_ACTUAL = 0;
+let ITEMS_ACTUALES = [];
+let DATOS_CSV = [];  // cache del CSV
 
 // ============================================================
 // HELPERS
@@ -418,11 +367,12 @@ function esc(s) {
 }
 function fmtFecha(f) {
   if (!f) return '—';
-  const d = new Date(f);
-  if (isNaN(d)) return '—';
-  return d.toLocaleDateString('es-PE', {
-    weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
-  });
+  if (f instanceof Date) {
+    return f.toLocaleDateString('es-PE', {
+      weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+    });
+  }
+  return String(f);
 }
 function getImagenDeltron(codigo) {
   const c = String(codigo || '').trim().toUpperCase();
@@ -430,109 +380,151 @@ function getImagenDeltron(codigo) {
          encodeURIComponent(c) + '&nomenu=1';
 }
 
-// ============================================================
-// ✅ CARGA INICIAL — TODO EN PARALELO
-// ============================================================
-async function cargarTodo() {
-  // 🔥 TC y lista de cotizaciones EN PARALELO
-  const [rTC, rLista] = await Promise.all([
-    fetch(URL_WEBAPP + '?accion=obtenerTC&t=' + Date.now())
-      .then(r => r.json()).catch(() => ({ ok: false })),
-    fetch(URL_WEBAPP + '?accion=listarCotizaciones&t=' + Date.now())
-      .then(r => r.json()).catch(() => ({ ok: false }))
-  ]);
-
-  if (rTC.ok && rTC.tc > 0) {
-    TC_ACTUAL = rTC.tc;
-    document.getElementById('tcDisplay').textContent = 'S/ ' + TC_ACTUAL.toFixed(2);
+// 🆕 Parsear dd/MM/yyyy → Date
+function parseFechaDDMMYYYY(s) {
+  if (!s) return null;
+  const str = String(s).trim();
+  const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) {
+    const d = new Date(parseInt(m[3]), parseInt(m[2]) - 1, parseInt(m[1]));
+    d.setHours(0, 0, 0, 0);
+    return d;
   }
+  // Fallback: intenta con Date nativo
+  const d = new Date(str);
+  return isNaN(d) ? null : d;
+}
 
-  if (!rLista.ok || !rLista.cotizaciones || rLista.cotizaciones.length === 0) {
-    mostrarVacio('Aún no hay cotizaciones', 'Cuando generes una desde el catálogo, aparecerá aquí automáticamente.');
-    return;
-  }
-
-  const ordenadas = rLista.cotizaciones.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-  await cargarCotizacionCompleta(ordenadas[0].id, true);
+// 🆕 ¿Está caducada?
+function estaCaducada(caducaStr) {
+  const caduca = parseFechaDDMMYYYY(caducaStr);
+  if (!caduca) return false; // sin caduca → se muestra
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  return caduca < hoy;
 }
 
 // ============================================================
-// ✅ CARGA POR ID — UNA SOLA LLAMADA
+// PARSEAR CSV
 // ============================================================
-async function cargarCotizacionCompleta(idFinal, esAutoCarga) {
-  const btn = document.getElementById('btnBuscar');
-  const original = btn ? btn.innerHTML : '';
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> BUSCANDO...';
+function parsearCSV(texto) {
+  const filas = [];
+  let fila = [], campo = '', enComillas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
+    if (enComillas) {
+      if (c === '"') {
+        if (texto[i + 1] === '"') { campo += '"'; i++; }
+        else enComillas = false;
+      } else campo += c;
+    } else {
+      if (c === '"') enComillas = true;
+      else if (c === ',') { fila.push(campo); campo = ''; }
+      else if (c === '\n') { fila.push(campo); filas.push(fila); fila = []; campo = ''; }
+      else if (c !== '\r') campo += c;
+    }
   }
+  if (campo.length || fila.length) { fila.push(campo); filas.push(fila); }
+  return filas;
+}
 
+function csvAFilas(texto) {
+  const filas = parsearCSV(texto);
+  if (filas.length < 2) return [];
+  const headers = filas[0].map(h => h.trim().toUpperCase());
+  const idx = (name) => headers.indexOf(name);
+
+  const iID = idx('ID');
+  const iFecha = idx('FECHA');
+  const iCaduca = idx('CADUCA');
+  const iCliente = idx('CLIENTE');
+  const iSede = idx('SEDE');
+  const iTC = idx('TC');
+  const iEnvio = idx('ENVIO');
+  const iEstado = idx('ESTADO');
+  const iCodigo = idx('CODIGO');
+  const iProducto = idx('PRODUCTO');
+  const iMarca = idx('MARCA');
+  const iPrecioUSD = idx('PRECIO_USD');
+  const iPrecioPen = idx('PRECIO_PEN');
+  const iPrecioPub = idx('PRECIO_PUBLICO');
+  const iCantidad = idx('CANTIDAD');
+  const iSubtotal = idx('SUBTOTAL');
+  const iFoto = idx('FOTO_URL');
+
+  return filas.slice(1).filter(f => f[iID]).map(f => ({
+    id: String(f[iID] || '').trim(),
+    fecha: f[iFecha] || '',
+    caduca: iCaduca >= 0 ? f[iCaduca] : '',
+    cliente: f[iCliente] || 'Cliente',
+    sede: String(f[iSede] || '').trim(),
+    tc: Number(f[iTC]) || 0,
+    envio: Number(f[iEnvio]) || 0,
+    estado: f[iEstado] || 'ACTIVA',
+    codigo: String(f[iCodigo] || '').trim(),
+    producto: f[iProducto] || '',
+    marca: f[iMarca] || '',
+    precio_usd: Number(f[iPrecioUSD]) || 0,
+    precio_pen: Number(f[iPrecioPen]) || 0,
+    precio: Number(f[iPrecioPub]) || 0,
+    cantidad: iCantidad >= 0 ? (Number(f[iCantidad]) || 1) : 1,
+    subtotal: iSubtotal >= 0 ? (Number(f[iSubtotal]) || 0) : 0,
+    foto_url: iFoto >= 0 ? String(f[iFoto] || '') : ''
+  }));
+}
+
+// ============================================================
+// CARGAR TODO
+// ============================================================
+async function cargarTodo() {
   document.getElementById('contenido').innerHTML = `
     <div class="estado">
       <div class="spinner"></div>
-      <p>${esAutoCarga ? 'Cargando última cotización' : 'Buscando cotización'} <b>${esc(idFinal)}</b>...</p>
+      <p>Cargando cotizaciones...</p>
     </div>
   `;
 
   try {
-    const r = await fetch(
-      URL_WEBAPP + '?accion=obtenerCotizacionCompleta&id=' + encodeURIComponent(idFinal) + '&t=' + Date.now()
-    );
-    const d = await r.json();
-    if (!d.ok) throw new Error(d.error || 'Cotización no encontrada');
+    const r = await fetch(URL_CSV_COTIZACIONES + '&t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const texto = await r.text();
+    DATOS_CSV = csvAFilas(texto);
 
-    const cot = d.data.cotizacion;
-    const productos = d.data.productos || [];
-    const tc = d.data.tc;
-
-    if (tc > 0) {
-      TC_ACTUAL = tc;
-      document.getElementById('tcDisplay').textContent = 'S/ ' + TC_ACTUAL.toFixed(2);
+    if (DATOS_CSV.length === 0) {
+      mostrarVacio('Aún no hay cotizaciones', 'Cuando generes una desde el catálogo, aparecerá aquí automáticamente.');
+      return;
     }
 
-    if (!cot.codigos || cot.codigos.length === 0) throw new Error('Esta cotización no tiene productos.');
-    if (productos.length === 0) throw new Error('Los productos de esta cotización ya no están disponibles.');
-
-    const sedeDisplay = document.getElementById('sedeDisplay');
-    if (cot.sede) {
-      sedeDisplay.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + esc(cot.sede);
-    } else {
-      sedeDisplay.innerHTML = '<i class="fa-solid fa-location-dot"></i> —';
+    // Agrupar por ID, quedarnos con cotizaciones vigentes
+    const porID = {};
+    for (const item of DATOS_CSV) {
+      if (!porID[item.id]) porID[item.id] = { meta: item, items: [] };
+      porID[item.id].items.push(item);
     }
 
-    const cantidades = cot.cantidades || productos.map(() => 1);
+    // Filtrar vigentes (no caducadas)
+    const idsVigentes = Object.keys(porID).filter(id => {
+      const meta = porID[id].meta;
+      return !estaCaducada(meta.caduca);
+    });
 
-    COTIZACION_ACTUAL = cot;
-    PRODUCTOS_ACTUALES = productos;
-    CANTIDADES_ACTUALES = cantidades;
-    renderCotizacion(cot, productos, cantidades);
+    // Ordenar por fecha desc
+    idsVigentes.sort((a, b) => {
+      const da = parseFechaDDMMYYYY(porID[a].meta.fecha) || new Date(0);
+      const db = parseFechaDDMMYYYY(porID[b].meta.fecha) || new Date(0);
+      return db - da;
+    });
 
-    if (!esAutoCarga) {
-      Swal.fire({
-        title: '✓ Cotización cargada',
-        text: productos.length + ' producto(s) encontrados.',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-        toast: true,
-        position: 'top-end'
-      });
+    if (idsVigentes.length === 0) {
+      mostrarVacio('La última cotización ya expiró', 'Genera una nueva desde el catálogo.');
+      return;
     }
+
+    // Cargar la última automáticamente
+    cargarCotizacionPorId(idsVigentes[0], porID);
 
   } catch (e) {
-    document.getElementById('contenido').innerHTML = `
-      <div class="estado">
-        <i class="fa-solid fa-circle-exclamation" style="color:#ef4444"></i>
-        <h3>No pudimos cargar la cotización</h3>
-        <p>${esc(e.message)}</p>
-      </div>
-    `;
-    if (!esAutoCarga) Swal.fire('Error', e.message, 'error');
-  } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = original;
-    }
+    mostrarVacio('Error al cargar', e.message);
   }
 }
 
@@ -541,34 +533,100 @@ async function cargarCotizacionCompleta(idFinal, esAutoCarga) {
 // ============================================================
 async function buscarCotizacion() {
   const input = document.getElementById('codigoInput');
-  const codigo = input.value.trim().toUpperCase();
+  let codigo = input.value.trim().toUpperCase();
 
   if (!codigo) {
     Swal.fire('Campo vacío', 'Ingresa tu código de cotización.', 'warning');
     return;
   }
 
-  let idFinal = codigo;
   if (!codigo.startsWith('COT-') && /^[A-Z0-9]{6,12}$/.test(codigo)) {
-    idFinal = 'COT-' + codigo;
+    codigo = 'COT-' + codigo;
   }
 
-  await cargarCotizacionCompleta(idFinal, false);
+  // Recargar CSV fresco
+  if (DATOS_CSV.length === 0) {
+    try {
+      const r = await fetch(URL_CSV_COTIZACIONES + '&t=' + Date.now());
+      const texto = await r.text();
+      DATOS_CSV = csvAFilas(texto);
+    } catch (e) { /* ignore */ }
+  }
+
+  const porID = {};
+  for (const item of DATOS_CSV) {
+    if (!porID[item.id]) porID[item.id] = { meta: item, items: [] };
+    porID[item.id].items.push(item);
+  }
+
+  if (!porID[codigo]) {
+    Swal.fire('No encontrada', 'No existe una cotización con ese código.', 'error');
+    return;
+  }
+
+  const meta = porID[codigo].meta;
+  if (estaCaducada(meta.caduca)) {
+    Swal.fire({
+      title: 'Cotización expirada',
+      text: 'Esta cotización venció el ' + meta.caduca + '. Pide una actualización.',
+      icon: 'warning'
+    });
+    return;
+  }
+
+  cargarCotizacionPorId(codigo, porID);
+}
+
+// ============================================================
+// CARGAR COTIZACIÓN
+// ============================================================
+function cargarCotizacionPorId(id, porID) {
+  const grupo = porID[id];
+  if (!grupo) return;
+
+  const meta = grupo.meta;
+  const items = grupo.items;
+
+  COTIZACION_ACTUAL = {
+    id: meta.id,
+    fecha: meta.fecha,
+    caduca: meta.caduca,
+    cliente: meta.cliente,
+    sede: meta.sede,
+    tc: meta.tc,
+    envio: meta.envio
+  };
+  ITEMS_ACTUALES = items;
+
+  // Sede
+  const sedeDisplay = document.getElementById('sedeDisplay');
+  if (meta.sede) {
+    sedeDisplay.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + esc(meta.sede);
+  } else {
+    sedeDisplay.innerHTML = '<i class="fa-solid fa-location-dot"></i> —';
+  }
+
+  // TC
+  document.getElementById('tcDisplay').textContent = meta.tc > 0
+    ? 'S/ ' + meta.tc.toFixed(2)
+    : '—';
+
+  renderCotizacion(COTIZACION_ACTUAL, items);
 }
 
 // ============================================================
 // RENDER
 // ============================================================
-function renderCotizacion(cot, productos, cantidades) {
+function renderCotizacion(cot, items) {
   const envio = (typeof cot.envio === 'number' && cot.envio >= 0) ? cot.envio : ENVIO_DEFAULT;
   let subtotal = 0;
 
-  const filas = productos.map((p, idx) => {
+  const filas = items.map(p => {
     const precio = Number(p.precio) || 0;
-    const cant = cantidades[idx] || 1;
-    const totalLinea = precio * cant;
+    const cant = Number(p.cantidad) || 1;
+    const totalLinea = Number(p.subtotal) || (precio * cant);
     subtotal += totalLinea;
-    const imgUrl = getImagenDeltron(p.codigo);
+    const imgUrl = p.foto_url || getImagenDeltron(p.codigo);
     return `
       <tr>
         <td class="foto-cell">
@@ -579,7 +637,7 @@ function renderCotizacion(cot, productos, cantidades) {
         </td>
         <td><span class="producto-codigo">${esc(p.codigo)}</span></td>
         <td>
-          <div class="producto-nombre">${esc(p.descripcion)}</div>
+          <div class="producto-nombre">${esc(p.producto)}</div>
           ${p.marca ? `<div class="producto-marca">${esc(p.marca)}</div>` : ''}
         </td>
         <td class="num">S/ ${fmt2(precio)}</td>
@@ -608,9 +666,7 @@ function renderCotizacion(cot, productos, cantidades) {
             <th class="num">Total</th>
           </tr>
         </thead>
-        <tbody>
-          ${filas}
-        </tbody>
+        <tbody>${filas}</tbody>
       </table>
     </div>
 
@@ -659,22 +715,20 @@ function mostrarVacio(titulo, detalle) {
 }
 
 // ============================================================
-// WHATSAPP — Aceptar cotización
+// WHATSAPP
 // ============================================================
 function enviarWhatsApp() {
   const cot = COTIZACION_ACTUAL;
-  const productos = PRODUCTOS_ACTUALES;
-  const cantidades = CANTIDADES_ACTUALES;
-  if (!cot || !productos.length) return;
+  const items = ITEMS_ACTUALES;
+  if (!cot || !items.length) return;
 
   const envio = (typeof cot.envio === 'number' && cot.envio >= 0) ? cot.envio : ENVIO_DEFAULT;
   let subtotal = 0;
-  const lineas = productos.map((p, idx) => {
-    const precio = Number(p.precio) || 0;
-    const cant = cantidades[idx] || 1;
-    const totalLinea = precio * cant;
+  const lineas = items.map(p => {
+    const cant = Number(p.cantidad) || 1;
+    const totalLinea = Number(p.subtotal) || (Number(p.precio) * cant);
     subtotal += totalLinea;
-    return `• ${cant}x ${p.descripcion} — S/ ${fmt2(totalLinea)}`;
+    return `• ${cant}x ${p.producto} — S/ ${fmt2(totalLinea)}`;
   }).join('\n');
 
   const total = subtotal + envio;
@@ -739,8 +793,7 @@ function limpiarBusqueda() {
   document.getElementById('sedeDisplay').innerHTML = '<i class="fa-solid fa-location-dot"></i> —';
   document.title = 'ServiComp+ | Consulta tu Cotización';
   COTIZACION_ACTUAL = null;
-  PRODUCTOS_ACTUALES = [];
-  CANTIDADES_ACTUALES = [];
+  ITEMS_ACTUALES = [];
 }
 
 // ============================================================
@@ -754,10 +807,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ✅ UNA sola entrada que hace todo en paralelo
   cargarTodo();
 });
 </script>
-
 </body>
 </html>
