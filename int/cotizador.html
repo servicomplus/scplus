@@ -303,6 +303,112 @@
   .btn-print { background: #6c757d; color: white; }
   .btn-print:hover { background: #5a6268; transform: translateY(-1px); }
 
+  /* ============================================================
+     SPECS
+     ============================================================ */
+  .specs-toggle {
+    background: none; border: none;
+    color: #10b981;
+    font-size: 10.5px; font-weight: 700;
+    padding: 3px 6px;
+    margin-top: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: background 0.15s, color 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .specs-toggle:hover { background: #ecfdf5; color: #059669; }
+  .specs-toggle i {
+    font-size: 9px;
+    transition: transform 0.2s;
+  }
+  .specs-toggle.abierto i { transform: rotate(90deg); }
+  .specs-toggle.sin-specs {
+    color: #94a3b8;
+    cursor: default;
+    font-weight: 500;
+  }
+  .specs-toggle.sin-specs:hover { background: none; color: #94a3b8; }
+
+  .specs-fila { display: none; }
+  .specs-fila.abierto { display: table-row; }
+  .specs-celda {
+    padding: 14px 20px 18px 70px !important;
+    background: #f8fafc !important;
+    border-bottom: 2px solid #e9ecef !important;
+  }
+  .specs-wrapper {
+    max-width: 780px;
+  }
+  .specs-grupo { margin-bottom: 12px; }
+  .specs-grupo:last-child { margin-bottom: 0; }
+  .specs-grupo-header {
+    background: linear-gradient(90deg, #1a3a5c 0%, #2c5282 100%);
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 4px 4px 0 0;
+  }
+  .specs-tabla {
+    width: 100%; border-collapse: collapse;
+    font-size: 11.5px; background: #fff;
+    border: 1px solid #e9ecef;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+  }
+  .specs-tabla tr:nth-child(even) { background: #fafbfd; }
+  .specs-tabla td {
+    padding: 6px 12px;
+    vertical-align: top;
+    border-bottom: 1px solid #f1f3f5;
+    line-height: 1.4;
+  }
+  .specs-tabla tr:last-child td { border-bottom: none; }
+  .specs-tabla td:first-child {
+    width: 38%;
+    color: #6c757d;
+    font-weight: 500;
+  }
+  .specs-tabla td:last-child {
+    color: #1a1a1a;
+    font-weight: 600;
+  }
+  .specs-valor-solo {
+    padding: 6px 12px !important;
+    color: #1a1a1a !important;
+    font-weight: 600 !important;
+    font-size: 11.5px;
+  }
+  .specs-acciones {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .specs-btn-copiar {
+    background: #10b981; color: #fff;
+    border: none; border-radius: 4px;
+    padding: 5px 12px; font-size: 10px;
+    font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: background 0.15s;
+  }
+  .specs-btn-copiar:hover { background: #059669; }
+  .specs-vacio {
+    color: #94a3b8; font-size: 11.5px; font-style: italic;
+    padding: 8px 0;
+    display: flex; align-items: center; gap: 6px;
+  }
+
   @media (max-width: 768px) {
     .documento { padding: 15px; margin: 10px; }
     .header-doc { flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -318,12 +424,19 @@
     .tabla-productos tbody td { padding: 6px; }
     .foto-cell { width: 40px; }
     .foto-link { width: 32px; height: 32px; }
+    .specs-celda { padding: 12px 10px !important; }
+    .specs-tabla td:first-child { width: 45%; }
+    .specs-tabla { font-size: 10.5px; }
   }
 
   @media print {
     body { background: white; }
     .documento { box-shadow: none; border: none; margin: 0; padding: 20px; }
     .no-print { display: none !important; }
+    .specs-toggle { display: none !important; }
+    .specs-fila { display: table-row !important; }
+    .specs-btn-copiar { display: none !important; }
+    .specs-acciones { display: none !important; }
   }
 </style>
 </head>
@@ -417,13 +530,11 @@ function esc(s) {
 }
 function fmtFecha(f) {
   if (!f) return '—';
-  // Si es Date
   if (f instanceof Date) {
     return f.toLocaleDateString('es-PE', {
       weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
     });
   }
-  // Si es string dd/MM/yyyy HH:mm → parsear
   const d = parseFechaHora(f);
   if (d) {
     return d.toLocaleDateString('es-PE', {
@@ -438,7 +549,6 @@ function getImagenDeltron(codigo) {
          encodeURIComponent(c) + '&nomenu=1';
 }
 
-// 🆕 Parsea "dd/MM/yyyy" o "dd/MM/yyyy HH:mm"
 function parseFechaHora(s) {
   if (!s) return null;
   const str = String(s).trim();
@@ -456,7 +566,6 @@ function parseFechaHora(s) {
   return null;
 }
 
-// Alias solo-día (para CADUCA)
 function parseFechaDDMMYYYY(s) {
   const d = parseFechaHora(s);
   if (!d) return null;
@@ -464,7 +573,6 @@ function parseFechaDDMMYYYY(s) {
   return d;
 }
 
-// ¿Está caducada? (compara solo por día)
 function estaCaducada(caducaStr) {
   const caduca = parseFechaDDMMYYYY(caducaStr);
   if (!caduca) return false;
@@ -521,6 +629,12 @@ function csvAFilas(texto) {
   const iSubtotal = idx('SUBTOTAL');
   const iFoto = idx('FOTO_URL');
 
+  // 🆕 Columnas de specs por POSICIÓN (por si los headers están vacíos)
+  // Estructura esperada: A(0)...Q(16) FOTO_URL, R(17) SPECS, S(18) SPECS_ESTADO, T(19) SPECS_UPDATED
+  const COL_SPECS = 17;
+  const COL_SPECS_ESTADO = 18;
+  const COL_SPECS_UPDATED = 19;
+
   return filas.slice(1).filter(f => f[iID]).map(f => ({
     id: String(f[iID] || '').trim(),
     fecha: f[iFecha] || '',
@@ -538,7 +652,11 @@ function csvAFilas(texto) {
     precio: Number(f[iPrecioPub]) || 0,
     cantidad: iCantidad >= 0 ? (Number(f[iCantidad]) || 1) : 1,
     subtotal: iSubtotal >= 0 ? (Number(f[iSubtotal]) || 0) : 0,
-    foto_url: iFoto >= 0 ? String(f[iFoto] || '') : ''
+    foto_url: iFoto >= 0 ? String(f[iFoto] || '') : '',
+    // 🆕 Specs
+    specs_json: String(f[COL_SPECS] || '').trim(),
+    specs_estado: String(f[COL_SPECS_ESTADO] || '').trim(),
+    specs_updated: String(f[COL_SPECS_UPDATED] || '').trim()
   }));
 }
 
@@ -583,7 +701,6 @@ async function cargarTodo() {
       return !estaCaducada(meta.caduca);
     });
 
-    // 🆕 Ordenar por FECHA CON HORA descendente
     idsVigentes.sort((a, b) => {
       const da = parseFechaHora(porID[a].meta.fecha) || new Date(0);
       const db = parseFechaHora(porID[b].meta.fecha) || new Date(0);
@@ -624,7 +741,6 @@ async function buscarCotizacion() {
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> BUSCANDO...';
 
   try {
-    // Recargar CSV fresco
     const r = await fetch(URL_CSV_COTIZACIONES + '&t=' + Date.now());
     const texto = await r.text();
     DATOS_CSV = csvAFilas(texto);
@@ -701,18 +817,181 @@ function cargarCotizacionPorId(id, porID) {
 }
 
 // ============================================================
-// RENDER
+// RENDER SPECS
+// ============================================================
+function renderSpecs(specsJson) {
+  if (!specsJson || specsJson === '[]' || specsJson === '') {
+    return '<div class="specs-vacio"><i class="fa-regular fa-circle-xmark"></i> Especificaciones no disponibles para este producto</div>';
+  }
+
+  let specs;
+  try {
+    specs = JSON.parse(specsJson);
+  } catch (e) {
+    return '<div class="specs-vacio"><i class="fa-solid fa-triangle-exclamation"></i> Error al leer especificaciones</div>';
+  }
+
+  if (!Array.isArray(specs) || specs.length === 0) {
+    return '<div class="specs-vacio"><i class="fa-regular fa-circle-xmark"></i> Especificaciones no disponibles para este producto</div>';
+  }
+
+  // Agrupar por categoría
+  const grupos = {};
+  for (const s of specs) {
+    const cat = s.categoria || 'GENERAL';
+    if (!grupos[cat]) grupos[cat] = [];
+    grupos[cat].push(s);
+  }
+
+  const html = Object.entries(grupos).map(([cat, arr]) => `
+    <div class="specs-grupo">
+      <div class="specs-grupo-header">${esc(cat)}</div>
+      <table class="specs-tabla">
+        ${arr.map(s => {
+          const tieneAtributo = s.atributo && s.atributo !== s.categoria && s.atributo !== '';
+          if (!tieneAtributo) {
+            return `<tr><td colspan="2" class="specs-valor-solo">${esc(s.valor || '')}</td></tr>`;
+          }
+          return `<tr><td>${esc(s.atributo)}</td><td>${esc(s.valor || '')}</td></tr>`;
+        }).join('')}
+      </table>
+    </div>
+  `).join('');
+
+  return html;
+}
+
+// Convierte specs a texto plano para copiar
+function specsATexto(specsJson) {
+  if (!specsJson || specsJson === '[]' || specsJson === '') return '';
+  let specs;
+  try { specs = JSON.parse(specsJson); } catch (e) { return ''; }
+  if (!Array.isArray(specs)) return '';
+
+  const grupos = {};
+  for (const s of specs) {
+    const cat = s.categoria || 'GENERAL';
+    if (!grupos[cat]) grupos[cat] = [];
+    grupos[cat].push(s);
+  }
+
+  return Object.entries(grupos).map(([cat, arr]) => {
+    const lineas = arr.map(s => {
+      const tieneAtributo = s.atributo && s.atributo !== s.categoria && s.atributo !== '';
+      return tieneAtributo
+        ? `  ${s.atributo}: ${s.valor || ''}`
+        : `  ${s.valor || ''}`;
+    }).join('\n');
+    return `${cat}\n${lineas}`;
+  }).join('\n\n');
+}
+
+// ============================================================
+// TOGGLE SPECS
+// ============================================================
+function toggleSpecs(uid, btn) {
+  const fila = document.querySelector(`.specs-fila[data-uid="${uid}"]`);
+  if (!fila) return;
+  const abierto = fila.classList.toggle('abierto');
+  btn.classList.toggle('abierto', abierto);
+  btn.innerHTML = abierto
+    ? '<i class="fa-solid fa-chevron-right"></i> Ocultar'
+    : '<i class="fa-solid fa-chevron-right"></i> Ver especificaciones';
+}
+
+// ============================================================
+// COPIAR SPECS
+// ============================================================
+function copiarSpecs(specsJson, codigo) {
+  const texto = specsATexto(specsJson);
+  if (!texto) {
+    Swal.fire('Sin especificaciones', 'Este producto no tiene specs para copiar.', 'info');
+    return;
+  }
+  const contenido = `📋 ${codigo}\n\n${texto}`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(contenido).then(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Copiado',
+        text: 'Las especificaciones están en el portapapeles.',
+        timer: 1400,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end'
+      });
+    }).catch(() => {
+      // Fallback
+      copiarFallback(contenido);
+    });
+  } else {
+    copiarFallback(contenido);
+  }
+}
+
+function copiarFallback(texto) {
+  const ta = document.createElement('textarea');
+  ta.value = texto;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    Swal.fire({
+      icon: 'success',
+      title: 'Copiado',
+      timer: 1400,
+      showConfirmButton: false,
+      toast: true,
+      position: 'top-end'
+    });
+  } catch (e) {
+    Swal.fire('Error', 'No se pudo copiar.', 'error');
+  }
+  document.body.removeChild(ta);
+}
+
+// ============================================================
+// RENDER COTIZACIÓN
 // ============================================================
 function renderCotizacion(cot, items) {
   const envio = (typeof cot.envio === 'number' && cot.envio >= 0) ? cot.envio : ENVIO_DEFAULT;
   let subtotal = 0;
 
-  const filas = items.map(p => {
+  const filas = items.map((p, idx) => {
     const precio = Number(p.precio) || 0;
     const cant = Number(p.cantidad) || 1;
     const totalLinea = Number(p.subtotal) || (precio * cant);
     subtotal += totalLinea;
     const imgUrl = p.foto_url || getImagenDeltron(p.codigo);
+
+    // UID único para esta fila (id + codigo + idx para evitar colisiones)
+    const uid = `${cot.id}__${p.codigo}__${idx}`;
+
+    // ¿Tiene specs?
+    const tieneSpecs = p.specs_json && p.specs_json !== '[]' && p.specs_json.trim() !== '';
+    const specsHtml = tieneSpecs
+      ? renderSpecs(p.specs_json)
+      : '<div class="specs-vacio"><i class="fa-regular fa-circle-xmark"></i> Especificaciones no disponibles para este producto</div>';
+
+    // Botón de toggle
+    const btnToggle = tieneSpecs
+      ? `<button class="specs-toggle" onclick="toggleSpecs('${uid}', this)" title="Ver especificaciones">
+           <i class="fa-solid fa-chevron-right"></i> Ver especificaciones
+         </button>`
+      : `<span class="specs-toggle sin-specs" title="Sin especificaciones">
+           <i class="fa-regular fa-circle-xmark"></i> Sin specs
+         </span>`;
+
+    // Botón copiar (solo si tiene specs)
+    const btnCopiar = tieneSpecs
+      ? `<button class="specs-btn-copiar" onclick="copiarSpecs(${JSON.stringify(p.specs_json).replace(/"/g, '&quot;')}, '${esc(p.codigo)}')">
+           <i class="fa-regular fa-copy"></i> Copiar
+         </button>`
+      : '';
+
     return `
       <tr>
         <td class="foto-cell">
@@ -721,7 +1000,10 @@ function renderCotizacion(cot, items) {
                  onerror="var td=this.closest('.foto-cell'); if(td) td.classList.add('sin-foto'); this.remove();">
           </a>
         </td>
-        <td><span class="producto-codigo">${esc(p.codigo)}</span></td>
+        <td>
+          <div class="producto-codigo">${esc(p.codigo)}</div>
+          <div>${btnToggle}</div>
+        </td>
         <td>
           <div class="producto-nombre">${esc(p.producto)}</div>
           ${p.marca ? `<div class="producto-marca">${esc(p.marca)}</div>` : ''}
@@ -729,6 +1011,16 @@ function renderCotizacion(cot, items) {
         <td class="num">S/ ${fmt2(precio)}</td>
         <td class="centro">${cant}</td>
         <td class="num">S/ ${fmt2(totalLinea)}</td>
+      </tr>
+      <tr class="specs-fila" data-uid="${uid}">
+        <td colspan="6" class="specs-celda">
+          <div class="specs-wrapper">
+            ${specsHtml}
+            <div class="specs-acciones no-print">
+              ${btnCopiar}
+            </div>
+          </div>
+        </td>
       </tr>
     `;
   }).join('');
@@ -745,7 +1037,7 @@ function renderCotizacion(cot, items) {
         <thead>
           <tr>
             <th style="width:54px;"></th>
-            <th>Código</th>
+            <th style="width:180px;">Código</th>
             <th>Producto</th>
             <th class="num">Precio</th>
             <th class="centro">Cant.</th>
@@ -776,7 +1068,8 @@ function renderCotizacion(cot, items) {
         <i class="fa-brands fa-whatsapp"></i> WhatsApp
       </button>
       <button class="btn-pdf" onclick="exportarPDF()">
-        <i class="fa-regular fa-file-pdf"></i> PDF      </button>
+        <i class="fa-regular fa-file-pdf"></i> PDF
+      </button>
       <button class="btn-print" onclick="window.print()">
         <i class="fa-regular fa-print"></i> Imprimir
       </button>
@@ -800,7 +1093,7 @@ function mostrarVacio(titulo, detalle) {
 }
 
 // ============================================================
-// WHATSAPP — Aceptar cotización
+// WHATSAPP
 // ============================================================
 function enviarWhatsApp() {
   const cot = COTIZACION_ACTUAL;
@@ -839,6 +1132,15 @@ function exportarPDF() {
   const cot = COTIZACION_ACTUAL;
   if (!cot) return;
 
+  // Expandir todas las specs antes de exportar
+  document.querySelectorAll('.specs-fila').forEach(f => f.classList.add('abierto'));
+  document.querySelectorAll('.specs-toggle').forEach(b => {
+    if (!b.classList.contains('sin-specs')) {
+      b.classList.add('abierto');
+      b.innerHTML = '<i class="fa-solid fa-chevron-right"></i> Ocultar';
+    }
+  });
+
   const elemento = document.getElementById('documento');
   const fecha = new Date().toLocaleDateString('es-PE').replace(/\//g, '-');
 
@@ -849,21 +1151,35 @@ function exportarPDF() {
     didOpen: () => Swal.showLoading()
   });
 
-  html2pdf()
-    .set({
-      margin: 0.4,
-      filename: 'Cotizacion_' + cot.id + '_' + fecha + '.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    })
-    .from(elemento)
-    .save()
-    .then(() => Swal.close())
-    .catch((e) => {
-      Swal.close();
-      Swal.fire('Error', 'No se pudo generar el PDF: ' + e.message, 'error');
-    });
+  // Pequeño delay para que el DOM se actualice con las specs expandidas
+  setTimeout(() => {
+    html2pdf()
+      .set({
+        margin: 0.4,
+        filename: 'Cotizacion_' + cot.id + '_' + fecha + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      })
+      .from(elemento)
+      .save()
+      .then(() => {
+        Swal.close();
+        // Colapsar specs después
+        document.querySelectorAll('.specs-fila').forEach(f => f.classList.remove('abierto'));
+        document.querySelectorAll('.specs-toggle').forEach(b => {
+          if (!b.classList.contains('sin-specs')) {
+            b.classList.remove('abierto');
+            b.innerHTML = '<i class="fa-solid fa-chevron-right"></i> Ver especificaciones';
+          }
+        });
+      })
+      .catch((e) => {
+        Swal.close();
+        Swal.fire('Error', 'No se pudo generar el PDF: ' + e.message, 'error');
+      });
+  }, 300);
 }
 
 // ============================================================
