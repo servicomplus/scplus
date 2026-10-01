@@ -1,6 +1,6 @@
 /* ================================================================ */
 /* SERVICOMP+ - TIENDA.JS                                           */
-/* Versión 3.3 - Multi-sede con vaciado al cambiar + tildes OK      */
+/* Versión 3.4 - Iconos por categoría + fix placeholder             */
 /* ================================================================ */
 
 (function () {
@@ -10,7 +10,6 @@
   // CONFIGURACIÓN
   // ================================================================
   const CONFIG = {
-    // ✅ URL corregida (antes tenía "URL_SHEET: " pegado dentro del string)
     URL_SHEET: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv',
     WHATSAPP: '51973952322',
     POR_TANDA: 30,
@@ -82,6 +81,30 @@
   }
 
   // ================================================================
+  // 🆕 ICONO POR CATEGORÍA (Font Awesome 6.4.0)
+  // ================================================================
+  function getIconoCategoria(categoria) {
+    const cat = String(categoria || '').toUpperCase();
+    if (!cat) return 'fa-box';
+    if (cat.includes('LAPTOP') || cat.includes('NOTEBOOK') || cat.includes('COMPUTADORA') || cat.includes('ALL IN ONE') || cat === 'PC') return 'fa-laptop';
+    if (cat.includes('MONITOR')) return 'fa-display';
+    if (cat.includes('MOUSE')) return 'fa-computer-mouse';
+    if (cat.includes('TECLADO') || cat.includes('KEYBOARD')) return 'fa-keyboard';
+    if (cat.includes('AUDIO') || cat.includes('PARLANTE') || cat.includes('AUDIFONO') || cat.includes('AURICULAR')) return 'fa-headphones';
+    if (cat.includes('IMPRESORA') || cat.includes('IMPRESORAS')) return 'fa-print';
+    if (cat.includes('TINTA') || cat.includes('TONER')) return 'fa-droplet';
+    if (cat.includes('SSD') || cat.includes('DISCO') || cat.includes('ALMACENAMIENTO')) return 'fa-hard-drive';
+    if (cat.includes('REDES') || cat.includes('NETWORK')) return 'fa-network-wired';
+    if (cat.includes('SOFTWARE') || cat.includes('LICENCIA')) return 'fa-compact-disc';
+    if (cat.includes('COMPONENTE') || cat.includes('HARDWARE')) return 'fa-microchip';
+    if (cat.includes('ACCESORIO') || cat.includes('CABLE')) return 'fa-plug';
+    if (cat.includes('CAMARA') || cat.includes('WEBCAM')) return 'fa-camera';
+    if (cat.includes('TABLET')) return 'fa-tablet';
+    if (cat.includes('CELULAR') || cat.includes('SMARTPHONE')) return 'fa-mobile-screen';
+    return 'fa-box';
+  }
+
+  // ================================================================
   // ESTADO
   // ================================================================
   let DATA = [];
@@ -106,7 +129,6 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  // ✅ Limpia tildes y caracteres raros (igual que en Code.gs)
   function limpiarTexto(txt) {
     if (!txt) return '';
     return String(txt)
@@ -163,10 +185,8 @@
       const texto = new TextDecoder('utf-8').decode(buffer);
       const todasLasFilas = parsearCSV(texto);
 
-      // 🆕 Llenar dropdown de sedes con las disponibles en el CSV
       llenarSedeDropdown(todasLasFilas);
 
-      // 🆕 Determinar sede actual (guardada en localStorage o primera disponible)
       const sedesDisponibles = [...new Set(todasLasFilas.map(d => d.sede).filter(Boolean))];
       const guardada = localStorage.getItem('servicomp_tienda_sede_v1');
       SEDE_ACTUAL = (guardada && sedesDisponibles.includes(guardada))
@@ -176,7 +196,6 @@
       const sedeSel = $('#sedeSelect');
       if (sedeSel) sedeSel.value = SEDE_ACTUAL;
 
-      // 🆕 Filtrar solo la sede actual
       DATA = todasLasFilas.filter(d => d.sede === SEDE_ACTUAL);
 
       llenarFiltros();
@@ -192,7 +211,6 @@
     }
   }
 
-  // 🆕 Llena el dropdown de sedes
   function llenarSedeDropdown(filas) {
     const sedes = [...new Set(filas.map(d => d.sede).filter(Boolean))].sort();
     const sel = $('#sedeSelect');
@@ -200,7 +218,6 @@
     sel.innerHTML = sedes.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
   }
 
-  // 🆕 Cambiar de sede con confirmación si hay carrito
   function cambiarSede(nuevaSede) {
     if (!nuevaSede || nuevaSede === SEDE_ACTUAL) return;
 
@@ -414,15 +431,16 @@
     const enCarrito = CARRITO.find((x) => x.codigo === d.codigo);
     const img = getImagenDeltron(d.codigo);
     const color = getColorCategoria(d.categoria);
+    const icono = getIconoCategoria(d.categoria);
 
     return `
       <tr data-codigo="${esc(d.codigo)}">
         <td class="thumb-cell">
           <a href="${img}" target="_blank" rel="noopener noreferrer" class="thumb-link" title="Ver foto">
-            <i class="fa-solid fa-camera thumb-placeholder"></i>
             <img src="${img}" alt="${esc(d.codigo)}" loading="lazy"
                  onload="this.classList.add('loaded')"
                  onerror="this.classList.add('error'); this.style.display='none';">
+            <i class="fa-solid ${icono} thumb-placeholder"></i>
           </a>
         </td>
         <td>
@@ -467,15 +485,16 @@
     const enCarrito = CARRITO.find((x) => x.codigo === d.codigo);
     const img = getImagenDeltron(d.codigo);
     const color = getColorCategoria(d.categoria);
+    const icono = getIconoCategoria(d.categoria);
 
     return `
       <div class="product-card-mobile" data-codigo="${esc(d.codigo)}">
         <div class="pcm-main">
           <a href="${img}" target="_blank" rel="noopener noreferrer" class="pcm-thumb" title="Ver foto">
-            <i class="fa-solid fa-camera pcm-thumb-placeholder"></i>
             <img src="${img}" alt="${esc(d.codigo)}" loading="lazy"
                  onload="this.classList.add('loaded')"
                  onerror="this.classList.add('error'); this.style.display='none';">
+            <i class="fa-solid ${icono} pcm-thumb-placeholder"></i>
           </a>
           <div class="pcm-info">
             <div class="pcm-top">
@@ -560,7 +579,6 @@
     const prod = DATA.find((d) => d.codigo === codigo);
     if (!prod) { mostrarToast('Producto no encontrado'); return; }
 
-    // 🛡️ Validación: solo productos de la sede actual
     if (prod.sede !== SEDE_ACTUAL) {
       mostrarToast('⚠️ Este producto no es de la sede ' + SEDE_ACTUAL);
       return;
@@ -573,7 +591,7 @@
       descripcion: prod.descripcion,
       marca: prod.marca,
       precio_publico: prod.precio_publico,
-      sede: prod.sede,               // 🆕 guardar sede
+      sede: prod.sede,
       cantidad: 1
     });
 
@@ -659,7 +677,6 @@
 
     actualizarTotales();
 
-    // Refrescar botones "+" en tabla y cards
     $$('.products-table tbody tr, .product-card-mobile').forEach((el) => {
       const cod = el.dataset.codigo;
       if (!cod) return;
@@ -827,7 +844,6 @@
       if (el) el.addEventListener('change', render);
     });
 
-    // 🆕 Sede: manejo especial con confirmación
     const sedeSel = $('#sedeSelect');
     if (sedeSel) sedeSel.addEventListener('change', (e) => cambiarSede(e.target.value));
 
@@ -877,7 +893,7 @@
 
     await cargarDatos();
 
-    console.log('✅ ServiComp+ Tienda inicializada (v3.3 multi-sede)');
+    console.log('✅ ServiComp+ Tienda inicializada (v3.4 iconos por categoría)');
   }
 
   if (document.readyState === 'loading') {
