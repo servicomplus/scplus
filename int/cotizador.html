@@ -304,6 +304,24 @@
   .btn-print:hover { background: #5a6268; transform: translateY(-1px); }
 
   /* ============================================================
+     STOCK
+     ============================================================ */
+  .stock-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 36px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+  }
+  .stock-alto { background: #d1fae5; color: #065f46; }
+  .stock-medio { background: #fef3c7; color: #92400e; }
+  .stock-bajo { background: #fee2e2; color: #991b1b; }
+  .stock-vacio { background: #f1f3f5; color: #94a3b8; }
+
+  /* ============================================================
      SPECS
      ============================================================ */
   .specs-toggle {
@@ -419,7 +437,7 @@
     .buscador .input-group button { justify-content: center; }
     .resumen .fila.total .valor { font-size: 18px; }
     .tabla-productos { overflow-x: auto; }
-    .tabla-productos table { min-width: 500px; font-size: 11px; }
+    .tabla-productos table { min-width: 620px; font-size: 11px; }
     .tabla-productos thead th { font-size: 9px; padding: 6px; }
     .tabla-productos tbody td { padding: 6px; }
     .foto-cell { width: 40px; }
@@ -427,6 +445,7 @@
     .specs-celda { padding: 12px 10px !important; }
     .specs-tabla td:first-child { width: 45%; }
     .specs-tabla { font-size: 10.5px; }
+    .stock-badge { font-size: 10px; min-width: 30px; }
   }
 
   @media print {
@@ -629,11 +648,12 @@ function csvAFilas(texto) {
   const iSubtotal = idx('SUBTOTAL');
   const iFoto = idx('FOTO_URL');
 
-  // 🆕 Columnas de specs por POSICIÓN (por si los headers están vacíos)
-  // Estructura esperada: A(0)...Q(16) FOTO_URL, R(17) SPECS, S(18) SPECS_ESTADO, T(19) SPECS_UPDATED
+  // Columnas por POSICIÓN
+  // Estructura: A(0)...Q(16) FOTO_URL, R(17) SPECS, S(18) SPECS_ESTADO, T(19) SPECS_UPDATED, U(20) STOCK
   const COL_SPECS = 17;
   const COL_SPECS_ESTADO = 18;
   const COL_SPECS_UPDATED = 19;
+  const COL_STOCK = 20;
 
   return filas.slice(1).filter(f => f[iID]).map(f => ({
     id: String(f[iID] || '').trim(),
@@ -653,10 +673,10 @@ function csvAFilas(texto) {
     cantidad: iCantidad >= 0 ? (Number(f[iCantidad]) || 1) : 1,
     subtotal: iSubtotal >= 0 ? (Number(f[iSubtotal]) || 0) : 0,
     foto_url: iFoto >= 0 ? String(f[iFoto] || '') : '',
-    // 🆕 Specs
     specs_json: String(f[COL_SPECS] || '').trim(),
     specs_estado: String(f[COL_SPECS_ESTADO] || '').trim(),
-    specs_updated: String(f[COL_SPECS_UPDATED] || '').trim()
+    specs_updated: String(f[COL_SPECS_UPDATED] || '').trim(),
+    stock: String(f[COL_STOCK] || '').trim()
   }));
 }
 
@@ -817,6 +837,22 @@ function cargarCotizacionPorId(id, porID) {
 }
 
 // ============================================================
+// STOCK
+// ============================================================
+function renderStock(stockStr) {
+  const s = String(stockStr || '').trim();
+  if (!s || s === '') return '<span class="stock-badge stock-vacio">—</span>';
+
+  const match = s.match(/-?\d+/);
+  const num = match ? parseInt(match[0]) : null;
+
+  if (num === null) return `<span class="stock-badge stock-vacio">${esc(s)}</span>`;
+  if (num === 0) return '<span class="stock-badge stock-bajo">0</span>';
+  if (num <= 10) return `<span class="stock-badge stock-medio">${num}</span>`;
+  return `<span class="stock-badge stock-alto">${num}+</span>`;
+}
+
+// ============================================================
 // RENDER SPECS
 // ============================================================
 function renderSpecs(specsJson) {
@@ -835,7 +871,6 @@ function renderSpecs(specsJson) {
     return '<div class="specs-vacio"><i class="fa-regular fa-circle-xmark"></i> Especificaciones no disponibles para este producto</div>';
   }
 
-  // Agrupar por categoría
   const grupos = {};
   for (const s of specs) {
     const cat = s.categoria || 'GENERAL';
@@ -861,7 +896,6 @@ function renderSpecs(specsJson) {
   return html;
 }
 
-// Convierte specs a texto plano para copiar
 function specsATexto(specsJson) {
   if (!specsJson || specsJson === '[]' || specsJson === '') return '';
   let specs;
@@ -921,10 +955,7 @@ function copiarSpecs(specsJson, codigo) {
         toast: true,
         position: 'top-end'
       });
-    }).catch(() => {
-      // Fallback
-      copiarFallback(contenido);
-    });
+    }).catch(() => copiarFallback(contenido));
   } else {
     copiarFallback(contenido);
   }
@@ -967,16 +998,12 @@ function renderCotizacion(cot, items) {
     subtotal += totalLinea;
     const imgUrl = p.foto_url || getImagenDeltron(p.codigo);
 
-    // UID único para esta fila (id + codigo + idx para evitar colisiones)
     const uid = `${cot.id}__${p.codigo}__${idx}`;
-
-    // ¿Tiene specs?
     const tieneSpecs = p.specs_json && p.specs_json !== '[]' && p.specs_json.trim() !== '';
     const specsHtml = tieneSpecs
       ? renderSpecs(p.specs_json)
       : '<div class="specs-vacio"><i class="fa-regular fa-circle-xmark"></i> Especificaciones no disponibles para este producto</div>';
 
-    // Botón de toggle
     const btnToggle = tieneSpecs
       ? `<button class="specs-toggle" onclick="toggleSpecs('${uid}', this)" title="Ver especificaciones">
            <i class="fa-solid fa-chevron-right"></i> Ver especificaciones
@@ -985,7 +1012,6 @@ function renderCotizacion(cot, items) {
            <i class="fa-regular fa-circle-xmark"></i> Sin specs
          </span>`;
 
-    // Botón copiar (solo si tiene specs)
     const btnCopiar = tieneSpecs
       ? `<button class="specs-btn-copiar" onclick="copiarSpecs(${JSON.stringify(p.specs_json).replace(/"/g, '&quot;')}, '${esc(p.codigo)}')">
            <i class="fa-regular fa-copy"></i> Copiar
@@ -1009,11 +1035,12 @@ function renderCotizacion(cot, items) {
           ${p.marca ? `<div class="producto-marca">${esc(p.marca)}</div>` : ''}
         </td>
         <td class="num">S/ ${fmt2(precio)}</td>
+        <td class="centro">${renderStock(p.stock)}</td>
         <td class="centro">${cant}</td>
         <td class="num">S/ ${fmt2(totalLinea)}</td>
       </tr>
       <tr class="specs-fila" data-uid="${uid}">
-        <td colspan="6" class="specs-celda">
+        <td colspan="7" class="specs-celda">
           <div class="specs-wrapper">
             ${specsHtml}
             <div class="specs-acciones no-print">
@@ -1040,6 +1067,7 @@ function renderCotizacion(cot, items) {
             <th style="width:180px;">Código</th>
             <th>Producto</th>
             <th class="num">Precio</th>
+            <th class="centro">Stock</th>
             <th class="centro">Cant.</th>
             <th class="num">Total</th>
           </tr>
@@ -1132,7 +1160,6 @@ function exportarPDF() {
   const cot = COTIZACION_ACTUAL;
   if (!cot) return;
 
-  // Expandir todas las specs antes de exportar
   document.querySelectorAll('.specs-fila').forEach(f => f.classList.add('abierto'));
   document.querySelectorAll('.specs-toggle').forEach(b => {
     if (!b.classList.contains('sin-specs')) {
@@ -1151,7 +1178,6 @@ function exportarPDF() {
     didOpen: () => Swal.showLoading()
   });
 
-  // Pequeño delay para que el DOM se actualice con las specs expandidas
   setTimeout(() => {
     html2pdf()
       .set({
@@ -1166,7 +1192,6 @@ function exportarPDF() {
       .save()
       .then(() => {
         Swal.close();
-        // Colapsar specs después
         document.querySelectorAll('.specs-fila').forEach(f => f.classList.remove('abierto'));
         document.querySelectorAll('.specs-toggle').forEach(b => {
           if (!b.classList.contains('sin-specs')) {
