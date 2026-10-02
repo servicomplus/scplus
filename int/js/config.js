@@ -20,10 +20,10 @@ const MARCAS_EXCLUIDAS     = ['GENÉRICO', 'GENERICO', 'SIN MARCA'];
 const PRECIOS_BASURA       = [0.01, 0.1, 1, 9999999];
 
 // --- Badges ---
-const BADGE_DIAS_NUEVO   = 7;    // días para considerar "nuevo"
-const BADGE_DIAS_CAMBIO  = 7;    // días para considerar cambio de precio/stock
-const BADGE_PCT_MINIMO   = 1;    // % mínimo de cambio para mostrar badge
-const BADGE_MAX_ICONOS   = 4;    // máximo de iconos por fila
+const BADGE_DIAS_NUEVO   = 7;
+const BADGE_DIAS_CAMBIO  = 7;
+const BADGE_PCT_MINIMO   = 1;
+const BADGE_MAX_ICONOS   = 4;
 
 // --- Listado ---
-const POR_TANDA = 40;            // productos por tanda (scroll infinito)
+const POR_TANDA = 40;
