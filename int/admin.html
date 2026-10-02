@@ -40,7 +40,11 @@
   <div id="error" class="error" style="display:none"></div>
 
   <div id="panel" style="display:none">
-    <div class="row">
+
+    <!-- ============================================
+         TOOLBAR · inputs y controles
+         ============================================ -->
+    <div class="toolbar">
       <input type="text" id="q" placeholder="🔍 Buscar: ssd 240 teamgroup..." oninput="renderDebounced()">
       <select id="cat" onchange="render()"><option value="">Todas las categorías</option></select>
       <select id="marca" onchange="render()"><option value="">Todas las marcas</option></select>
@@ -55,33 +59,56 @@
         <span id="btnVistaLabel">Tarjetas</span>
       </button>
       <button class="secondary" onclick="cargarDatos()">🔄 Recargar</button>
+    </div>
 
-      <button class="badge-filter f-new"   id="filtro-nuevo"       onclick="toggleFiltroBadge('nuevo')">
+    <!-- ============================================
+         FILTROS BADGE · con separador de grupos
+         ============================================ -->
+    <div class="filters-bar">
+
+      <!-- Grupo: Nuevos -->
+      <button class="badge-filter f-new" id="filtro-nuevo" onclick="toggleFiltroBadge('nuevo')">
         <i class="fa-solid fa-circle" style="font-size:8px"></i>
         Nuevos <span class="cnt" id="cnt-nuevo">0</span>
       </button>
-      <button class="badge-filter f-price" id="filtro-precio-baja" onclick="toggleFiltroBadge('precioBaja')">
-        <i class="fa-solid fa-arrow-down"></i>
-        Bajaron <span class="cnt" id="cnt-precio-baja">0</span>
+
+      <span class="filter-sep"></span>
+
+      <!-- Grupo: Precio -->
+      <button class="badge-filter f-precio-down" id="filtro-precio-baja" onclick="toggleFiltroBadge('precioBaja')">
+        <i class="fa-solid fa-arrow-trend-down"></i>
+        Precio bajó <span class="cnt" id="cnt-precio-baja">0</span>
       </button>
-      <button class="badge-filter f-price" id="filtro-precio-sube" onclick="toggleFiltroBadge('precioSube')">
-        <i class="fa-solid fa-arrow-up"></i>
-        Subieron <span class="cnt" id="cnt-precio-sube">0</span>
+      <button class="badge-filter f-precio-up" id="filtro-precio-sube" onclick="toggleFiltroBadge('precioSube')">
+        <i class="fa-solid fa-arrow-trend-up"></i>
+        Precio subió <span class="cnt" id="cnt-precio-sube">0</span>
       </button>
-      <button class="badge-filter f-stock" id="filtro-stock-baja"  onclick="toggleFiltroBadge('stockBaja')">
-        <i class="fa-solid fa-triangle-exclamation"></i>
+
+      <span class="filter-sep"></span>
+
+      <!-- Grupo: Stock -->
+      <button class="badge-filter f-stock-down" id="filtro-stock-baja" onclick="toggleFiltroBadge('stockBaja')">
+        <i class="fa-solid fa-arrow-down-long"></i>
         Stock bajó <span class="cnt" id="cnt-stock-baja">0</span>
       </button>
-      <button class="badge-filter f-stock" id="filtro-stock-sube"  onclick="toggleFiltroBadge('stockSube')">
-        <i class="fa-solid fa-circle-check"></i>
+      <button class="badge-filter f-stock-up" id="filtro-stock-sube" onclick="toggleFiltroBadge('stockSube')">
+        <i class="fa-solid fa-arrow-up-long"></i>
         Stock subió <span class="cnt" id="cnt-stock-sube">0</span>
       </button>
+
+      <span class="filter-sep"></span>
+
+      <!-- Grupo: Favoritos -->
       <button class="badge-filter f-fav" id="filtro-favoritos" onclick="toggleFiltroFavoritos()">
         <i class="fa-solid fa-star"></i>
         Favoritos <span class="cnt" id="cnt-favoritos">0</span>
       </button>
+
     </div>
 
+    <!-- ============================================
+         STATS
+         ============================================ -->
     <div class="stats">
       <div>Productos: <b id="s_total">0</b></div>
       <div>Mostrando: <b id="s_show">0</b></div>
@@ -89,6 +116,9 @@
       <div>Marcas: <b id="s_marca">0</b></div>
     </div>
 
+    <!-- ============================================
+         TABLA
+         ============================================ -->
     <div class="table-wrap" id="tableWrap">
       <table>
         <thead>
@@ -113,11 +143,17 @@
       </div>
     </div>
 
+    <!-- ============================================
+         CARDS
+         ============================================ -->
     <div class="cards-wrap" id="cardsWrap"></div>
     <div id="empty" class="empty" style="display:none">Sin resultados</div>
   </div>
 </div>
 
+<!-- ============================================
+     CARRITO
+     ============================================ -->
 <button class="cart-fab empty" id="cartFab" onclick="abrirCarrito()" title="Ver carrito">
   <i class="fa-solid fa-cart-shopping"></i>
   <span class="cart-badge" id="cartBadge">0</span>
@@ -181,6 +217,9 @@
   </div>
 </aside>
 
+<!-- ============================================
+     MODAL
+     ============================================ -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)cerrarModal()">
   <div class="modal">
     <div class="modal-header">
