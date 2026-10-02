@@ -551,6 +551,110 @@
   }
   body.vista-cards .table-wrap { display: none; }
   body.vista-cards .cards-wrap { display: grid; }
+
+  /* ============================================================
+     BADGES · nuevos / cambios de precio / cambios de stock
+     ============================================================ */
+  .badges {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    margin-left: 6px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    font-size: 10.5px;
+    cursor: pointer;
+    transition: transform .15s ease;
+    user-select: none;
+  }
+  .badge:hover { transform: scale(1.4); }
+  .badge i { pointer-events: none; }
+
+  .badge-new { color: #4ade80; font-size: 8px; }
+  .badge-price.down { color: #4ade80; }
+  .badge-price.up   { color: #fbbf24; }
+  .badge-stock.danger { color: #f87171; }
+  .badge-stock.warn   { color: #fbbf24; }
+  .badge-stock.ok     { color: #4ade80; }
+
+  .badge-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: #020617;
+    color: #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    font-size: 11.5px;
+    font-family: ui-monospace, monospace;
+    line-height: 1.6;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    white-space: nowrap;
+    display: none;
+  }
+  .badge-tooltip.visible { display: block; }
+  .badge-tooltip .tt-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #1e293b;
+    font-family: system-ui, sans-serif;
+    letter-spacing: 0.03em;
+  }
+  .badge-tooltip .label { color: #94a3b8; }
+  .badge-tooltip .value { color: #fbbf24; font-weight: 600; }
+  .badge-tooltip .good  { color: #4ade80; font-weight: 700; }
+  .badge-tooltip .bad   { color: #f87171; font-weight: 700; }
+  .badge-tooltip .warn  { color: #fbbf24; font-weight: 700; }
+
+  .badge-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #0f172a;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 7px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+  }
+  .badge-filter:hover { border-color: #3b82f6; color: #e2e8f0; }
+  .badge-filter.active {
+    background: #1e40af;
+    border-color: #3b82f6;
+    color: #ffffff;
+  }
+  .badge-filter.active i { color: #ffffff !important; }
+  .badge-filter i { font-size: 10.5px; }
+  .badge-filter .cnt {
+    font-size: 10px;
+    color: #64748b;
+    font-family: ui-monospace, monospace;
+  }
+  .badge-filter.active .cnt { color: #bfdbfe; }
+  .badge-filter.f-new i     { color: #4ade80; }
+  .badge-filter.f-price i   { color: #4ade80; }
+  .badge-filter.f-stock i   { color: #f87171; }
+
+  @media (max-width: 768px) {
+    .badge { width: 14px; height: 14px; font-size: 10px; }
+    .badges { gap: 4px; margin-left: 4px; }
+    .badge-filter { padding: 6px 9px; font-size: 11px; }
+    .badge-filter .cnt { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -592,6 +696,28 @@
         <span id="btnVistaLabel">Tarjetas</span>
       </button>
       <button class="secondary" onclick="cargarDatos()">🔄 Recargar</button>
+
+      <!-- Filtros rápidos por badges -->
+      <button class="badge-filter f-new"   id="filtro-nuevo"       onclick="toggleFiltroBadge('nuevo')">
+        <i class="fa-solid fa-circle" style="font-size:8px"></i>
+        Nuevos <span class="cnt" id="cnt-nuevo">0</span>
+      </button>
+      <button class="badge-filter f-price" id="filtro-precio-baja" onclick="toggleFiltroBadge('precioBaja')">
+        <i class="fa-solid fa-arrow-down"></i>
+        Bajaron <span class="cnt" id="cnt-precio-baja">0</span>
+      </button>
+      <button class="badge-filter f-price" id="filtro-precio-sube" onclick="toggleFiltroBadge('precioSube')">
+        <i class="fa-solid fa-arrow-up"></i>
+        Subieron <span class="cnt" id="cnt-precio-sube">0</span>
+      </button>
+      <button class="badge-filter f-stock" id="filtro-stock-baja"  onclick="toggleFiltroBadge('stockBaja')">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Stock bajó <span class="cnt" id="cnt-stock-baja">0</span>
+      </button>
+      <button class="badge-filter f-stock" id="filtro-stock-sube"  onclick="toggleFiltroBadge('stockSube')">
+        <i class="fa-solid fa-circle-check"></i>
+        Stock subió <span class="cnt" id="cnt-stock-sube">0</span>
+      </button>
     </div>
 
     <div class="stats">
@@ -735,8 +861,8 @@
   <span>Código copiado</span>
 </div>
 
+<div id="badge-tooltip" class="badge-tooltip"></div>
 <div id="tooltip-global" class="tooltip-flotante"></div>
-
 <script>
 // ============================================================
 // CONFIGURACIÓN
@@ -747,6 +873,34 @@ const POR_TANDA = 24;
 const KEY_SEDE = 'servicomp_sede_v1';
 const KEY_CARRITO = 'servicomp_carrito_v1';
 
+// ============================================================
+// URLS DE REPORTES (badges)
+// ============================================================
+const URL_REP_PRECIOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=1940346287&single=true&output=csv';
+const URL_REP_NUEVOS  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=936196408&single=true&output=csv';
+const URL_REP_STOCK   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=1393993617&single=true&output=csv';
+
+// ============================================================
+// CONFIGURACIÓN DE BADGES
+// ============================================================
+const BADGE_DIAS_NUEVO   = 7;
+const BADGE_DIAS_CAMBIO  = 7;
+const BADGE_PCT_MINIMO   = 1;
+const BADGE_MAX_ICONOS   = 3;
+
+// ============================================================
+// ESTADO DE BADGES
+// ============================================================
+let DATA_PRECIOS = [];
+let DATA_NUEVOS  = [];
+let DATA_STOCK   = [];
+let BADGES = {};
+let FILTROS_BADGE = { nuevo:false, precioBaja:false, precioSube:false, stockBaja:false, stockSube:false };
+let BADGE_TOOLTIP_EL = null;
+
+// ============================================================
+// EXCLUSIONES (catálogo)
+// ============================================================
 const CATEGORIAS_EXCLUIDAS = [
   'SERVICIO TECNICO', 'SERVICIOS OTROS', 'SERVICIOS VENTAS',
   'ACCESORIOS', 'DELTRON', 'DELTRON PC'
@@ -821,6 +975,9 @@ async function cargarDatos() {
 
     document.getElementById('ultima-act').textContent = new Date().toLocaleString('es-PE');
     actualizarSedeTags();
+
+    await cargarReportes();
+
     render();
   } catch (e) {
     document.getElementById('loading').style.display = 'none';
@@ -986,6 +1143,7 @@ function render() {
       const txt = (d.codigo + ' ' + d.descripcion + ' ' + d.marca + ' ' + d.categoria).toLowerCase();
       if (!terminos.every(t => txt.includes(t))) return false;
     }
+    if (!pasaFiltroBadge(d)) return false;
     return true;
   });
 
@@ -1075,7 +1233,7 @@ function cargarMas() {
           ${esc(d.codigo)} <i class="fa-regular fa-copy"></i>
         </span>
       </td>
-      <td class="desc">${esc(d.descripcion)}</td>
+      <td class="desc">${esc(d.descripcion)}${renderBadges(d)}</td>
       <td class="${st.cls}">${esc(st.txt)}</td>
       <td class="price">
         <span class="tooltip-trigger" data-tooltip="${encodeTooltip(tooltipUSD)}">$ ${fmt2(d.precio_usd)}</span>
@@ -1112,7 +1270,7 @@ function cargarMas() {
           </a>
         </div>
       </div>
-      <div class="card-desc">${esc(d.descripcion)}</div>
+      <div class="card-desc">${esc(d.descripcion)}${renderBadges(d)}</div>
       <div class="card-prices">
         <div class="card-price-item">
           <span class="label">USD</span>
@@ -1171,6 +1329,356 @@ function normalizaStock(s) {
 }
 
 // ============================================================
+// CARGAR REPORTES (badges)
+// ============================================================
+async function cargarReportes() {
+  try {
+    const [rP, rN, rS] = await Promise.all([
+      fetch(URL_REP_PRECIOS + '&t=' + Date.now()).then(r => r.ok ? r.text() : ''),
+      fetch(URL_REP_NUEVOS  + '&t=' + Date.now()).then(r => r.ok ? r.text() : ''),
+      fetch(URL_REP_STOCK   + '&t=' + Date.now()).then(r => r.ok ? r.text() : '')
+    ]);
+    DATA_PRECIOS = rP ? parsearCSVReportes(rP) : [];
+    DATA_NUEVOS  = rN ? parsearCSVReportes(rN) : [];
+    DATA_STOCK   = rS ? parsearCSVReportes(rS) : [];
+    construirBadges();
+    actualizarContadoresBadges();
+    console.log('✅ Badges: ' + Object.keys(BADGES).length + ' productos con estado');
+  } catch (e) {
+    console.warn('⚠️ Error cargando reportes:', e.message);
+    BADGES = {};
+  }
+}
+
+function parsearCSVReportes(texto) {
+  const filas = [];
+  let fila = [], campo = '', enComillas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
+    if (enComillas) {
+      if (c === '"') {
+        if (texto[i+1] === '"') { campo += '"'; i++; }
+        else enComillas = false;
+      } else campo += c;
+    } else {
+      if (c === '"') enComillas = true;
+      else if (c === ',') { fila.push(campo); campo = ''; }
+      else if (c === '\n') { fila.push(campo); filas.push(fila); fila = []; campo = ''; }
+      else if (c !== '\r') campo += c;
+    }
+  }
+  if (campo.length || fila.length) { fila.push(campo); filas.push(fila); }
+
+  if (filas.length < 2) return [];
+  const headers = filas[0].map(h => h.trim().toUpperCase());
+  return filas.slice(1).filter(f => f.length >= 5).map(f => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = f[i]; });
+    return obj;
+  });
+}
+
+function parsearFechaReporte(str) {
+  if (!str) return null;
+  if (str instanceof Date) return str;
+  const s = String(str).trim();
+  let m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+  if (m) {
+    return new Date(
+      parseInt(m[3]), parseInt(m[2]) - 1, parseInt(m[1]),
+      parseInt(m[4] || 0), parseInt(m[5] || 0)
+    );
+  }
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// ============================================================
+// CONSTRUIR ÍNDICE DE BADGES
+// ============================================================
+function construirBadges() {
+  BADGES = {};
+  const ahora = Date.now();
+  const corteNuevo  = ahora - BADGE_DIAS_NUEVO  * 86400000;
+  const corteCambio = ahora - BADGE_DIAS_CAMBIO * 86400000;
+
+  // PRECIOS
+  const ultimoCambio = {};
+  for (const row of DATA_PRECIOS) {
+    const sede = String(row.SEDE || '').toUpperCase().trim();
+    const codigo = String(row.CODIGO || '').trim();
+    if (!sede || !codigo) continue;
+
+    const fecha = parsearFechaReporte(row.FECHA_HORA);
+    if (!fecha || fecha.getTime() < corteCambio) continue;
+
+    const subtipo = String(row.SUBTIPO || '').toUpperCase();
+    if (!subtipo.startsWith('PRECIO_')) continue;
+
+    const antes = parseFloat(row.PRECIO_ANTES) || 0;
+    const ahora2 = parseFloat(row.PRECIO_AHORA) || 0;
+    if (antes <= 0 || ahora2 <= 0) continue;
+    if (antes > 9999999 || ahora2 > 9999999) continue;
+
+    const delta = ahora2 - antes;
+    const pct = antes > 0 ? (delta / antes) * 100 : 0;
+    if (Math.abs(pct) < BADGE_PCT_MINIMO) continue;
+
+    const key = sede + '|' + codigo;
+    if (!ultimoCambio[key] || fecha > ultimoCambio[key].fecha) {
+      ultimoCambio[key] = {
+        fecha, antes, ahora: ahora2, delta, pct,
+        dir: delta < 0 ? 'down' : 'up'
+      };
+    }
+  }
+  for (const key in ultimoCambio) {
+    if (!BADGES[key]) BADGES[key] = {};
+    BADGES[key].precio = ultimoCambio[key];
+  }
+
+  // STOCK
+  const ultimoStock = {};
+  for (const row of DATA_STOCK) {
+    const sede = String(row.SEDE || '').toUpperCase().trim();
+    const codigo = String(row.CODIGO || '').trim();
+    if (!sede || !codigo) continue;
+
+    const fecha = parsearFechaReporte(row.FECHA_HORA);
+    if (!fecha || fecha.getTime() < corteCambio) continue;
+
+    const subtipo = String(row.SUBTIPO || '').toUpperCase();
+    if (!subtipo.startsWith('STOCK_')) continue;
+
+    const antes = parseFloat(row.VALOR_ANTES) || 0;
+    const ahora2 = parseFloat(row.VALOR_AHORA) || 0;
+    const delta = ahora2 - antes;
+    const pct = antes > 0 ? (delta / antes) * 100 : 0;
+
+    let dir = 'danger';
+    if (subtipo === 'STOCK_SUBE') dir = 'ok';
+    else if (subtipo === 'STOCK_BAJA') dir = 'danger';
+    else if (subtipo === 'STOCK_BAJO') dir = 'warn';
+    else if (subtipo === 'STOCK_CERO') dir = 'danger';
+
+    const key = sede + '|' + codigo;
+    if (!ultimoStock[key] || fecha > ultimoStock[key].fecha) {
+      ultimoStock[key] = { fecha, antes, ahora: ahora2, delta, pct, dir, subtipo };
+    }
+  }
+  for (const key in ultimoStock) {
+    if (!BADGES[key]) BADGES[key] = {};
+    BADGES[key].stock_chg = ultimoStock[key];
+  }
+
+  // NUEVOS
+  for (const row of DATA_NUEVOS) {
+    const sede = String(row.SEDE || '').toUpperCase().trim();
+    const codigo = String(row.CODIGO || '').trim();
+    if (!sede || !codigo) continue;
+
+    const tipo = String(row.TIPO || '').toUpperCase();
+    if (tipo !== 'NUEVO') continue;
+
+    const fecha = parsearFechaReporte(row.FECHA_HORA);
+    if (!fecha || fecha.getTime() < corteNuevo) continue;
+
+    const key = sede + '|' + codigo;
+    if (!BADGES[key]) BADGES[key] = {};
+    if (!BADGES[key].nuevo || fecha > BADGES[key].nuevo.fecha) {
+      BADGES[key].nuevo = {
+        fecha,
+        dias: Math.floor((ahora - fecha.getTime()) / 86400000)
+      };
+    }
+  }
+}
+
+// ============================================================
+// RENDER DE BADGES
+// ============================================================
+function badgeDe(d) {
+  const key = String(d.sede || '').toUpperCase().trim() + '|' + String(d.codigo || '').trim();
+  return BADGES[key] || null;
+}
+
+function renderBadges(d) {
+  const b = badgeDe(d);
+  if (!b) return '';
+
+  const iconos = [];
+  const stk = normalizaStock(d.stock);
+  const stockNum = parseInt(stk.txt) || 0;
+
+  if (b.nuevo) iconos.push(iconNuevo(b.nuevo));
+  if (b.precio && iconos.length < BADGE_MAX_ICONOS) iconos.push(iconPrecio(b.precio));
+
+  if (iconos.length < BADGE_MAX_ICONOS) {
+    if (b.stock_chg) iconos.push(iconStockChange(b.stock_chg));
+    else if (stockNum > 0 && stockNum <= 3) iconos.push(iconStockLow(stockNum));
+  }
+
+  if (iconos.length === 0) return '';
+  return '<span class="badges">' + iconos.join('') + '</span>';
+}
+
+function iconNuevo(n) {
+  const fechaTxt = n.fecha.toLocaleDateString('es-PE');
+  const diasTxt = n.dias === 0 ? 'hoy' : 'hace ' + n.dias + ' día' + (n.dias !== 1 ? 's' : '');
+  const tt = `
+    <div class="tt-title">● NUEVO</div>
+    <div><span class="label">Ingresó:</span> ${esc(fechaTxt)}</div>
+    <div><span class="label">Hace:</span> ${esc(diasTxt)}</div>`;
+  return `<span class="badge badge-new" data-tt="${encodeURIComponent(tt)}">●</span>`;
+}
+
+function iconPrecio(p) {
+  const cls = p.dir === 'down' ? 'down' : 'up';
+  const ico = p.dir === 'down' ? 'fa-arrow-down' : 'fa-arrow-up';
+  const signo = p.delta > 0 ? '+' : '';
+  const tt = `
+    <div class="tt-title">● PRECIO ${p.dir === 'down' ? '↓' : '↑'}</div>
+    <div><span class="label">Antes:</span> <span class="value">$ ${fmt2(p.antes)}</span></div>
+    <div><span class="label">Ahora:</span> <span class="value">$ ${fmt2(p.ahora)}</span></div>
+    <div><span class="label">Δ:</span> <span class="${p.delta < 0 ? 'good' : 'warn'}">${signo}$${fmt2(p.delta)} (${signo}${p.pct.toFixed(2)}%)</span></div>
+    <div><span class="label">Fecha:</span> ${esc(p.fecha.toLocaleString('es-PE'))}</div>`;
+  return `<span class="badge badge-price ${cls}" data-tt="${encodeURIComponent(tt)}"><i class="fa-solid ${ico}"></i></span>`;
+}
+
+function iconStockChange(s) {
+  let dir = s.dir;
+  if (s.subtipo === 'STOCK_CERO') dir = 'danger';
+  if (s.subtipo === 'STOCK_BAJO') dir = 'warn';
+  if (s.subtipo === 'STOCK_SUBE') dir = 'ok';
+  if (s.subtipo === 'STOCK_BAJA') dir = 'danger';
+
+  const map = {
+    danger: ['fa-triangle-exclamation', 'danger'],
+    warn:   ['fa-triangle-exclamation', 'warn'],
+    ok:     ['fa-circle-check', 'ok']
+  };
+  const [ico, cls] = map[dir] || ['fa-triangle-exclamation', 'danger'];
+  const signo = s.delta > 0 ? '+' : '';
+
+  let titulo = 'STOCK ⚠';
+  if (dir === 'ok') titulo = 'STOCK ✓';
+  else if (dir === 'warn') titulo = 'STOCK BAJO ⚠';
+
+  const tt = `
+    <div class="tt-title">● ${titulo}</div>
+    <div><span class="label">Antes:</span> <span class="value">${s.antes}</span></div>
+    <div><span class="label">Ahora:</span> <span class="value">${s.ahora}</span></div>
+    <div><span class="label">Δ:</span> <span class="${s.delta < 0 ? 'bad' : 'good'}">${signo}${s.delta} (${signo}${s.pct.toFixed(1)}%)</span></div>
+    <div><span class="label">Fecha:</span> ${esc(s.fecha.toLocaleString('es-PE'))}</div>`;
+  return `<span class="badge badge-stock ${cls}" data-tt="${encodeURIComponent(tt)}"><i class="fa-solid ${ico}"></i></span>`;
+}
+
+function iconStockLow(n) {
+  const tt = `
+    <div class="tt-title">● STOCK BAJO</div>
+    <div><span class="label">Actual:</span> <span class="warn">${n}</span></div>
+    <div><span class="label">Alerta:</span> quedan pocas unidades</div>`;
+  return `<span class="badge badge-stock warn" data-tt="${encodeURIComponent(tt)}"><i class="fa-solid fa-triangle-exclamation"></i></span>`;
+}
+
+// ============================================================
+// CONTADORES
+// ============================================================
+function actualizarContadoresBadges() {
+  const cnt = { nuevo:0, precioBaja:0, precioSube:0, stockBaja:0, stockSube:0 };
+  for (const d of DATA) {
+    const b = badgeDe(d);
+    const stk = normalizaStock(d.stock);
+    const n = parseInt(stk.txt) || 0;
+    if (b && b.nuevo) cnt.nuevo++;
+    if (b && b.precio) {
+      if (b.precio.dir === 'down') cnt.precioBaja++;
+      else cnt.precioSube++;
+    }
+    if (b && b.stock_chg) {
+      if (b.stock_chg.dir === 'danger' || b.stock_chg.dir === 'warn') cnt.stockBaja++;
+      else if (b.stock_chg.dir === 'ok') cnt.stockSube++;
+    } else if (n > 0 && n <= 3) {
+      cnt.stockBaja++;
+    }
+  }
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('cnt-nuevo', cnt.nuevo);
+  set('cnt-precio-baja', cnt.precioBaja);
+  set('cnt-precio-sube', cnt.precioSube);
+  set('cnt-stock-baja', cnt.stockBaja);
+  set('cnt-stock-sube', cnt.stockSube);
+}
+
+// ============================================================
+// FILTROS TOGGLE
+// ============================================================
+function toggleFiltroBadge(nombre) {
+  FILTROS_BADGE[nombre] = !FILTROS_BADGE[nombre];
+  const map = {
+    nuevo: 'filtro-nuevo',
+    precioBaja: 'filtro-precio-baja',
+    precioSube: 'filtro-precio-sube',
+    stockBaja: 'filtro-stock-baja',
+    stockSube: 'filtro-stock-sube'
+  };
+  const btn = document.getElementById(map[nombre]);
+  if (btn) btn.classList.toggle('active', FILTROS_BADGE[nombre]);
+  render();
+}
+
+function pasaFiltroBadge(d) {
+  const activos = Object.keys(FILTROS_BADGE).filter(k => FILTROS_BADGE[k]);
+  if (activos.length === 0) return true;
+
+  const b = badgeDe(d);
+  const stk = normalizaStock(d.stock);
+  const stockNum = parseInt(stk.txt) || 0;
+
+  for (const f of activos) {
+    if (f === 'nuevo'      && b && b.nuevo) return true;
+    if (f === 'precioBaja' && b && b.precio && b.precio.dir === 'down') return true;
+    if (f === 'precioSube' && b && b.precio && b.precio.dir === 'up')   return true;
+    if (f === 'stockBaja') {
+      if (b && b.stock_chg && (b.stock_chg.dir === 'danger' || b.stock_chg.dir === 'warn')) return true;
+      if (stockNum > 0 && stockNum <= 3) return true;
+    }
+    if (f === 'stockSube'  && b && b.stock_chg && b.stock_chg.dir === 'ok') return true;
+  }
+  return false;
+}
+
+// ============================================================
+// TOOLTIP DE BADGES
+// ============================================================
+function initBadgeTooltip() {
+  BADGE_TOOLTIP_EL = document.getElementById('badge-tooltip');
+  if (!BADGE_TOOLTIP_EL) return;
+
+  document.addEventListener('mouseover', (e) => {
+    const el = e.target.closest('.badge[data-tt]');
+    if (!el) return;
+    BADGE_TOOLTIP_EL.innerHTML = decodeURIComponent(el.dataset.tt || '');
+    BADGE_TOOLTIP_EL.classList.add('visible');
+    const r = el.getBoundingClientRect();
+    const tr = BADGE_TOOLTIP_EL.getBoundingClientRect();
+    let top = r.top - tr.height - 8;
+    let left = r.left + r.width / 2 - tr.width / 2;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + tr.width > window.innerWidth - 8) left = window.innerWidth - tr.width - 8;
+    BADGE_TOOLTIP_EL.style.top = top + 'px';
+    BADGE_TOOLTIP_EL.style.left = left + 'px';
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('.badge[data-tt]')) {
+      BADGE_TOOLTIP_EL.classList.remove('visible');
+    }
+  });
+}
+
+// ============================================================
 // COPIAR
 // ============================================================
 function copiarCodigo(texto) { copiarAlPortapapeles(texto, 'Código copiado'); }
@@ -1217,7 +1725,7 @@ function toggleVista() {
 }
 
 // ============================================================
-// TOOLTIP
+// TOOLTIP GENÉRICO (precios, márgenes)
 // ============================================================
 const tooltipGlobal = document.getElementById('tooltip-global');
 
@@ -1536,6 +2044,7 @@ function imprimirDesdeModal() {
 // ============================================================
 // INICIALIZACIÓN
 // ============================================================
+initBadgeTooltip();
 cargarCarritoDeStorage();
 actualizarCarritoUI();
 cargarDatos();
@@ -1547,6 +2056,5 @@ document.addEventListener('keydown', (e) => {
   }
 });
 </script>
-
 </body>
 </html>
