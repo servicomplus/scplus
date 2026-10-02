@@ -1,10 +1,10 @@
 // ============================================================
 // FAVORITOS · global, filtrado por sede, con caché local
 // ============================================================
+// NOTA: KEY_FAV_CACHE está declarada en config.js — NO repetir aquí.
 
-let FAVORITOS = [];              // [{ codigo, fecha, nota }] válidos para la sede actual
+let FAVORITOS = [];
 let MOSTRAR_SOLO_FAVORITOS = false;
-const KEY_FAV_CACHE = 'servicomp_favoritos_cache_v1';
 
 // ------------------------------------------------------------
 // Cargar (primero cache, luego red)
