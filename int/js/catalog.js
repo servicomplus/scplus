@@ -348,3 +348,151 @@ function initTooltipGlobal() {
     if (e.target.closest('.tooltip-trigger')) tooltipGlobal.classList.remove('visible');
   });
 }
+
+
+/* ============================================
+   TOOLBAR · inputs y controles
+   ============================================ */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.toolbar > input[type="text"] {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.toolbar > select {
+  flex: 0 1 160px;
+  min-width: 0;
+}
+.toolbar > button {
+  flex: 0 0 auto;
+}
+
+/* ============================================
+   FILTROS BAR · badges con separadores
+   ============================================ */
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.badge-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f8fafc;
+  color: #64748b;
+  transition: all .15s ease;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.badge-filter:hover { background: #f1f5f9; }
+.badge-filter .cnt {
+  background: rgba(0,0,0,.08);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.badge-filter.active {
+  font-weight: 700;
+  box-shadow: 0 0 0 2px rgba(59,130,246,.15);
+}
+
+/* Activos — colores únicos */
+.badge-filter.active.f-new         { background:#dcfce7; color:#166534; border-color:#86efac; }
+.badge-filter.active.f-precio-down { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+.badge-filter.active.f-precio-up   { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+.badge-filter.active.f-stock-down  { background:#ffedd5; color:#9a3412; border-color:#fdba74; }
+.badge-filter.active.f-stock-up    { background:#ede9fe; color:#5b21b6; border-color:#c4b5fd; }
+.badge-filter.active.f-fav         { background:#fef9c3; color:#854d0e; border-color:#fde047; }
+
+/* Separador entre grupos */
+.filter-sep {
+  width: 1px;
+  height: 22px;
+  background: #cbd5e1;
+  margin: 0 6px;
+  align-self: center;
+}
+
+/* ============================================
+   BADGES EN TABLA/CARDS · solo iconos
+   ============================================ */
+.badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 9px;
+  cursor: help;
+  transition: transform .1s ease;
+}
+.badge:hover { transform: scale(1.15); }
+
+.badge-fav       { background:#fef9c3; color:#854d0e; }
+.badge-fav.active{ background:#fde047; color:#713f12; }
+.badge-new       { background:#dcfce7; color:#166534; font-size:8px; }
+.badge-price.down{ background:#dbeafe; color:#1e40af; }
+.badge-price.up  { background:#fee2e2; color:#991b1b; }
+.badge-stock.danger,
+.badge-stock.warn{ background:#ffedd5; color:#9a3412; }
+.badge-stock.ok  { background:#ede9fe; color:#5b21b6; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 640px) {
+  .toolbar > input[type="text"] { flex: 1 1 100%; }
+  .toolbar > select { flex: 1 1 calc(50% - 4px); }
+  .toolbar > button { flex: 1 1 100%; }
+
+  .filters-bar {
+    gap: 6px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filters-bar::-webkit-scrollbar { display: none; }
+  .badge-filter { font-size: 12px; padding: 5px 10px; }
+  .filter-sep { display: none; }
+
+  /* Tabla vs Cards */
+  .table-wrap { display: none; }
+  .cards-wrap { display: grid; }
+}
+
+@media (min-width: 641px) {
+  .cards-wrap { display: none; }
+  .table-wrap { display: block; }
+}
+
+/* Evitar hover pegado en móvil */
+@media (hover: none) {
+  .badge-filter:hover { background: #f8fafc; }
+  .badge-filter:active { transform: scale(0.96); }
+}
