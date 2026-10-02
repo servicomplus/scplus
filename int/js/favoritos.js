@@ -10,14 +10,17 @@ const KEY_FAV_CACHE = 'servicomp_favoritos_cache_v1';
 // Cargar (primero cache, luego red)
 // ------------------------------------------------------------
 async function cargarFavoritos() {
-  // 1. Cache instantáneo
+  // 1. Cache instantáneo (pinta rápido)
   try {
     const raw = localStorage.getItem(KEY_FAV_CACHE);
     if (raw) {
       const cache = JSON.parse(raw);
       FAVORITOS = filtrarPorSede(cache);
+      console.log('[FAV] cache:', FAVORITOS.length, '/', cache.length, 'sede', SEDE_ACTUAL);
     }
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[FAV] cache error:', e);
+  }
 
   // 2. Red (background, actualiza cache)
   try {
@@ -25,9 +28,9 @@ async function cargarFavoritos() {
     const todos = (resp && resp.favoritos) ? resp.favoritos : [];
     FAVORITOS = filtrarPorSede(todos);
     localStorage.setItem(KEY_FAV_CACHE, JSON.stringify(todos));
-    log('✅ Favoritos (' + SEDE_ACTUAL + '): ' + FAVORITOS.length + ' / total ' + todos.length);
+    console.log('[FAV] red:', FAVORITOS.length, '/', todos.length, 'sede', SEDE_ACTUAL);
   } catch (e) {
-    warn('⚠️ Error cargando favoritos:', e.message);
+    console.warn('⚠️ Favoritos: usando solo cache. Motivo:', e.message);
   }
 }
 
@@ -74,20 +77,13 @@ async function toggleFavorito(codigo, nota) {
       mostrarToast('⭐ Agregado: ' + codigo);
     }
 
-    // Actualizar cache
     actualizarCacheFavoritos();
-
-    // Actualizar visualmente badge Y botón
     actualizarBadgeFavorito(codigo, !esFav);
-
-    // Actualizar contador y filtro
     actualizarContadorFavoritos();
 
-    // Si estamos en modo "solo favoritos" y quitamos → re-render
     if (MOSTRAR_SOLO_FAVORITOS && esFav) {
       render();
     } else {
-      // Si agregamos un favorito y estamos viendo favoritos primero, re-ordenar
       const orden = document.getElementById('orden')?.value;
       if (!esFav && orden === 'favoritos_primero') render();
     }
@@ -98,13 +94,11 @@ async function toggleFavorito(codigo, nota) {
 
 // Actualiza el badge ⭐ Y el botón ☆/⭐ visualmente
 function actualizarBadgeFavorito(codigo, activo) {
-  // Badge ⭐ (que aparece al lado de la descripción cuando es favorito)
   document.querySelectorAll(`.badge-fav[data-fav="${CSS.escape(codigo)}"]`).forEach(badge => {
     badge.classList.toggle('active', activo);
     badge.title = activo ? 'Quitar de favoritos' : 'Agregar a favoritos';
   });
 
-  // Botón ☆/⭐ (siempre visible, al lado de Agregar)
   document.querySelectorAll(`[data-fav-toggle="${CSS.escape(codigo)}"]`).forEach(btn => {
     btn.classList.toggle('active', activo);
     btn.title = activo ? 'Quitar de favoritos' : 'Agregar a favoritos';
@@ -122,11 +116,8 @@ function actualizarCacheFavoritos() {
       cache = raw ? JSON.parse(raw) : [];
     } catch (e) {}
 
-    // Quita todos los de la sede actual
     const codigosEnSede = new Set(DATA.map(d => d.codigo));
     cache = cache.filter(f => !codigosEnSede.has(String(f.codigo)));
-
-    // Agrega los actuales
     cache = cache.concat(FAVORITOS);
 
     localStorage.setItem(KEY_FAV_CACHE, JSON.stringify(cache));
