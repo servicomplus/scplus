@@ -170,7 +170,6 @@ async function cargarDatos() {
         ? guardada
         : (sedesDisponibles[0] || '');
     }
-    // Siempre sincronizar el <select> con SEDE_ACTUAL
     document.getElementById('sedeHeader').value = SEDE_ACTUAL;
 
     DATA = todasLasFilas.filter(d =>
@@ -190,20 +189,27 @@ async function cargarDatos() {
     document.getElementById('ultima-act').textContent = new Date().toLocaleString('es-PE');
     actualizarSedeTags();
 
-    await cargarReportes();
+    // 🔥 Reportes en paralelo (NO bloquean favoritos)
+    const promesaReportes = cargarReportes();
 
-    if (my !== _reqId) return;
-    render();
-
-    // Cargar favoritos una vez que DATA esté listo
+    // 🔥 Favoritos en paralelo (con DATA ya lleno)
     if (typeof cargarFavoritos === 'function') {
       await cargarFavoritos();
+      if (my !== _reqId) return;
       if (typeof actualizarContadorFavoritos === 'function') {
         actualizarContadorFavoritos();
       }
-      if (my !== _reqId) return;
-      render();
     }
+
+    // Primer render con favoritos listos (badges pueden no estar aún)
+    if (my !== _reqId) return;
+    render();
+
+    // Esperar reportes (badges) y re-render
+    await promesaReportes;
+    if (my !== _reqId) return;
+    render();
+
   } catch (e) {
     if (my !== _reqId) return;
     document.getElementById('loading').style.display = 'none';
