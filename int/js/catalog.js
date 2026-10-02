@@ -9,13 +9,12 @@ function llenarSedeDropdown(filas) {
     `<option value="${esc(s)}">${esc(s)}</option>`
   ).join('');
 
-  // Re-asignar el valor actual (evita que el navegador resetee al primer <option>)
   if (SEDE_ACTUAL && sedes.includes(SEDE_ACTUAL)) {
     sel.value = SEDE_ACTUAL;
   }
 }
 
-function cambiarSede(nuevaSede) {
+async function cambiarSede(nuevaSede) {
   if (!nuevaSede || nuevaSede === SEDE_ACTUAL) return;
 
   if (CARRITO.length > 0) {
@@ -35,7 +34,26 @@ function cambiarSede(nuevaSede) {
   localStorage.setItem(KEY_SEDE, SEDE_ACTUAL);
   actualizarCarritoUI();
   actualizarSedeTags();
-  cargarDatos();
+
+  // 🔥 Resetear filtros visuales
+  MOSTRAR_SOLO_FAVORITOS = false;
+  document.getElementById('filtro-favoritos')?.classList.remove('active');
+
+  FILTROS_BADGE = {
+    nuevo: false,
+    precioBaja: false,
+    precioSube: false,
+    stockBaja: false,
+    stockSube: false
+  };
+  document.querySelectorAll('.badge-filter').forEach(b => b.classList.remove('active'));
+
+  // 🔥 Resetear favoritos en memoria (se recargan dentro de cargarDatos)
+  FAVORITOS = [];
+  actualizarContadorFavoritos();
+
+  // 🔥 Esperar a que TODO termine
+  await cargarDatos();
 }
 
 function actualizarSedeTags() {
@@ -158,7 +176,6 @@ function cargarMas() {
 
     const esFav = esFavorito(d.codigo);
 
-    // Botón ☆/⭐ (siempre visible) — alterna favorito
     const btnFavHtml = `<button class="btn-fav ${esFav ? 'active' : ''}"
       data-fav-toggle="${esc(d.codigo)}"
       title="${esFav ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
