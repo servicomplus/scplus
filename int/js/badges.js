@@ -109,18 +109,17 @@ function renderBadges(d) {
   const b = badgeDe(d);
   const esFav = (typeof esFavorito === 'function') && esFavorito(d.codigo);
 
-  // Si no hay nada que mostrar, salir
   if (!b && !esFav) return '';
 
   const iconos = [];
 
-  // ⭐ Favorito SIEMPRE primero
+  // ⭐ Favorito SIEMPRE primero (no cuenta para el límite)
   if (esFav) iconos.push(iconFavorito(d.codigo));
 
-  // Resto de badges (nuevo, precio, stock)
+  // Resto de badges (máximo 4)
   if (b) {
-    if (b.nuevo && iconos.length < BADGE_MAX_ICONOS) iconos.push(iconNuevo(b.nuevo));
-    if (b.precio && iconos.length < BADGE_MAX_ICONOS) iconos.push(iconPrecio(b.precio));
+    if (b.nuevo && iconos.length < BADGE_MAX_ICONOS)     iconos.push(iconNuevo(b.nuevo));
+    if (b.precio && iconos.length < BADGE_MAX_ICONOS)    iconos.push(iconPrecio(b.precio));
     if (b.stock_chg && iconos.length < BADGE_MAX_ICONOS) iconos.push(iconStockChange(b.stock_chg));
   }
 
@@ -150,7 +149,7 @@ function iconFavorito(codigo) {
 }
 
 // ------------------------------------------------------------
-// NUEVO
+// NUEVO · verde (reservado)
 // ------------------------------------------------------------
 function iconNuevo(n) {
   const fechaTxt = n.fecha.toLocaleDateString('es-PE');
@@ -163,11 +162,12 @@ function iconNuevo(n) {
 }
 
 // ------------------------------------------------------------
-// PRECIO
+// PRECIO · tendencia (coincide con filtro)
+// Precio bajó → azul / Precio subió → rojo
 // ------------------------------------------------------------
 function iconPrecio(p) {
   const cls = p.dir === 'down' ? 'down' : 'up';
-  const ico = p.dir === 'down' ? 'fa-arrow-down' : 'fa-arrow-up';
+  const ico = p.dir === 'down' ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up';
   const signo = p.delta > 0 ? '+' : '';
   const tt = `
     <div class="tt-title">● PRECIO ${p.dir === 'down' ? '↓' : '↑'}</div>
@@ -179,7 +179,8 @@ function iconPrecio(p) {
 }
 
 // ------------------------------------------------------------
-// STOCK (solo cambios)
+// STOCK · flecha larga (coincide con filtro)
+// Stock bajó → naranja / Stock subió → violeta
 // ------------------------------------------------------------
 function iconStockChange(s) {
   let dir = s.dir;
@@ -188,12 +189,13 @@ function iconStockChange(s) {
   if (s.subtipo === 'STOCK_SUBE') dir = 'ok';
   if (s.subtipo === 'STOCK_BAJA') dir = 'danger';
 
+  // 🔥 Iconos que coinciden con los filtros
   const map = {
-    danger: ['fa-triangle-exclamation', 'danger'],
-    warn:   ['fa-triangle-exclamation', 'warn'],
-    ok:     ['fa-circle-check', 'ok']
+    danger: ['fa-arrow-down-long', 'danger'],
+    warn:   ['fa-arrow-down-long', 'warn'],
+    ok:     ['fa-arrow-up-long',   'ok']
   };
-  const [ico, cls] = map[dir] || ['fa-triangle-exclamation', 'danger'];
+  const [ico, cls] = map[dir] || ['fa-arrow-down-long', 'danger'];
   const signo = s.delta > 0 ? '+' : '';
 
   let titulo = 'STOCK ⚠';
