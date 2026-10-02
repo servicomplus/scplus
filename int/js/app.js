@@ -2,7 +2,7 @@
 // APP · bootstrap de la aplicación
 // ============================================================
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initBadgeTooltip();
   initTooltipGlobal();
   initScrollListeners();
@@ -10,7 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   cargarCarritoDeStorage();
   actualizarCarritoUI();
-  cargarDatos();
+
+  // 🔥 Esperar a que cargarDatos termine TODO (DATA + reportes + favoritos)
+  try {
+    await cargarDatos();
+  } catch (e) {
+    console.error('Fallo bootstrap:', e);
+  }
 
   // Atajos de teclado
   document.addEventListener('keydown', (e) => {
@@ -18,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cerrarCarrito();
       cerrarModal();
     }
-    // "/" enfoca el buscador (si no está escribiendo ya)
     if (e.key === '/' && !/input|textarea|select/i.test(document.activeElement.tagName)) {
       e.preventDefault();
       document.getElementById('q')?.focus();
