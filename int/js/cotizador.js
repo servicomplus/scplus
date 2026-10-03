@@ -650,7 +650,7 @@ function renderCotizacion(cot, items) {
     const cant = Number(p.cantidad) || 1;
     const totalLinea = Number(p.subtotal) || (precio * cant);
     subtotal += totalLinea;
-    const imgUrl = p.foto_url || getImagenDeltron(p.codigo);
+    const imgUrl = getImagenDeltron(p.codigo);
 
     const uid = `${cot.id}__${p.codigo}__${idx}`;
     const tieneSpecs = p.specs_json && p.specs_json !== '[]' && p.specs_json.trim() !== '';
