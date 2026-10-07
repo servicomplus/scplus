@@ -6,9 +6,11 @@
 <title>ServiComp+ | Tienda</title>
 <meta name="description" content="Catálogo premium de productos tecnológicos al mejor precio. Laptops, PCs, componentes y más.">
 
+<!-- Fuentes y Font Awesome -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+<!-- Librerías carrito -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -18,7 +20,9 @@
 </head>
 <body>
 
-<!-- HEADER (inyectado) -->
+<!-- ============================================================ -->
+<!-- HEADER (inyectado por main.js)                                -->
+<!-- ============================================================ -->
 <div id="header-placeholder"></div>
 
 <div class="container">
@@ -31,11 +35,13 @@
   </h1>
   <p class="sub">Selecciona varias categorías, sedes o marcas a la vez · Ascendente por defecto</p>
 
+  <!-- Loader -->
   <div id="loader" class="loader">
     <div class="spinner"></div>
     <div>Cargando catálogo...</div>
   </div>
 
+  <!-- App -->
   <div id="app" style="display:none">
     <div class="cmd">
       <div class="search">
@@ -44,6 +50,7 @@
       </div>
       <div class="filters">
 
+        <!-- Dropdown Sede -->
         <div class="dropdown" data-dd="sede">
           <button type="button" class="dd-trigger" data-trigger>
             <i class="fa-solid fa-location-dot" style="color:var(--ink-soft);font-size:12px"></i>
@@ -61,6 +68,7 @@
           </div>
         </div>
 
+        <!-- Dropdown Categoría -->
         <div class="dropdown" data-dd="cat">
           <button type="button" class="dd-trigger" data-trigger>
             <i class="fa-solid fa-tag" style="color:var(--ink-soft);font-size:12px"></i>
@@ -78,6 +86,7 @@
           </div>
         </div>
 
+        <!-- Dropdown Marca -->
         <div class="dropdown" data-dd="marca">
           <button type="button" class="dd-trigger" data-trigger>
             <i class="fa-solid fa-copyright" style="color:var(--ink-soft);font-size:12px"></i>
@@ -95,6 +104,7 @@
           </div>
         </div>
 
+        <!-- Dropdown Orden -->
         <div class="dropdown" data-dd="orden">
           <button type="button" class="dd-trigger" data-trigger style="min-width:210px">
             <i class="fa-solid fa-arrow-up-1-9" style="color:var(--ink-soft);font-size:12px"></i>
@@ -127,7 +137,9 @@
   </div>
 </div>
 
-<!-- CARRITO: OVERLAY + PANEL -->
+<!-- ============================================================ -->
+<!-- CARRITO: OVERLAY + PANEL                                      -->
+<!-- ============================================================ -->
 <div class="cart-overlay" id="cartOverlay"></div>
 
 <aside class="cart-panel" id="cartPanel" aria-hidden="true">
@@ -185,19 +197,27 @@
   </div>
 </aside>
 
-<!-- FAB CARRITO (IZQUIERDA) -->
+<!-- ============================================================ -->
+<!-- FAB CARRITO (IZQUIERDA)                                       -->
+<!-- ============================================================ -->
 <button class="fab-cart" id="fabCart" title="Ver carrito" aria-label="Ver carrito">
   <i class="fa-solid fa-bag-shopping"></i>
   <span class="badge hidden" id="cartBadge">0</span>
 </button>
 
-<!-- FOOTER (inyectado) -->
+<!-- ============================================================ -->
+<!-- FOOTER (inyectado por main.js)                                -->
+<!-- ============================================================ -->
 <div id="footer-placeholder"></div>
 
-<!-- WHATSAPP GLOBAL (inyectado por global.js) -->
+<!-- ============================================================ -->
+<!-- WHATSAPP GLOBAL (inyectado por main.js)                       -->
+<!-- ============================================================ -->
 <div id="whatsapp-placeholder"></div>
 
-<!-- TOAST -->
+<!-- ============================================================ -->
+<!-- TOAST                                                         -->
+<!-- ============================================================ -->
 <div class="toast" id="toast">
   <i class="fa-solid fa-check"></i>
   <span>Copiado</span>
@@ -206,7 +226,7 @@
 <!-- PapaParse CDN -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-<!-- Loader global (inyecta header, footer, WhatsApp) -->
+<!-- Loader global (inyecta header, footer y WhatsApp en todas las páginas) -->
 <script src="js/main.js"></script>
 
 <!-- Script tienda -->
