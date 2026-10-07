@@ -3,93 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
 <title>ServiComp+ | Tienda</title>
 <meta name="description" content="Catálogo premium de productos tecnológicos al mejor precio. Laptops, PCs, componentes y más.">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <!-- Global primero, tienda después para sobrescribir -->
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/tienda.css">
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
 <!-- HEADER (inyectado) -->
 <div id="header-placeholder"></div>
 
-<!-- CONTENIDO TIENDA -->
-<main class="store-main">
+<div class="container">
+  <h1 class="store-title">
+    <span class="title-main">Catálogo</span>
+    <span class="live-badge">
+      <span class="live-dot"></span>
+      En vivo
+    </span>
+  </h1>
+  <p class="sub">Selecciona varias categorías, sedes o marcas a la vez · Ascendente por defecto</p>
 
-  <!-- Filtros -->
-  <section class="store-filters-section">
-    <div class="container">
-      <div class="filters-bar">
-        <div class="search-wrapper">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="searchInput" placeholder="Buscar producto, código, marca..." autocomplete="off">
-        </div>
-        <select id="sedeSelect"></select>
-        <select id="catSelect"><option value="">Todas las categorías</option></select>
-        <select id="marcaSelect"><option value="">Todas las marcas</option></select>
-        <select id="ordenSelect">
-          <option value="precio_asc">Precio ↑</option>
-          <option value="precio_desc">Precio ↓</option>
-          <option value="codigo_az">Código A-Z</option>
-        </select>
+  <div id="loader" class="loader">
+    <div class="spinner"></div>
+    <div>Cargando catálogo...</div>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="cmd">
+      <div class="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search" placeholder="Buscar producto, código, marca..." autocomplete="off">
       </div>
+      <div class="filters">
 
-      <div class="results-bar">
-        <div class="count-badge">
-          <i class="fa-solid fa-layer-group"></i>
-          <b id="resultsCount">0</b> productos disponibles
-        </div>
-        <div class="header-info">
-          <div class="info-item">
-            <i class="fa-regular fa-calendar"></i>
-            <span id="fechaDisplay">—</span>
+        <div class="dropdown" data-dd="sede">
+          <button type="button" class="dd-trigger" data-trigger>
+            <i class="fa-solid fa-location-dot" style="color:var(--ink-soft);font-size:12px"></i>
+            <span class="label">Todas las sedes</span>
+            <span class="count-badge" style="display:none">0</span>
+            <i class="fa-solid fa-chevron-down caret"></i>
+          </button>
+          <div class="dd-panel" data-panel>
+            <div class="dd-search"><input type="text" placeholder="Buscar..." data-dd-search></div>
+            <div class="dd-actions">
+              <button type="button" data-dd-all>Seleccionar todo</button>
+              <button type="button" data-dd-none>Limpiar</button>
+            </div>
+            <div class="dd-list" data-dd-list></div>
           </div>
-          <div class="info-divider"></div>
-          <div class="info-item">
-            <i class="fa-regular fa-money-bill-1"></i>
-            T.C. <b id="tcDisplay">—</b>
+        </div>
+
+        <div class="dropdown" data-dd="cat">
+          <button type="button" class="dd-trigger" data-trigger>
+            <i class="fa-solid fa-tag" style="color:var(--ink-soft);font-size:12px"></i>
+            <span class="label">Todas las categorías</span>
+            <span class="count-badge" style="display:none">0</span>
+            <i class="fa-solid fa-chevron-down caret"></i>
+          </button>
+          <div class="dd-panel" data-panel>
+            <div class="dd-search"><input type="text" placeholder="Buscar categoría..." data-dd-search></div>
+            <div class="dd-actions">
+              <button type="button" data-dd-all>Seleccionar todo</button>
+              <button type="button" data-dd-none>Limpiar</button>
+            </div>
+            <div class="dd-list" data-dd-list></div>
           </div>
         </div>
+
+        <div class="dropdown" data-dd="marca">
+          <button type="button" class="dd-trigger" data-trigger>
+            <i class="fa-solid fa-copyright" style="color:var(--ink-soft);font-size:12px"></i>
+            <span class="label">Todas las marcas</span>
+            <span class="count-badge" style="display:none">0</span>
+            <i class="fa-solid fa-chevron-down caret"></i>
+          </button>
+          <div class="dd-panel" data-panel>
+            <div class="dd-search"><input type="text" placeholder="Buscar marca..." data-dd-search></div>
+            <div class="dd-actions">
+              <button type="button" data-dd-all>Seleccionar todo</button>
+              <button type="button" data-dd-none>Limpiar</button>
+            </div>
+            <div class="dd-list" data-dd-list></div>
+          </div>
+        </div>
+
+        <div class="dropdown" data-dd="orden">
+          <button type="button" class="dd-trigger" data-trigger style="min-width:210px">
+            <i class="fa-solid fa-arrow-up-1-9" style="color:var(--ink-soft);font-size:12px"></i>
+            <span class="label">Precio: Menor a Mayor</span>
+            <i class="fa-solid fa-chevron-down caret"></i>
+          </button>
+          <div class="dd-panel" data-panel style="min-width:240px">
+            <div class="dd-list" data-dd-list-orden></div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-clear" id="btnClear">
+          <i class="fa-solid fa-eraser"></i> Limpiar
+        </button>
       </div>
     </div>
-  </section>
 
-  <!-- Productos -->
-  <section class="products-section">
-    <div class="container">
-      <div id="productsList">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <p>Cargando catálogo premium...</p>
-        </div>
+    <div class="results">
+      <div class="count"><b id="count">0</b> productos disponibles <span id="excluidos" style="display:none;color:var(--ink-soft);font-size:11px"></span></div>
+      <div class="meta">
+        <span><i class="fa-regular fa-calendar"></i><span id="fecha">—</span></span>
+        <span title="Tipo de cambio real aplicado">
+          <i class="fa-regular fa-money-bill-1"></i>T.C. real <b id="tc">—</b>
+        </span>
       </div>
-      <div id="loadMoreTrigger" style="height:20px;"></div>
     </div>
-  </section>
 
-</main>
+    <div class="grid" id="grid"></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
 
-<!-- FOOTER (inyectado) -->
-<div id="footer-placeholder"></div>
-
-<!-- WHATSAPP (inyectado) -->
-<div id="whatsapp-placeholder"></div>
-
-<!-- OVERLAY CARRITO -->
+<!-- CARRITO: OVERLAY + PANEL -->
 <div class="cart-overlay" id="cartOverlay"></div>
 
-<!-- PANEL CARRITO -->
 <aside class="cart-panel" id="cartPanel" aria-hidden="true">
   <div class="panel-header">
     <h2><i class="fa-solid fa-bag-shopping"></i> Mi Carrito</h2>
@@ -118,16 +158,13 @@
 
     <div class="cart-summary">
       <div class="summary-row">
-        <span>Subtotal</span>
-        <span id="cartSubtotal">S/ 0.00</span>
+        <span>Subtotal</span><span id="cartSubtotal">S/ 0.00</span>
       </div>
       <div class="summary-row">
-        <span>Envío</span>
-        <span id="cartEnvio">S/ 0.00</span>
+        <span>Envío</span><span id="cartEnvio">S/ 0.00</span>
       </div>
       <div class="summary-row total">
-        <span>TOTAL</span>
-        <span id="cartTotal">S/ 0.00</span>
+        <span>TOTAL</span><span id="cartTotal">S/ 0.00</span>
       </div>
     </div>
 
@@ -148,11 +185,17 @@
   </div>
 </aside>
 
-<!-- FAB CARRITO (izquierda) -->
+<!-- FAB CARRITO (IZQUIERDA) -->
 <button class="fab-cart" id="fabCart" title="Ver carrito" aria-label="Ver carrito">
   <i class="fa-solid fa-bag-shopping"></i>
   <span class="badge hidden" id="cartBadge">0</span>
 </button>
+
+<!-- FOOTER (inyectado) -->
+<div id="footer-placeholder"></div>
+
+<!-- WHATSAPP GLOBAL (inyectado por global.js) -->
+<div id="whatsapp-placeholder"></div>
 
 <!-- TOAST -->
 <div class="toast" id="toast">
@@ -160,7 +203,14 @@
   <span>Copiado</span>
 </div>
 
-<script src="js/tienda.js"></script>
+<!-- PapaParse CDN -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<!-- Loader global (inyecta header, footer, WhatsApp) -->
+<script src="js/global.js"></script>
+
+<!-- Script tienda -->
+<script src="js/tienda.js?v=11"></script>
 
 </body>
 </html>
