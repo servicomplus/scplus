@@ -1,905 +1,1023 @@
-/* ================================================================ */
-/* SERVICOMP+ - TIENDA.JS                                           */
-/* Versión 3.4 - Iconos por categoría + fix placeholder             */
-/* ================================================================ */
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv';
 
-(function () {
-  'use strict';
+const CSV_THUMB_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=1886951424&single=true&output=csv';
 
-  // ================================================================
-  // CONFIGURACIÓN
-  // ================================================================
-  const CONFIG = {
-    URL_SHEET: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=329818076&single=true&output=csv',
-    WHATSAPP: '51973952322',
-    POR_TANDA: 30,
-    SEDE_DEFAULT: 'LIMA',
-    KEY_CARRITO: 'servicomp_tienda_carrito_v3',
-    CATEGORIAS_EXCLUIDAS: ['SERVICIO TECNICO', 'SERVICIOS OTROS', 'SERVICIOS VENTAS', 'ACCESORIOS', 'DELTRON', 'DELTRON PC'],
-    MARCAS_EXCLUIDAS: ['ZZ OTRAS MARCAS', 'DELTRON'],
-    COMPONENTES: [
-      { selector: '#header-placeholder', file: 'components/header.html' },
-      { selector: '#footer-placeholder', file: 'components/footer.html' },
-      { selector: '#whatsapp-placeholder', file: 'components/whatsapp.html' }
-    ]
-  };
+const CSV_URL_FINAL   = CSV_URL   + '&_=' + Date.now();
+const CSV_THUMB_FINAL = CSV_THUMB_URL + '&_=' + Date.now();
 
-  // ================================================================
-  // PALETA DE COLORES POR CATEGORÍA
-  // ================================================================
-  const COLORES_CATEGORIA = {
-    'LAPTOPS':          { bg: '#dbeafe', text: '#1d4ed8' },
-    'LAPTOP':           { bg: '#dbeafe', text: '#1d4ed8' },
-    'COMPUTADORAS':     { bg: '#dbeafe', text: '#1d4ed8' },
-    'PC':               { bg: '#dbeafe', text: '#1d4ed8' },
-    'ALL IN ONE':       { bg: '#dbeafe', text: '#1d4ed8' },
+const PER_PAGE = 24;
+const ORDEN_DEFAULT = 'precio_asc';
+const SEDE_DEFAULT = 'LIMA';
 
-    'MONITORES':        { bg: '#e0e7ff', text: '#4338ca' },
-    'MONITOR':          { bg: '#e0e7ff', text: '#4338ca' },
+const WHATSAPP_NUM = '51973952322';
+const KEY_CARRITO  = 'servicomp_tienda_carrito_v4';
 
-    'COMPONENTES':      { bg: '#e6f7ed', text: '#059669' },
-    'HARDWARE':         { bg: '#e6f7ed', text: '#059669' },
+/* ============================================================
+   CATEGORÍAS POR DEFECTO
+   ============================================================ */
+const CATEGORIAS_DEFAULT = [
+  'NOTEBOOK CELERON','NOTEBOOK CORE 3','NOTEBOOK CORE 5','NOTEBOOK CORE 7',
+  'NOTEBOOK CORE 9','NOTEBOOK CORE i3','NOTEBOOK CORE i5','NOTEBOOK CORE i7',
+  'NOTEBOOK CORE ULTRA 5','NOTEBOOK CORE ULTRA 5 AI','NOTEBOOK CORE ULTRA 7',
+  'NOTEBOOK CORE ULTRA 7 AI','NOTEBOOK CORE ULTRA 9','NOTEBOOK GAM CORE ULTRA 9',
+  'NOTEBOOK GAMING CORE 5','NOTEBOOK GAMING CORE 7','NOTEBOOK GAMING CORE i5',
+  'NOTEBOOK GAMING CORE i7','NOTEBOOK GAMING CORE i9','NOTEBOOK GM CORE ULT 9 AI',
+  'NOTEBOOK WORKSTATION'
+];
 
-    'ALMACENAMIENTO':   { bg: '#f3e8ff', text: '#7c3aed' },
-    'DISCOS':           { bg: '#f3e8ff', text: '#7c3aed' },
-    'SSD':              { bg: '#f3e8ff', text: '#7c3aed' },
+function esCategoriaDefault(cat){
+  if(!cat) return false;
+  return CATEGORIAS_DEFAULT.includes(cat.trim());
+}
 
-    'REDES':            { bg: '#fee2e2', text: '#b91c1c' },
-    'NETWORKING':       { bg: '#fee2e2', text: '#b91c1c' },
+/* ============================================================
+   EXCLUSIONES
+   ============================================================ */
+const CATEGORIAS_EXCLUIDAS = [
+  'SERVICIO TECNICO','SERVICIOS OTROS','SERVICIOS VENTAS','ACCESORIOS',
+  'DELTRON','DELTRON PC','MERCHANDISING'
+];
+const MARCAS_EXCLUIDAS = ['ZZ OTRAS MARCAS','DELTRON'];
 
-    'PERIFERICOS':      { bg: '#fef3c7', text: '#b45309' },
-    'MOUSE':            { bg: '#fef3c7', text: '#b45309' },
-    'TECLADOS':         { bg: '#fef3c7', text: '#b45309' },
+const norm = s => String(s || '').trim().toUpperCase();
+const esCategoriaExcluida = cat => CATEGORIAS_EXCLUIDAS.some(x => norm(x) === norm(cat));
+const esMarcaExcluida = marca => MARCAS_EXCLUIDAS.some(x => norm(x) === norm(marca));
 
-    'IMPRESORAS':       { bg: '#cffafe', text: '#0891b2' },
-    'IMPRESORA':        { bg: '#cffafe', text: '#0891b2' },
-    'TINTAS':           { bg: '#cffafe', text: '#0891b2' },
-    'TONER':            { bg: '#cffafe', text: '#0891b2' },
+/* ============================================================
+   COLORES POR MARCA
+   ============================================================ */
+const COLORES_MARCA = {
+  'HP':'#0096d6','Lenovo':'#e2231a','Dell':'#007db8','Asus':'#00539b',
+  'Acer':'#83b81a','Apple':'#555555','Logitech':'#00b8fc','Razer':'#44d62c',
+  'Samsung':'#1428a0','Kingston':'#d40000','AMD':'#ed1c24','Intel':'#0071c5',
+  'MSI':'#ff0000','Gigabyte':'#f60','Epson':'#003399','Western Digital':'#005197',
+  'Seagate':'#6eb43f','Toshiba':'#ff0000','TeamGroup':'#e60012','Hiksemi':'#0072ce',
+  'Corsair':'#ffcc00','Noctua':'#7c3aed','Cooler Master':'#6f2da8','D-Link':'#0073a8',
+  'Microsoft':'#00a4ef','Kaspersky':'#006d5c','Bitdefender':'#ed1c24','Eset':'#009fe3',
+  'Canon':'#cc0000','Teros':'#6366f1','Advance':'#f59e0b'
+};
+const FALLBACK_COLOR = '#0f2b47';
 
-    'AUDIO':            { bg: '#ffe4e6', text: '#be123c' },
-    'PARLANTES':        { bg: '#ffe4e6', text: '#be123c' },
+/* ============================================================
+   ICONOS POR CATEGORÍA
+   ============================================================ */
+const ICONOS_CAT = {
+  'ACCESORIOS USB':'fa-usb',
+  'AUDIO, AURICULAR C/MIC':'fa-headphones','AUDIO, AURICULAR C/MIC GM':'fa-headset',
+  'AUDIO, AURICULAR INALAM':'fa-headphones-simple','AUDIO, MICROFONO USB':'fa-microphone',
+  'AUDIO, PARLANTE INALAMBRC':'fa-volume-high','AUDIO, ACCESORIOS DE':'fa-headphones',
+  'CAMARA, WEBCAM':'fa-video','CARTUCHERA / PORTACABLES':'fa-briefcase',
+  'CASES ATX VER2.0':'fa-computer','CASES MICRO ATX':'fa-computer',
+  'CASES SIN FUENTE P/GAMERS':'fa-computer','CASES, FUENTE PARA':'fa-bolt',
+  'CASES, FUENTE PARA GAMING':'fa-bolt','CASES, FUENTE CERTIFICADA':'fa-bolt',
+  'COMERCIAL LASER':'fa-print','COMERCIAL MATRICIAL':'fa-print',
+  'COMERCIAL TANQUE TINTA':'fa-print','CONSUMO TANQUE TINTA MULT':'fa-print',
+  'COOLER LIQUIDO CPU 240':'fa-fan','COOLER LIQUIDO CPU 360':'fa-fan',
+  'DISCO DURO 3.5 SATA':'fa-hard-drive','DISCO DURO EXTERNO 2.5':'fa-hard-drive',
+  'DISCO SOLIDO EXTERNO(SSD)':'fa-hard-drive','DVD-WRITER EXTERNO':'fa-compact-disc',
+  'ESTABILIZADOR DE TENSION':'fa-bolt','FAN COOLER CPU':'fa-fan',
+  'IMAGENES, ACCESORIOS DISP':'fa-image','IMAGENES, PROYECTOR':'fa-video',
+  'IMPRESORA TERMICA':'fa-receipt','IMPRESORA, ACCESORIOS DE':'fa-print',
+  'MOCHILA / BACKPACK':'fa-bag-shopping',
+  'MOUSE INALAMBRICO':'fa-computer-mouse','MOUSE PAD/MAT, ACCESORIOS':'fa-computer-mouse',
+  'MOUSE PARA GAMERS':'fa-computer-mouse','MOUSE USB':'fa-computer-mouse',
+  'NOTEBOOK, ACCESORIOS DE':'fa-laptop','NOTEBOOK, MALETIN/MOCHILA':'fa-briefcase',
+  'RED WIFI ACCESORIOS':'fa-wifi','RED WIFI ADAPTADORES USB':'fa-wifi',
+  'RED WIFI ROUTER-ADSL':'fa-wifi','RED WIFI TARJETAS PCI':'fa-wifi',
+  'RED, ACCESORIOS':'fa-network-wired','RED, CAMARAS IP':'fa-video',
+  'RED, SWITCH ACCESO':'fa-network-wired','RED, SWITCH BASICO':'fa-network-wired',
+  'SILLAS GAMER':'fa-chair','SOFTWARE, ANTIVIRUS':'fa-shield-virus',
+  'SSD 2.5 SATA':'fa-hard-drive','SSD M.2 NVMe':'fa-hard-drive',
+  'SUMINIST P/IMPR, BOTELLAS':'fa-droplet','SUMINIST P/IMPRES, TINTAS':'fa-droplet',
+  'T CELULARES, ACCESORIOS':'fa-mobile-screen','TABLET ANDROID':'fa-tablet',
+  'TECLADO INALAMBRICO':'fa-keyboard','TECLADO PARA GAMERS':'fa-keyboard',
+  'TECLADO USB':'fa-keyboard','TECLADO+MOUSE COMBO KIT':'fa-keyboard',
+  'TECLADO+MOUSE KIT INALAMB':'fa-keyboard','TELEVISORES, RACKS PARA':'fa-tv',
+  'UPS INTERACTIVO':'fa-battery-full','VIDEO, PCI EXP NVIDIA GAM':'fa-microchip',
+  'VIDEO, PCI EXP RADEON GAM':'fa-microchip'
+};
+const FALLBACK_ICON = 'fa-box';
 
-    'SOFTWARE':         { bg: '#ede9fe', text: '#6d28d9' },
-    'LICENCIAS':        { bg: '#ede9fe', text: '#6d28d9' },
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let TODOS = [];
+let FILTRADOS = [];
+let PAGINA = 1;
 
-    'ACCESORIOS':       { bg: '#fce7f3', text: '#be185d' },
-    'CABLES':           { bg: '#fce7f3', text: '#be185d' },
+const FILTROS = { sede: new Set([SEDE_DEFAULT]), cat: new Set(), marca: new Set() };
+let ORDEN = ORDEN_DEFAULT;
+let EXCLUIDOS_TOTAL = 0;
 
-    'DEFAULT':          { bg: '#eef3f9', text: '#0f2b47' }
-  };
+const THUMB_MAP = new Map();
 
-  function getColorCategoria(categoria) {
-    if (!categoria) return COLORES_CATEGORIA.DEFAULT;
-    const cat = String(categoria).trim().toUpperCase();
-    if (COLORES_CATEGORIA[cat]) return COLORES_CATEGORIA[cat];
-    for (const key in COLORES_CATEGORIA) {
-      if (key !== 'DEFAULT' && cat.includes(key)) {
-        return COLORES_CATEGORIA[key];
+let CARRITO = [];
+
+const OPCIONES_ORDEN = [
+  { value: 'precio_asc', label: 'Precio: Menor a Mayor', icon: 'fa-arrow-up-1-9' },
+  { value: 'precio_desc', label: 'Precio: Mayor a Menor', icon: 'fa-arrow-down-9-1' },
+  { value: 'nombre_asc', label: 'Ascendente (A-Z)', icon: 'fa-arrow-down-a-z' },
+  { value: 'nombre_desc', label: 'Descendente (Z-A)', icon: 'fa-arrow-up-z-a' },
+  { value: 'stock_desc', label: 'Stock: Mayor a Menor', icon: 'fa-arrow-down-wide-short' },
+  { value: 'stock_asc', label: 'Stock: Menor a Mayor', icon: 'fa-arrow-up-wide-short' }
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const fmt = n => 'S/ ' + Math.round(Number(n) || 0).toLocaleString('es-PE');
+const fmt2 = n => (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function copiarTexto(texto){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(texto);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    return true;
+  } catch(e){
+    console.warn('No se pudo copiar:', e);
+    return false;
+  }
+}
+
+function getColor(marca){
+  if(!marca) return FALLBACK_COLOR;
+  const key = marca.toLowerCase().trim();
+  for(const k in COLORES_MARCA){
+    if(key === k.toLowerCase() || key.includes(k.toLowerCase()) || k.toLowerCase().includes(key)){
+      return COLORES_MARCA[k];
+    }
+  }
+  return FALLBACK_COLOR;
+}
+
+function getIcon(cat){
+  if(!cat) return FALLBACK_ICON;
+  if(ICONOS_CAT[cat]) return ICONOS_CAT[cat];
+  const c = cat.toUpperCase();
+  if(c.includes('AUDIO') || c.includes('PARLANTE') || c.includes('AURICULAR')) return 'fa-headphones';
+  if(c.includes('MONITOR')) return 'fa-display';
+  if(c.includes('MOUSE')) return 'fa-computer-mouse';
+  if(c.includes('TECLADO')) return 'fa-keyboard';
+  if(c.includes('NOTEBOOK') || c.includes('LAPTOP')) return 'fa-laptop';
+  if(c.includes('COMPUTADORA') || c.includes('PC ') || c.includes('CPU')) return 'fa-desktop';
+  if(c.includes('MEM')) return 'fa-memory';
+  if(c.includes('DISCO') || c.includes('SSD') || c.includes('HD')) return 'fa-hard-drive';
+  if(c.includes('CASE')) return 'fa-computer';
+  if(c.includes('IMPRESORA') || c.includes('PRINT')) return 'fa-print';
+  if(c.includes('RED') || c.includes('WIFI')) return 'fa-wifi';
+  if(c.includes('FUENTE') || c.includes('UPS') || c.includes('ESTABILIZADOR')) return 'fa-bolt';
+  if(c.includes('MOCHILA') || c.includes('MALETIN') || c.includes('CARTUCHERA')) return 'fa-bag-shopping';
+  if(c.includes('SOFTWARE') || c.includes('KASPERSKY') || c.includes('ESD')) return 'fa-shield-virus';
+  if(c.includes('PROYECTOR') || c.includes('IMAGENES')) return 'fa-video';
+  if(c.includes('TABLET')) return 'fa-tablet';
+  return FALLBACK_ICON;
+}
+
+function esUrlValida(u){
+  if(!u) return false;
+  const s = String(u).trim();
+  if(!s) return false;
+  if(s === 'TIMESTAMP' || s.endsWith('_TIMESTAMP.jpg')) return false;
+  return /^https?:\/\//i.test(s);
+}
+
+function getImagen(p){
+  const original = String(p.url_thumbnail || '').trim();
+  const codigo = String(p.CODIGO || '').trim().toLowerCase();
+  if(codigo && THUMB_MAP.has(codigo)){
+    const url = THUMB_MAP.get(codigo);
+    if(esUrlValida(url)) return url;
+  }
+  if(esUrlValida(original)) return original;
+  return original || null;
+}
+
+function getModelo(p){
+  const desc = p.DESCRIPCION_CORTA || '';
+  const partes = desc.split(',').map(s => s.trim());
+  if(partes[0]){
+    const palabras = partes[0].split(' ');
+    return palabras.slice(0, 4).join(' ').substring(0, 40);
+  }
+  return p.MARCA || '';
+}
+
+/* ============================================================
+   CARGA THUMBNAILS
+   ============================================================ */
+function cargarThumbnails(){
+  return new Promise((resolve) => {
+    if(!CSV_THUMB_URL){ return resolve(); }
+
+    Papa.parse(CSV_THUMB_FINAL, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      transformHeader: h => String(h || '').trim().toLowerCase(),
+      complete: function(results){
+        results.data.forEach(row => {
+          const codigoRaw = row['codigo'] || row['code'] || row['sku'] || '';
+          const urlRaw = row['url_thumbnail'] || row['url_thumb'] || row['thumbnail'] || row['url'] || '';
+          const codigo = String(codigoRaw).trim().toLowerCase();
+          const url = String(urlRaw).trim();
+          if(codigo && url && esUrlValida(url)){
+            THUMB_MAP.set(codigo, url);
+          }
+        });
+        console.log(`🖼️ Thumbnails cargados: ${THUMB_MAP.size}`);
+        resolve();
+      },
+      error: function(err){
+        console.warn('⚠️ Error thumbnails:', err);
+        resolve();
       }
-    }
-    return COLORES_CATEGORIA.DEFAULT;
-  }
-
-  // ================================================================
-  // 🆕 ICONO POR CATEGORÍA (Font Awesome 6.4.0)
-  // ================================================================
-  function getIconoCategoria(categoria) {
-    const cat = String(categoria || '').toUpperCase();
-    if (!cat) return 'fa-box';
-    if (cat.includes('LAPTOP') || cat.includes('NOTEBOOK') || cat.includes('COMPUTADORA') || cat.includes('ALL IN ONE') || cat === 'PC') return 'fa-laptop';
-    if (cat.includes('MONITOR')) return 'fa-display';
-    if (cat.includes('MOUSE')) return 'fa-computer-mouse';
-    if (cat.includes('TECLADO') || cat.includes('KEYBOARD')) return 'fa-keyboard';
-    if (cat.includes('AUDIO') || cat.includes('PARLANTE') || cat.includes('AUDIFONO') || cat.includes('AURICULAR')) return 'fa-headphones';
-    if (cat.includes('IMPRESORA') || cat.includes('IMPRESORAS')) return 'fa-print';
-    if (cat.includes('TINTA') || cat.includes('TONER')) return 'fa-droplet';
-    if (cat.includes('SSD') || cat.includes('DISCO') || cat.includes('ALMACENAMIENTO')) return 'fa-hard-drive';
-    if (cat.includes('REDES') || cat.includes('NETWORK')) return 'fa-network-wired';
-    if (cat.includes('SOFTWARE') || cat.includes('LICENCIA')) return 'fa-compact-disc';
-    if (cat.includes('COMPONENTE') || cat.includes('HARDWARE')) return 'fa-microchip';
-    if (cat.includes('ACCESORIO') || cat.includes('CABLE')) return 'fa-plug';
-    if (cat.includes('CAMARA') || cat.includes('WEBCAM')) return 'fa-camera';
-    if (cat.includes('TABLET')) return 'fa-tablet';
-    if (cat.includes('CELULAR') || cat.includes('SMARTPHONE')) return 'fa-mobile-screen';
-    return 'fa-box';
-  }
-
-  // ================================================================
-  // ESTADO
-  // ================================================================
-  let DATA = [];
-  let DATA_FILTRADA = [];
-  let VISIBLES = 0;
-  let CARRITO = [];
-  let SEDE_ACTUAL = '';
-  let observerLoadMore = null;
-  let debounceTimer = null;
-  let toastTimer = null;
-
-  // ================================================================
-  // HELPERS
-  // ================================================================
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => document.querySelectorAll(sel);
-
-  const fmt2 = (n) => (n == null || isNaN(n)) ? '0.00'
-    : Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const fmt0 = (n) => (n == null || isNaN(n)) ? '0'
-    : Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
-    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-  function limpiarTexto(txt) {
-    if (!txt) return '';
-    return String(txt)
-      .replace(/\uFFFD/g, '')
-      .replace(/�/g, '')
-      .replace(/[ÁÀÄÂ]/g, 'A')
-      .replace(/[ÉÈËÊ]/g, 'E')
-      .replace(/[ÍÌÏÎ]/g, 'I')
-      .replace(/[ÓÒÖÔ]/g, 'O')
-      .replace(/[ÚÙÜÛ]/g, 'U')
-      .replace(/[áàäâ]/g, 'a')
-      .replace(/[éèëê]/g, 'e')
-      .replace(/[íìïî]/g, 'i')
-      .replace(/[óòöô]/g, 'o')
-      .replace(/[úùüû]/g, 'u')
-      .replace(/[Ñ]/g, 'N')
-      .replace(/[ñ]/g, 'n')
-      .replace(/[¿¡]/g, '')
-      .replace(/°/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  // ================================================================
-  // 1. CARGA DE COMPONENTES
-  // ================================================================
-  async function cargarComponentes() {
-    const promesas = CONFIG.COMPONENTES.map(({ selector, file }) => {
-      const el = $(selector);
-      if (!el) return Promise.resolve();
-      return fetch(file)
-        .then((res) => res.ok ? res.text() : Promise.reject('HTTP ' + res.status))
-        .then((html) => { el.innerHTML = html; })
-        .catch(() => { el.innerHTML = ''; });
     });
-    await Promise.all(promesas);
-  }
+  });
+}
 
-  // ================================================================
-  // 2. CARGA DE DATOS
-  // ================================================================
-  async function cargarDatos() {
-    const lista = $('#productsList');
-    lista.innerHTML = `
-      <div class="loading-state">
-        <div class="spinner"></div>
-        <p>Cargando catálogo premium...</p>
-      </div>`;
+/* ============================================================
+   CARGA CATÁLOGO
+   ============================================================ */
+function cargarCatalogo(){
+  Papa.parse(CSV_URL_FINAL, {
+    download: true,
+    header: true,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    complete: function(results){
+      const totalOriginal = results.data.length;
 
-    try {
-      const r = await fetch(CONFIG.URL_SHEET + '&t=' + Date.now());
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const buffer = await r.arrayBuffer();
-      const texto = new TextDecoder('utf-8').decode(buffer);
-      const todasLasFilas = parsearCSV(texto);
+      TODOS = results.data
+        .filter(p => p && p.CODIGO && String(p.CODIGO).trim() !== '')
+        .filter(p => !esCategoriaExcluida(p.CATEGORIA))
+        .filter(p => !esMarcaExcluida(p.MARCA))
+        .map(p => ({
+          codigo: String(p.CODIGO).trim(),
+          nombre: (p.DESCRIPCION_CORTA || p.DESCRIPCION_LARGA || 'Sin descripción').trim().toUpperCase(),
+          nombreLargo: (p.DESCRIPCION_LARGA || p.DESCRIPCION_CORTA || '').trim().toUpperCase(),
+          marca: (p.MARCA || 'Genérico').trim(),
+          modelo: getModelo(p).toUpperCase(),
+          categoria: (p.CATEGORIA || 'Sin categoría').trim(),
+          sede: (p.SEDE || '').trim(),
+          stock: Number(p.STOCK) || 0,
+          precio: Number(p.PRECIO_PEN) || 0,
+          precioUSD: Number(p.PRECIO_USD) || 0,
+          precioPublico: Number(p.PRECIO_PUBLICO) || 0,
+          sku: (p.SKU || '').trim(),
+          garantia: (p.GARANTIA || '').trim(),
+          imagen: getImagen(p),
+          urlModal: (p.url_modal || '').trim(),
+          fecha: p.FECHA_ACTUALIZACION || '',
+          tc: Number(p.TC_AJUSTADO) || 0
+        }));
 
-      llenarSedeDropdown(todasLasFilas);
+      EXCLUIDOS_TOTAL = totalOriginal - TODOS.length;
+      console.log(`✅ Disponibles: ${TODOS.length} · 🚫 Excluidos: ${EXCLUIDOS_TOTAL}`);
 
-      const sedesDisponibles = [...new Set(todasLasFilas.map(d => d.sede).filter(Boolean))];
-      const guardada = localStorage.getItem('servicomp_tienda_sede_v1');
-      SEDE_ACTUAL = (guardada && sedesDisponibles.includes(guardada))
-        ? guardada
-        : (sedesDisponibles.find(s => s === CONFIG.SEDE_DEFAULT) || sedesDisponibles[0] || '');
-
-      const sedeSel = $('#sedeSelect');
-      if (sedeSel) sedeSel.value = SEDE_ACTUAL;
-
-      DATA = todasLasFilas.filter(d => d.sede === SEDE_ACTUAL);
-
-      llenarFiltros();
-      pintarFechaYTC();
-      render();
-
-    } catch (e) {
-      lista.innerHTML = `
-        <div class="empty-state">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <p>Error al cargar: ${esc(e.message)}</p>
-        </div>`;
-    }
-  }
-
-  function llenarSedeDropdown(filas) {
-    const sedes = [...new Set(filas.map(d => d.sede).filter(Boolean))].sort();
-    const sel = $('#sedeSelect');
-    if (!sel) return;
-    sel.innerHTML = sedes.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
-  }
-
-  function cambiarSede(nuevaSede) {
-    if (!nuevaSede || nuevaSede === SEDE_ACTUAL) return;
-
-    if (CARRITO.length > 0) {
-      const ok = confirm(
-        'Al cambiar a la sede ' + nuevaSede + ' se vaciará el carrito.\n\n' +
-        '¿Continuar?'
-      );
-      if (!ok) {
-        const sel = $('#sedeSelect');
-        if (sel) sel.value = SEDE_ACTUAL;
+      if(!TODOS.length){
+        $('loader').innerHTML = '<div class="error-box">No se encontraron productos válidos.</div>';
         return;
       }
-      CARRITO = [];
-      guardarCarrito();
+      inicializar();
+    },
+    error: function(err){
+      console.error('❌ Error CSV:', err);
+      $('loader').innerHTML = `<div class="error-box">Error al cargar el CSV.</div>`;
     }
+  });
+}
 
-    SEDE_ACTUAL = nuevaSede;
-    localStorage.setItem('servicomp_tienda_sede_v1', SEDE_ACTUAL);
-    actualizarCarritoUI();
-    cargarDatos();
-  }
+(async function init(){
+  cargarCarritoDeStorage();
+  pintarCarrito();
+  bindCarrito();
+  await cargarThumbnails();
+  cargarCatalogo();
+})();
 
-  function parsearCSV(texto) {
-    const filas = [];
-    let fila = [], campo = '', enComillas = false;
-    for (let i = 0; i < texto.length; i++) {
-      const c = texto[i];
-      if (enComillas) {
-        if (c === '"') {
-          if (texto[i + 1] === '"') { campo += '"'; i++; }
-          else enComillas = false;
-        } else campo += c;
-      } else {
-        if (c === '"') enComillas = true;
-        else if (c === ',') { fila.push(campo); campo = ''; }
-        else if (c === '\n') { fila.push(campo); filas.push(fila); fila = []; campo = ''; }
-        else if (c !== '\r') campo += c;
-      }
-    }
-    if (campo.length || fila.length) { fila.push(campo); filas.push(fila); }
+/* ============================================================
+   INICIALIZAR
+   ============================================================ */
+function inicializar(){
+  TODOS.forEach(p => {
+    if(esCategoriaDefault(p.categoria)) FILTROS.cat.add(p.categoria);
+  });
 
-    const headers = filas[0].map((h) => h.trim().toUpperCase());
-    const idx = (name) => headers.indexOf(name);
+  poblarFiltros();
 
-    return filas.slice(1)
-      .filter((f) => f.length >= 20 && f[idx('CODIGO')])
-      .map((f) => ({
-        sede: String(f[idx('SEDE')] || '').trim().toUpperCase(),
-        codigo: (f[idx('CODIGO')] || '').trim(),
-        categoria: limpiarTexto(f[idx('CATEGORIA')] || ''),
-        descripcion: limpiarTexto(f[idx('DESCRIPCION_CORTA')] || '').toUpperCase(),
-        stock: f[idx('STOCK')] || '',
-        marca: limpiarTexto(f[idx('MARCA')] || ''),
-        tc_real: parseFloat(f[idx('TC_REAL')]) || 0,
-        precio_publico: parseFloat(f[idx('PRECIO_PUBLICO')]) || null
-      }))
-      .filter((d) => !esStockCero(d.stock))
-      .filter((d) => !esCategoriaExcluida(d.categoria))
-      .filter((d) => !esMarcaExcluida(d.marca))
-      .filter((d) => !empiezaConZZ(d.codigo))
-      .filter((d) => d.precio_publico && d.precio_publico > 0);
-  }
+  const primera = TODOS[0];
+  $('fecha').textContent = primera.fecha || new Date().toLocaleDateString('es-PE');
+  $('tc').textContent = primera.tc ? Number(primera.tc).toFixed(2) : '—';
 
-  const esStockCero = (stock) => {
-    if (!stock) return true;
-    const s = String(stock).trim();
-    return s === '' || s === '0';
-  };
-  const esCategoriaExcluida = (cat) => {
-    if (!cat) return false;
-    const c = String(cat).trim().toUpperCase();
-    return CONFIG.CATEGORIAS_EXCLUIDAS.some((ex) => c === ex);
-  };
-  const esMarcaExcluida = (marca) => {
-    if (!marca) return false;
-    const m = String(marca).trim().toUpperCase();
-    return CONFIG.MARCAS_EXCLUIDAS.some((ex) => m === ex);
-  };
-  const empiezaConZZ = (codigo) => codigo
-    ? String(codigo).trim().toLowerCase().startsWith('zz')
-    : false;
+  const elExc = document.getElementById('excluidos');
+ 
+  $('search').addEventListener('input', () => { PAGINA = 1; filtrar(); });
+  $('btnClear').addEventListener('click', limpiarFiltros);
 
-  const normalizaStock = (s) => {
-    if (!s) return { txt: '—', cls: 'stock-critical' };
-    if (/^>\d+$/.test(s)) return { txt: s.slice(1) + '+', cls: 'stock-available' };
-    if (/^\d+\+$/.test(s)) return { txt: s, cls: 'stock-available' };
-    const n = parseInt(s);
-    if (isNaN(n)) return { txt: s, cls: 'stock-available' };
-    if (n === 0) return { txt: '0', cls: 'stock-critical' };
-    if (n <= 2) return { txt: n, cls: 'stock-critical' };
-    if (n <= 5) return { txt: n, cls: 'stock-low' };
-    return { txt: n, cls: 'stock-available' };
-  };
+  configurarDropdowns();
 
-  function pintarFechaYTC() {
-    const ahora = new Date();
-    const fechaFmt = ahora.toLocaleDateString('es-PE', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  $('loader').style.display = 'none';
+  $('app').style.display = 'block';
+
+  filtrar();
+}
+
+/* ============================================================
+   POBLAR FILTROS
+   ============================================================ */
+function poblarFiltros(){
+  const sedes = [...new Set(TODOS.map(p => p.sede).filter(Boolean))].sort();
+  const cats = [...new Set(TODOS.map(p => p.categoria).filter(Boolean))].sort();
+  const marcas = [...new Set(TODOS.map(p => p.marca).filter(Boolean))].sort();
+
+  construirDropdown('sede', sedes, 'Todas las sedes');
+  construirDropdown('cat', cats, 'Todas las categorías');
+  construirDropdown('marca', marcas, 'Todas las marcas');
+
+  const listOrden = document.querySelector('[data-dd-list-orden]');
+  listOrden.innerHTML = OPCIONES_ORDEN.map(o => `
+    <div class="dd-item" data-orden="${o.value}">
+      <i class="fa-solid ${o.icon}" style="width:16px;color:var(--ink-soft);font-size:12px"></i>
+      <label>${o.label}</label>
+      ${o.value === ORDEN ? '<i class="fa-solid fa-check" style="color:var(--brand);margin-left:auto"></i>' : ''}
+    </div>
+  `).join('');
+
+  listOrden.querySelectorAll('[data-orden]').forEach(el => {
+    el.addEventListener('click', () => {
+      ORDEN = el.dataset.orden;
+      const op = OPCIONES_ORDEN.find(o => o.value === ORDEN);
+      document.querySelector('[data-dd="orden"] .label').textContent = op.label;
+      document.querySelector('[data-dd="orden"] .dd-panel').classList.remove('open');
+      document.querySelector('[data-dd="orden"] .dd-trigger').classList.remove('open');
+      listOrden.querySelectorAll('[data-orden]').forEach(e => {
+        const ico = e.querySelector('.fa-check');
+        if(ico) ico.remove();
+      });
+      el.insertAdjacentHTML('beforeend', '<i class="fa-solid fa-check" style="color:var(--brand);margin-left:auto"></i>');
+      PAGINA = 1;
+      filtrar();
     });
-    const el = $('#fechaDisplay');
-    if (el) el.textContent = fechaFmt.charAt(0).toUpperCase() + fechaFmt.slice(1);
+  });
+}
 
-    const tc = $('#tcDisplay');
-    if (tc && DATA[0] && DATA[0].tc_real > 0) {
-      tc.textContent = 'S/ ' + DATA[0].tc_real.toFixed(2);
-    }
-  }
+function construirDropdown(tipo, items, placeholder){
+  const dd = document.querySelector(`[data-dd="${tipo}"]`);
+  const list = dd.querySelector('[data-dd-list]');
 
-  // ================================================================
-  // 3. FILTROS
-  // ================================================================
-  function llenarFiltros() {
-    const cats = [...new Set(DATA.map((d) => d.categoria).filter(Boolean))].sort();
-    const marcas = [...new Set(DATA.map((d) => d.marca).filter(Boolean))].sort();
+  list.innerHTML = items.map((item, idx) => `
+    <div class="dd-item">
+      <input type="checkbox" id="chk-${tipo}-${idx}" value="${item}" ${FILTROS[tipo].has(item) ? 'checked' : ''}>
+      <label for="chk-${tipo}-${idx}">${item}</label>
+    </div>
+  `).join('');
 
-    $('#catSelect').innerHTML = '<option value="">Todas las categorías</option>' +
-      cats.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
-    $('#marcaSelect').innerHTML = '<option value="">Todas las marcas</option>' +
-      marcas.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
-  }
+  actualizarLabelDropdown(tipo, placeholder);
 
-  function renderDebounced() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(render, 150);
-  }
-
-  function render() {
-    const q = $('#searchInput').value.toLowerCase().trim();
-    const fCat = $('#catSelect').value;
-    const fMarca = $('#marcaSelect').value;
-    const orden = $('#ordenSelect').value;
-
-    const terminos = q ? q.split(/\s+/).filter(Boolean) : [];
-
-    DATA_FILTRADA = DATA.filter((d) => {
-      if (fCat && d.categoria !== fCat) return false;
-      if (fMarca && d.marca !== fMarca) return false;
-      if (terminos.length > 0) {
-        const txt = (d.codigo + ' ' + d.descripcion + ' ' + d.marca + ' ' + d.categoria).toLowerCase();
-        if (!terminos.every((t) => txt.includes(t))) return false;
-      }
-      return true;
+  list.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+    chk.addEventListener('change', () => {
+      if(chk.checked) FILTROS[tipo].add(chk.value);
+      else FILTROS[tipo].delete(chk.value);
+      actualizarLabelDropdown(tipo, placeholder);
+      PAGINA = 1;
+      filtrar();
     });
+  });
 
-    if (orden === 'precio_desc') {
-      DATA_FILTRADA.sort((a, b) => (b.precio_publico ?? -1) - (a.precio_publico ?? -1));
-    } else if (orden === 'codigo_az') {
-      DATA_FILTRADA.sort((a, b) => a.codigo.localeCompare(b.codigo));
+  dd.querySelector('[data-dd-all]').onclick = () => {
+    list.querySelectorAll('input[type="checkbox"]').forEach(c => {
+      c.checked = true;
+      FILTROS[tipo].add(c.value);
+    });
+    actualizarLabelDropdown(tipo, placeholder);
+    PAGINA = 1;
+    filtrar();
+  };
+
+  dd.querySelector('[data-dd-none]').onclick = () => {
+    list.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    FILTROS[tipo].clear();
+    actualizarLabelDropdown(tipo, placeholder);
+    PAGINA = 1;
+    filtrar();
+  };
+
+  const search = dd.querySelector('[data-dd-search]');
+  if(search){
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase();
+      list.querySelectorAll('.dd-item').forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  }
+}
+
+function actualizarLabelDropdown(tipo, placeholder){
+  const dd = document.querySelector(`[data-dd="${tipo}"]`);
+  const label = dd.querySelector('.label');
+  const badge = dd.querySelector('.count-badge');
+  const n = FILTROS[tipo].size;
+
+  if(n === 0){
+    label.textContent = placeholder;
+    badge.style.display = 'none';
+  } else if(n === 1){
+    label.textContent = [...FILTROS[tipo]][0];
+    badge.style.display = 'none';
+  } else {
+    label.textContent = `${n} seleccionados`;
+    badge.textContent = n;
+    badge.style.display = 'inline-block';
+  }
+}
+
+/* ============================================================
+   DROPDOWNS
+   ============================================================ */
+function configurarDropdowns(){
+  document.querySelectorAll('.dd-trigger').forEach(trigger => {
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      const dd = trigger.closest('.dropdown');
+      const panel = dd.querySelector('.dd-panel');
+      const isOpen = panel.classList.contains('open');
+
+      document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open'));
+      document.querySelectorAll('.dd-trigger').forEach(t => t.classList.remove('open'));
+
+      if(!isOpen){
+        panel.classList.add('open');
+        trigger.classList.add('open');
+        const s = panel.querySelector('[data-dd-search]');
+        if(s) setTimeout(() => s.focus(), 50);
+      }
+    });
+  });
+
+  document.addEventListener('click', e => {
+    if(!e.target.closest('.dropdown')){
+      document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open'));
+      document.querySelectorAll('.dd-trigger').forEach(t => t.classList.remove('open'));
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open'));
+      document.querySelectorAll('.dd-trigger').forEach(t => t.classList.remove('open'));
+    }
+  });
+}
+
+/* ============================================================
+   LIMPIAR FILTROS
+   ============================================================ */
+function limpiarFiltros(){
+  FILTROS.sede.clear();
+  FILTROS.cat.clear();
+  FILTROS.marca.clear();
+  $('search').value = '';
+  PAGINA = 1;
+
+  document.querySelectorAll('.dd-list input[type="checkbox"]').forEach(c => c.checked = false);
+
+  actualizarLabelDropdown('sede', 'Todas las sedes');
+  actualizarLabelDropdown('cat', 'Todas las categorías');
+  actualizarLabelDropdown('marca', 'Todas las marcas');
+
+  filtrar();
+}
+
+/* ============================================================
+   FILTRAR
+   ============================================================ */
+function filtrar(){
+  const q = $('search').value.trim().toLowerCase();
+
+  FILTRADOS = TODOS.filter(p => {
+    if(FILTROS.sede.size && !FILTROS.sede.has(p.sede)) return false;
+    if(FILTROS.cat.size && !FILTROS.cat.has(p.categoria)) return false;
+    if(FILTROS.marca.size && !FILTROS.marca.has(p.marca)) return false;
+    if(q){
+      const texto = `${p.nombre} ${p.nombreLargo} ${p.codigo} ${p.marca} ${p.sku} ${p.categoria} ${p.modelo}`.toLowerCase();
+      if(!texto.includes(q)) return false;
+    }
+    return true;
+  });
+
+  switch(ORDEN){
+    case 'precio_asc': FILTRADOS.sort((a,b) => (a.precioPublico || a.precio) - (b.precioPublico || b.precio)); break;
+    case 'precio_desc': FILTRADOS.sort((a,b) => (b.precioPublico || b.precio) - (a.precioPublico || a.precio)); break;
+    case 'nombre_asc': FILTRADOS.sort((a,b) => a.nombre.localeCompare(b.nombre)); break;
+    case 'nombre_desc': FILTRADOS.sort((a,b) => b.nombre.localeCompare(a.nombre)); break;
+    case 'stock_desc': FILTRADOS.sort((a,b) => b.stock - a.stock); break;
+    case 'stock_asc': FILTRADOS.sort((a,b) => a.stock - b.stock); break;
+  }
+
+  render();
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(){
+  const grid = $('grid');
+  $('count').textContent = FILTRADOS.length;
+
+  if(!FILTRADOS.length){
+    grid.innerHTML = `<div class="empty"><i class="fa-regular fa-face-frown"></i><p>No se encontraron productos con esos filtros</p></div>`;
+    $('pagination').innerHTML = '';
+    return;
+  }
+
+  const totalPag = Math.ceil(FILTRADOS.length / PER_PAGE);
+  if(PAGINA > totalPag) PAGINA = totalPag;
+  if(PAGINA < 1) PAGINA = 1;
+
+  const inicio = (PAGINA - 1) * PER_PAGE;
+  const pag = FILTRADOS.slice(inicio, inicio + PER_PAGE);
+
+  grid.innerHTML = pag.map((p, i) => {
+    const color = getColor(p.marca);
+    const icono = getIcon(p.categoria);
+    const tieneFoto = !!p.imagen;
+    const enCarrito = CARRITO.find(x => x.codigo === p.codigo && x.sede === p.sede);
+
+    let stockPill = '';
+    if(p.stock === 0){
+      stockPill = `<span class="stock-pill agotado">Agotado</span>`;
+    } else if(p.stock < 10){
+      stockPill = `<span class="stock-pill bajo">Stock: ${p.stock}</span>`;
     } else {
-      DATA_FILTRADA.sort((a, b) => (a.precio_publico ?? 1e18) - (b.precio_publico ?? 1e18));
+      stockPill = `<span class="stock-pill">Stock: ${p.stock}</span>`;
     }
 
-    $('#resultsCount').textContent = DATA_FILTRADA.length;
+    const imgHTML = tieneFoto
+      ? `<img class="thumb"
+              src="${p.imagen}"
+              alt="${p.nombre}"
+              loading="lazy"
+              onerror="var v=this.parentElement; this.remove(); if(v) v.classList.remove('con-foto');">`
+      : '';
 
-    VISIBLES = 0;
-    $('#productsList').innerHTML = '';
-
-    if (DATA_FILTRADA.length === 0) {
-      $('#productsList').innerHTML = `
-        <div class="empty-state">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <p>No encontramos productos con esos filtros.</p>
-        </div>`;
-      return;
-    }
-
-    $('#productsList').innerHTML = `
-      <div class="products-table-wrap">
-        <table class="products-table">
-          <thead>
-            <tr>
-              <th style="width:56px;"></th>
-              <th>Código</th>
-              <th>Producto</th>
-              <th>Marca</th>
-              <th class="centro">Stock</th>
-              <th class="num">Precio</th>
-              <th class="centro">Agregar</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyProducts"></tbody>
-        </table>
-      </div>
-      <div class="products-cards-mobile" id="cardsProducts"></div>`;
-
-    cargarMas();
-  }
-
-  function cargarMas() {
-    if (VISIBLES >= DATA_FILTRADA.length) return;
-    const tbody = $('#tbodyProducts');
-    const cards = $('#cardsProducts');
-    if (!tbody || !cards) return;
-
-    const limite = Math.min(VISIBLES + CONFIG.POR_TANDA, DATA_FILTRADA.length);
-    const batch = DATA_FILTRADA.slice(VISIBLES, limite);
-
-    tbody.insertAdjacentHTML('beforeend', batch.map(renderFila).join(''));
-    cards.insertAdjacentHTML('beforeend', batch.map(renderCardMobile).join(''));
-
-    VISIBLES = limite;
-    if (VISIBLES < DATA_FILTRADA.length) setTimeout(observarLoadMore, 80);
-  }
-
-  // ================================================================
-  // 4. RENDER FILA (DESKTOP)
-  // ================================================================
-  function renderFila(d) {
-    const st = normalizaStock(d.stock);
-    const enCarrito = CARRITO.find((x) => x.codigo === d.codigo);
-    const img = getImagenDeltron(d.codigo);
-    const color = getColorCategoria(d.categoria);
-    const icono = getIconoCategoria(d.categoria);
+    const descripcion = p.nombreLargo || p.nombre;
+    const precioFinal = p.precioPublico > 0 ? p.precioPublico : p.precio;
 
     return `
-      <tr data-codigo="${esc(d.codigo)}">
-        <td class="thumb-cell">
-          <a href="${img}" target="_blank" rel="noopener noreferrer" class="thumb-link" title="Ver foto">
-            <img src="${img}" alt="${esc(d.codigo)}" loading="lazy"
-                 onload="this.classList.add('loaded')"
-                 onerror="this.classList.add('error'); this.style.display='none';">
-            <i class="fa-solid ${icono} thumb-placeholder"></i>
-          </a>
-        </td>
-        <td>
-          <span class="code-cell" data-copy="${esc(d.codigo)}" title="Copiar código">
-            ${esc(d.codigo)} <i class="fa-regular fa-copy"></i>
-          </span>
-        </td>
-        <td class="desc-cell">${esc(d.descripcion)}</td>
-        <td>
-          <span class="brand-badge" style="background:${color.bg}; color:${color.text}; border-color:${color.text}33;">
-            <i class="fa-solid fa-tag"></i> ${esc(d.marca || '—')}
-          </span>
-        </td>
-        <td class="centro">
-          <span class="stock-pill ${st.cls}">${st.txt}</span>
-        </td>
-        <td class="num">
-          <span class="price-cell"><span class="currency">S/</span>${fmt0(d.precio_publico)}</span>
-        </td>
-        <td class="centro">
-          <button class="btn-add-row ${enCarrito ? 'added' : ''}"
-                  data-add="${esc(d.codigo)}"
-                  style="${enCarrito ? '' : `background: linear-gradient(135deg, ${color.text} 0%, ${color.text}cc 100%); box-shadow: 0 3px 8px ${color.text}40;`}"
-                  title="${enCarrito ? 'Agregar otra unidad' : 'Agregar al carrito'}">
-            <i class="fa-solid fa-${enCarrito ? 'check' : 'plus'}"></i>
-          </button>
-        </td>
-      </tr>`;
-  }
-
-  function getImagenDeltron(codigo) {
-    const c = String(codigo).trim().toUpperCase();
-    return 'https://www.deltron.com.pe/modulos/productos/items/image_ext.php?item=' +
-      encodeURIComponent(c) + '&nomenu=1';
-  }
-
-  // ================================================================
-  // 5. RENDER CARD (MÓVIL)
-  // ================================================================
-  function renderCardMobile(d) {
-    const st = normalizaStock(d.stock);
-    const enCarrito = CARRITO.find((x) => x.codigo === d.codigo);
-    const img = getImagenDeltron(d.codigo);
-    const color = getColorCategoria(d.categoria);
-    const icono = getIconoCategoria(d.categoria);
-
-    return `
-      <div class="product-card-mobile" data-codigo="${esc(d.codigo)}">
-        <div class="pcm-main">
-          <a href="${img}" target="_blank" rel="noopener noreferrer" class="pcm-thumb" title="Ver foto">
-            <img src="${img}" alt="${esc(d.codigo)}" loading="lazy"
-                 onload="this.classList.add('loaded')"
-                 onerror="this.classList.add('error'); this.style.display='none';">
-            <i class="fa-solid ${icono} pcm-thumb-placeholder"></i>
-          </a>
-          <div class="pcm-info">
-            <div class="pcm-top">
-              <span class="pcm-code" data-copy="${esc(d.codigo)}">
-                ${esc(d.codigo)} <i class="fa-regular fa-copy"></i>
-              </span>
-              <span class="stock-pill ${st.cls} pcm-stock">${st.txt}</span>
-            </div>
-            <div class="pcm-desc">${esc(d.descripcion)}</div>
+      <article class="card" style="animation-delay:${Math.min(i*0.02,0.4)}s">
+        <div class="visual ${tieneFoto ? 'con-foto' : ''}" style="--mc:${color}"
+             data-codigo="${p.codigo}"
+             role="button" tabindex="0"
+             aria-label="Ver ${p.nombre}">
+          <div class="pattern"></div>
+          ${imgHTML}
+          <i class="fa-solid ${icono} icon"></i>
+          <div class="content">
+            <span class="brand">${p.marca.substring(0,10)}</span>
+            <span class="model">${p.modelo}</span>
+            <span class="cat-tag">${p.categoria.substring(0,22)}</span>
           </div>
+          <i class="fa-solid fa-arrow-up-right-from-square cam-hint"></i>
+          <span class="tooltip">Clic para ver detalle</span>
         </div>
-        <div class="pcm-footer">
-          <span class="pcm-brand" style="color:${color.text};">
-            <i class="fa-solid fa-tag"></i> ${esc(d.marca || '—')}
+        <div class="info">
+          <h3 class="title">${descripcion}</h3>
+          <span class="code" data-code="${p.codigo}" title="Clic para copiar código">
+            #${p.codigo} · ${p.sede}
+            <i class="fa-regular fa-copy cp-ico"></i>
           </span>
-          <span class="pcm-price"><span class="currency">S/</span>${fmt0(d.precio_publico)}</span>
-          <button class="pcm-add ${enCarrito ? 'added' : ''}"
-                  data-add="${esc(d.codigo)}"
-                  style="${enCarrito ? '' : `background: linear-gradient(135deg, ${color.text} 0%, ${color.text}cc 100%); box-shadow: 0 3px 10px ${color.text}40;`}">
+          <div class="row">
+            <div>
+              <div class="price">${fmt(precioFinal)}</div>
+            </div>
+            ${stockPill}
+          </div>
+          <button class="btn-add-card ${enCarrito ? 'added' : ''}" data-add="${p.codigo}" data-sede="${p.sede}">
             <i class="fa-solid fa-${enCarrito ? 'check' : 'plus'}"></i>
+            ${enCarrito ? 'En carrito' : 'Agregar'}
           </button>
         </div>
-      </div>`;
+      </article>
+    `;
+  }).join('');
+
+  // Clic en la imagen → abrir URL del modal en nueva pestaña
+  grid.querySelectorAll('.visual').forEach(el => {
+    el.addEventListener('click', () => abrirUrlModal(el.dataset.codigo));
+    el.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrirUrlModal(el.dataset.codigo); }
+    });
+  });
+
+  // Copiar código al clic
+  grid.querySelectorAll('.code').forEach(el => {
+    el.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const code = el.dataset.code;
+      if(!code) return;
+
+      const ok = await copiarTexto(code);
+      el.classList.toggle('ok', ok);
+      el.classList.toggle('err', !ok);
+
+      const ico = el.querySelector('.cp-ico');
+      const original = ico.className;
+      ico.className = ok ? 'fa-solid fa-check cp-ico' : 'fa-solid fa-xmark cp-ico';
+
+      setTimeout(() => {
+        el.classList.remove('ok','err');
+        ico.className = original;
+      }, 1200);
+    });
+  });
+
+  renderPaginacion(totalPag);
+}
+
+function renderPaginacion(total){
+  const el = $('pagination');
+  if(total <= 1){ el.innerHTML = ''; return; }
+
+  let html = '';
+  html += `<button ${PAGINA === 1 ? 'disabled' : ''} data-p="${PAGINA-1}">← Anterior</button>`;
+
+  const rango = [];
+  const delta = 2;
+  for(let i = 1; i <= total; i++){
+    if(i === 1 || i === total || (i >= PAGINA - delta && i <= PAGINA + delta)){
+      rango.push(i);
+    }
   }
 
-  // ================================================================
-  // 6. SCROLL INFINITO
-  // ================================================================
-  function observarLoadMore() {
-    if (observerLoadMore) observerLoadMore.disconnect();
-    const trigger = $('#loadMoreTrigger');
-    if (!trigger) return;
-    observerLoadMore = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && VISIBLES < DATA_FILTRADA.length) cargarMas();
-    }, { rootMargin: '500px' });
-    observerLoadMore.observe(trigger);
-  }
+  let prev = 0;
+  rango.forEach(n => {
+    if(prev && n - prev > 1) html += `<span class="dots">…</span>`;
+    html += `<button class="${n === PAGINA ? 'active' : ''}" data-p="${n}">${n}</button>`;
+    prev = n;
+  });
 
-  // ================================================================
-  // 7. COPIAR CÓDIGO
-  // ================================================================
-  function copiarCodigo(texto) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(texto)
-        .then(() => mostrarToast('Código copiado: ' + texto))
-        .catch(() => fallbackCopiar(texto));
-    } else fallbackCopiar(texto);
-  }
-  function fallbackCopiar(texto) {
-    const ta = document.createElement('textarea');
-    ta.value = texto;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); mostrarToast('Código copiado: ' + texto); } catch (e) {}
-    ta.remove();
-  }
-  function mostrarToast(msg) {
-    const toast = $('#toast');
-    if (!toast) return;
-    toast.querySelector('span').textContent = msg || 'Copiado';
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
-  }
+  html += `<button ${PAGINA === total ? 'disabled' : ''} data-p="${PAGINA+1}">Siguiente →</button>`;
+  el.innerHTML = html;
 
-  // ================================================================
-  // 8. CARRITO
-  // ================================================================
-  function cargarCarritoDeStorage() {
-    try {
-      const raw = localStorage.getItem(CONFIG.KEY_CARRITO);
-      if (raw) CARRITO = JSON.parse(raw) || [];
-    } catch (e) { CARRITO = []; }
-  }
-  function guardarCarrito() {
-    try { localStorage.setItem(CONFIG.KEY_CARRITO, JSON.stringify(CARRITO)); } catch (e) {}
-  }
+  el.querySelectorAll('button[data-p]').forEach(b => {
+    b.addEventListener('click', () => {
+      PAGINA = parseInt(b.dataset.p);
+      render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+}
 
-  function agregarAlCarrito(codigo) {
-    const prod = DATA.find((d) => d.codigo === codigo);
-    if (!prod) { mostrarToast('Producto no encontrado'); return; }
+/* ============================================================
+   ABRIR URL DEL MODAL EN NUEVA PESTAÑA
+   ============================================================ */
+function abrirUrlModal(codigo){
+  const p = TODOS.find(x => x.codigo === codigo);
+  if(!p) return;
 
-    if (prod.sede !== SEDE_ACTUAL) {
-      mostrarToast('⚠️ Este producto no es de la sede ' + SEDE_ACTUAL);
+  if(p.urlModal && esUrlValida(p.urlModal)){
+    window.open(p.urlModal, '_blank', 'noopener,noreferrer');
+  } else {
+    console.warn('⚠️ Sin url_modal para:', codigo);
+    alert('Este producto no tiene link de detalle.');
+  }
+}
+
+/* ============================================================
+   CARRITO – ServiComp+ (v5)
+   ============================================================ */
+let toastTimer = null;
+
+function toast(msg){
+  const t = $('toast'); if(!t) return;
+  t.querySelector('span').textContent = msg || 'Listo';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function cargarCarritoDeStorage(){
+  try{
+    const raw = localStorage.getItem(KEY_CARRITO);
+    CARRITO = raw ? (JSON.parse(raw) || []) : [];
+  } catch(e){ CARRITO = []; }
+}
+
+function guardarCarrito(){
+  try{ localStorage.setItem(KEY_CARRITO, JSON.stringify(CARRITO)); }catch(e){}
+}
+
+/* -------- AGREGAR (con bloqueo/pregunta por sede) -------- */
+function agregarAlCarrito(codigo, sede){
+  const p = TODOS.find(x => x.codigo === codigo && (!sede || x.sede === sede))
+         || TODOS.find(x => x.codigo === codigo);
+  if(!p) return;
+
+  // Evitar mezcla de sedes: preguntar y vaciar
+  const sedeEnCarrito = CARRITO.length ? CARRITO[0].sede : null;
+  if(sedeEnCarrito && p.sede !== sedeEnCarrito){
+    const ok = confirm(
+      'Tu carrito tiene productos de la sede ' + sedeEnCarrito + '.\n\n' +
+      '¿Vaciar el carrito y agregar este producto de ' + p.sede + '?'
+    );
+    if(!ok){
+      toast('⚠️ Mantienes el carrito de ' + sedeEnCarrito);
       return;
     }
-
-    const existe = CARRITO.find((x) => x.codigo === codigo);
-    if (existe) existe.cantidad += 1;
-    else CARRITO.push({
-      codigo: prod.codigo,
-      descripcion: prod.descripcion,
-      marca: prod.marca,
-      precio_publico: prod.precio_publico,
-      sede: prod.sede,
-      cantidad: 1
-    });
-
-    guardarCarrito();
-    actualizarCarritoUI();
-    mostrarToast('✓ Agregado: ' + codigo);
-  }
-
-  function cambiarCantidad(codigo, delta) {
-    const item = CARRITO.find((x) => x.codigo === codigo);
-    if (!item) return;
-    item.cantidad += delta;
-    if (item.cantidad <= 0) CARRITO = CARRITO.filter((x) => x.codigo !== codigo);
-    guardarCarrito();
-    actualizarCarritoUI();
-  }
-
-  function eliminarDelCarrito(codigo) {
-    CARRITO = CARRITO.filter((x) => x.codigo !== codigo);
-    guardarCarrito();
-    actualizarCarritoUI();
-  }
-
-  function vaciarCarrito() {
-    if (CARRITO.length === 0) return;
-    if (!confirm('¿Vaciar todo el carrito?')) return;
     CARRITO = [];
     guardarCarrito();
-    actualizarCarritoUI();
-    mostrarToast('Carrito vaciado');
   }
 
-  function calcularTotales() {
-    const subtotal = CARRITO.reduce((s, x) => s + (x.precio_publico * x.cantidad), 0);
-    const envioEl = $('#envioInput');
-    const envio = parseFloat(envioEl ? envioEl.value : 0) || 0;
-    return { subtotal, envio, total: subtotal + envio };
+  const ex = CARRITO.find(x => x.codigo === codigo && x.sede === p.sede);
+  if(ex) ex.cantidad += 1;
+  else CARRITO.push({
+    codigo: p.codigo,
+    descripcion: p.nombre,
+    marca: p.marca,
+    precio_publico: p.precioPublico > 0 ? p.precioPublico : p.precio,
+    sede: p.sede,
+    cantidad: 1
+  });
+
+  guardarCarrito();
+  pintarCarrito();
+  toast('✓ Agregado: ' + codigo);
+}
+
+/* -------- CAMBIAR CANTIDAD (por código + sede) -------- */
+function cambiarCantidad(codigo, delta, sede){
+  const it = CARRITO.find(x => x.codigo === codigo && (!sede || x.sede === sede));
+  if(!it) return;
+  it.cantidad += delta;
+  if(it.cantidad <= 0){
+    CARRITO = CARRITO.filter(x => !(x.codigo === codigo && x.sede === it.sede));
   }
+  guardarCarrito();
+  pintarCarrito();
+}
 
-  function actualizarTotales() {
-    const { subtotal, envio, total } = calcularTotales();
-    const s = $('#cartSubtotal'); if (s) s.textContent = 'S/ ' + fmt2(subtotal);
-    const e = $('#cartEnvio'); if (e) e.textContent = 'S/ ' + fmt2(envio);
-    const t = $('#cartTotal'); if (t) t.textContent = 'S/ ' + fmt2(total);
-  }
+/* -------- ELIMINAR (por código + sede) -------- */
+function eliminarDelCarrito(codigo, sede){
+  CARRITO = CARRITO.filter(x => !(x.codigo === codigo && (!sede || x.sede === sede)));
+  guardarCarrito();
+  pintarCarrito();
+}
 
-  function actualizarCarritoUI() {
-    const body = $('#cartBody');
-    const badge = $('#cartBadge');
-    if (!body || !badge) return;
+function vaciarCarrito(){
+  if(!CARRITO.length) return;
+  if(!confirm('¿Vaciar todo el carrito?')) return;
+  CARRITO = [];
+  guardarCarrito();
+  pintarCarrito();
+  toast('Carrito vaciado');
+}
 
-    const totalItems = CARRITO.reduce((s, x) => s + x.cantidad, 0);
-    badge.textContent = totalItems;
-    badge.classList.toggle('hidden', totalItems === 0);
+function calcularTotales(){
+  const subtotal = CARRITO.reduce((s,x) => s + x.precio_publico * x.cantidad, 0);
+  const envioEl = $('envioInput');
+  const envio = parseFloat(envioEl ? envioEl.value : 0) || 0;
+  return { subtotal, envio, total: subtotal + envio };
+}
 
-    if (CARRITO.length === 0) {
-      body.innerHTML = `
-        <div class="empty-cart">
-          <i class="fa-regular fa-cart-plus"></i>
-          Agrega productos desde el catálogo
-        </div>`;
-    } else {
-      body.innerHTML = CARRITO.map((item) => `
-        <div class="cart-item">
-          <div class="item-info">
-            <div class="item-code">
-              ${esc(item.codigo)}
-              ${item.sede ? `<span class="item-sede">· ${esc(item.sede)}</span>` : ''}
-            </div>
-            <div class="item-name">${esc(item.descripcion)}</div>
-            <div class="item-price">S/ ${fmt2(item.precio_publico)}</div>
-          </div>
-          <div class="item-qty">
-            <button data-qty-dec="${esc(item.codigo)}">−</button>
-            <span class="qty-num">${item.cantidad}</span>
-            <button data-qty-inc="${esc(item.codigo)}">+</button>
-          </div>
-          <button class="item-remove" data-remove="${esc(item.codigo)}">
-            <i class="fa-regular fa-trash-can"></i>
-          </button>
-        </div>`).join('');
-    }
+function actualizarTotales(){
+  const { subtotal, envio, total } = calcularTotales();
+  if($('cartSubtotal')) $('cartSubtotal').textContent = 'S/ ' + fmt2(subtotal);
+  if($('cartEnvio'))    $('cartEnvio').textContent    = 'S/ ' + fmt2(envio);
+  if($('cartTotal'))    $('cartTotal').textContent    = 'S/ ' + fmt2(total);
+}
 
-    actualizarTotales();
+/* -------- PINTAR CARRITO (con data-sede en cada botón) -------- */
+function pintarCarrito(){
+  const body = $('cartBody');
+  const badge = $('cartBadge');
+  if(!body || !badge) return;
 
-    $$('.products-table tbody tr, .product-card-mobile').forEach((el) => {
-      const cod = el.dataset.codigo;
-      if (!cod) return;
-      const enC = CARRITO.find((x) => x.codigo === cod);
-      const btn = el.querySelector('.btn-add-row, .pcm-add');
-      if (btn) {
-        btn.classList.toggle('added', !!enC);
-        if (enC) {
-          btn.style.background = '';
-          btn.style.boxShadow = '';
-        } else {
-          const prod = DATA.find((d) => d.codigo === cod);
-          if (prod) {
-            const color = getColorCategoria(prod.categoria);
-            btn.style.background = `linear-gradient(135deg, ${color.text} 0%, ${color.text}cc 100%)`;
-            btn.style.boxShadow = `0 3px 8px ${color.text}40`;
-          }
-        }
-        btn.innerHTML = `<i class="fa-solid fa-${enC ? 'check' : 'plus'}"></i>`;
-      }
-    });
-  }
+  const totalItems = CARRITO.reduce((s,x) => s + x.cantidad, 0);
+  badge.textContent = totalItems;
+  badge.classList.toggle('hidden', totalItems === 0);
 
-  function abrirCarrito() {
-    $('#cartPanel').classList.add('open');
-    $('#cartOverlay').classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-  function cerrarCarrito() {
-    $('#cartPanel').classList.remove('open');
-    $('#cartOverlay').classList.remove('show');
-    document.body.style.overflow = '';
-  }
-
-  // ================================================================
-  // 9. WHATSAPP
-  // ================================================================
-  function enviarWhatsApp() {
-    if (CARRITO.length === 0) { mostrarToast('Agrega productos primero'); return; }
-
-    const clienteEl = $('#clienteNombre');
-    const cliente = (clienteEl ? clienteEl.value.trim() : '') || 'Cliente';
-    const { subtotal, envio, total } = calcularTotales();
-
-    const lineas = CARRITO.map((x) =>
-      `• ${x.cantidad}x ${x.descripcion.substring(0, 50)} — S/ ${fmt2(x.precio_publico * x.cantidad)}`
-    ).join('\n');
-
-    const texto =
-      `¡Hola ServiComp+! 👋\n\n` +
-      `Soy *${cliente}* y quiero cotizar:\n` +
-      `Sede: *${SEDE_ACTUAL}*\n\n` +
-      `*Productos:*\n${lineas}\n\n` +
-      `*Subtotal:* S/ ${fmt2(subtotal)}\n` +
-      `*Envío:* S/ ${fmt2(envio)}\n` +
-      `*TOTAL:* S/ ${fmt2(total)}\n\n` +
-      `¿Me confirman disponibilidad y tiempo de entrega?`;
-
-    window.open('https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(texto), '_blank');
-  }
-
-  // ================================================================
-  // 10. PDF
-  // ================================================================
-  function exportarPDF() {
-    if (CARRITO.length === 0) { mostrarToast('Agrega productos primero'); return; }
-
-    const clienteEl = $('#clienteNombre');
-    const cliente = (clienteEl ? clienteEl.value.trim() : '') || 'Cliente';
-    const { subtotal, envio, total } = calcularTotales();
-    const fecha = new Date().toLocaleDateString('es-PE');
-    const hora = new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
-
-    const filas = CARRITO.map((x) => `
-      <tr>
-        <td style="padding:10px;border-bottom:1px solid #eef2f6;font-size:12px;font-family:monospace;color:#0f2b47;font-weight:700;">${esc(x.codigo)}</td>
-        <td style="padding:10px;border-bottom:1px solid #eef2f6;font-size:12px;color:#334155;">${esc(x.descripcion)}</td>
-        <td style="padding:10px;border-bottom:1px solid #eef2f6;text-align:center;font-size:12px;font-weight:600;">${x.cantidad}</td>
-        <td style="padding:10px;border-bottom:1px solid #eef2f6;text-align:right;font-size:12px;font-family:monospace;">S/ ${fmt2(x.precio_publico)}</td>
-        <td style="padding:10px;border-bottom:1px solid #eef2f6;text-align:right;font-size:12px;font-weight:700;font-family:monospace;color:#0f2b47;">S/ ${fmt2(x.precio_publico * x.cantidad)}</td>
-      </tr>`).join('');
-
-    const printDiv = document.createElement('div');
-    printDiv.innerHTML = `
-      <div style="padding:40px;font-family:'Inter',sans-serif;max-width:820px;margin:0 auto;background:#fff;color:#0f172a;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0f2b47;padding-bottom:20px;margin-bottom:24px;">
-          <div>
-            <h2 style="font-size:24px;font-weight:900;color:#0f2b47;margin:0;letter-spacing:-0.02em;">ServiComp<span style="color:#dc3545;">+</span></h2>
-            <p style="color:#64748b;font-weight:500;font-size:12px;margin:6px 0 0;letter-spacing:0.05em;text-transform:uppercase;">Soluciones Informáticas</p>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.1em;font-weight:800;">Cotización</div>
-            <div style="font-size:14px;font-weight:700;color:#0f2b47;margin-top:4px;">${fecha} · ${hora}</div>
-          </div>
-        </div>
-
-        <div style="background:#f8fafc;padding:14px 18px;border-radius:8px;margin-bottom:24px;border:1px solid #eef2f6;">
-          <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;font-weight:800;margin-bottom:4px;">Cliente</div>
-          <div style="font-size:15px;font-weight:700;color:#0f172a;">${esc(cliente)}</div>
-          <div style="font-size:11px;color:#64748b;margin-top:6px;">Sede: <b style="color:#0f2b47;">${esc(SEDE_ACTUAL)}</b></div>
-        </div>
-
-        <table style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr style="background:#f8fafc;">
-              <th style="padding:12px 10px;text-align:left;font-size:10px;text-transform:uppercase;color:#64748b;letter-spacing:0.08em;font-weight:800;border-bottom:2px solid #e2e8f0;">Código</th>
-              <th style="padding:12px 10px;text-align:left;font-size:10px;text-transform:uppercase;color:#64748b;letter-spacing:0.08em;font-weight:800;border-bottom:2px solid #e2e8f0;">Producto</th>
-              <th style="padding:12px 10px;text-align:center;font-size:10px;text-transform:uppercase;color:#64748b;letter-spacing:0.08em;font-weight:800;border-bottom:2px solid #e2e8f0;">Cant</th>
-              <th style="padding:12px 10px;text-align:right;font-size:10px;text-transform:uppercase;color:#64748b;letter-spacing:0.08em;font-weight:800;border-bottom:2px solid #e2e8f0;">P/U</th>
-              <th style="padding:12px 10px;text-align:right;font-size:10px;text-transform:uppercase;color:#64748b;letter-spacing:0.08em;font-weight:800;border-bottom:2px solid #e2e8f0;">Total</th>
-            </tr>
-          </thead>
-          <tbody>${filas}</tbody>
-        </table>
-
-        <div style="margin-top:28px;text-align:right;padding-top:16px;">
-          <div style="font-size:13px;color:#475569;padding:5px 0;font-weight:500;">Subtotal: <b style="color:#0f2b47;">S/ ${fmt2(subtotal)}</b></div>
-          <div style="font-size:13px;color:#475569;padding:5px 0;font-weight:500;">Envío: <b style="color:#0f2b47;">S/ ${fmt2(envio)}</b></div>
-          <div style="font-size:24px;font-weight:900;color:#0f2b47;padding-top:14px;border-top:2px solid #e2e8f0;margin-top:10px;letter-spacing:-0.02em;">TOTAL: S/ ${fmt2(total)}</div>
-        </div>
-
-        <div style="margin-top:40px;padding-top:24px;border-top:1px dashed #cbd5e1;font-size:11px;color:#94a3b8;text-align:center;letter-spacing:0.04em;">
-          ¡Gracias por tu preferencia! · WhatsApp: +51 973 952 322
-        </div>
+  if(!CARRITO.length){
+    body.innerHTML = `
+      <div class="empty-cart">
+        <i class="fa-regular fa-cart-plus"></i>
+        Agrega productos desde el catálogo
       </div>`;
-
-    if (typeof Swal === 'undefined' || typeof html2pdf === 'undefined') {
-      alert('Error: librerías no cargadas');
-      return;
-    }
-
-    Swal.fire({
-      title: 'Generando PDF...',
-      text: 'Espera un momento',
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading()
-    });
-
-    html2pdf()
-      .set({
-        margin: 0.4,
-        filename: 'Cotizacion_ServiComp_' + Date.now() + '.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      })
-      .from(printDiv)
-      .save()
-      .then(() => Swal.close())
-      .catch((e) => {
-        Swal.close();
-        Swal.fire('Error', 'No se pudo generar el PDF: ' + e.message, 'error');
-      });
-  }
-
-  // ================================================================
-  // 11. EVENTOS
-  // ================================================================
-  function bindEventos() {
-    const search = $('#searchInput');
-    if (search) search.addEventListener('input', renderDebounced);
-
-    ['catSelect', 'marcaSelect', 'ordenSelect'].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('change', render);
-    });
-
-    const sedeSel = $('#sedeSelect');
-    if (sedeSel) sedeSel.addEventListener('change', (e) => cambiarSede(e.target.value));
-
-    const envio = $('#envioInput');
-    if (envio) envio.addEventListener('input', actualizarTotales);
-
-    const fabCart = $('#fabCart'); if (fabCart) fabCart.addEventListener('click', abrirCarrito);
-    const cartClose = $('#cartCloseBtn'); if (cartClose) cartClose.addEventListener('click', cerrarCarrito);
-    const overlay = $('#cartOverlay'); if (overlay) overlay.addEventListener('click', cerrarCarrito);
-    const btnPrint = $('#btnPrint'); if (btnPrint) btnPrint.addEventListener('click', () => window.print());
-    const btnVaciar = $('#btnVaciar'); if (btnVaciar) btnVaciar.addEventListener('click', vaciarCarrito);
-    const btnWsp = $('#btnWhatsApp'); if (btnWsp) btnWsp.addEventListener('click', enviarWhatsApp);
-    const btnPDF = $('#btnPDF'); if (btnPDF) btnPDF.addEventListener('click', exportarPDF);
-
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarCarrito(); });
-
-    document.body.addEventListener('click', (e) => {
-      const t = e.target;
-
-      const copyEl = t.closest('[data-copy]');
-      if (copyEl) { copiarCodigo(copyEl.dataset.copy); return; }
-
-      const addEl = t.closest('[data-add]');
-      if (addEl) { agregarAlCarrito(addEl.dataset.add); return; }
-
-      const qtyDec = t.closest('[data-qty-dec]');
-      if (qtyDec) { cambiarCantidad(qtyDec.dataset.qtyDec, -1); return; }
-      const qtyInc = t.closest('[data-qty-inc]');
-      if (qtyInc) { cambiarCantidad(qtyInc.dataset.qtyInc, 1); return; }
-      const rem = t.closest('[data-remove]');
-      if (rem) { eliminarDelCarrito(rem.dataset.remove); return; }
-    });
-  }
-
-  // ================================================================
-  // 12. INIT
-  // ================================================================
-  async function init() {
-    cargarCarritoDeStorage();
-    actualizarCarritoUI();
-    bindEventos();
-
-    await cargarComponentes();
-
-    const activeLink = document.querySelector('.nav-desktop a[data-page="tienda"]');
-    if (activeLink) activeLink.classList.add('active');
-
-    await cargarDatos();
-
-    console.log('✅ ServiComp+ Tienda inicializada (v3.4 iconos por categoría)');
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
   } else {
-    init();
+    body.innerHTML = CARRITO.map(it => `
+      <div class="cart-item">
+        <div class="item-info">
+          <div class="item-code">
+            ${esc(it.codigo)}
+            ${it.sede ? `<span class="item-sede">· ${esc(it.sede)}</span>` : ''}
+          </div>
+          <div class="item-name">${esc(it.descripcion)}</div>
+          <div class="item-price">S/ ${fmt2(it.precio_publico)}</div>
+        </div>
+        <div class="item-qty">
+          <button data-qty-dec="${esc(it.codigo)}" data-sede="${esc(it.sede)}">−</button>
+          <span class="qty-num">${it.cantidad}</span>
+          <button data-qty-inc="${esc(it.codigo)}" data-sede="${esc(it.sede)}">+</button>
+        </div>
+        <button class="item-remove" data-remove="${esc(it.codigo)}" data-sede="${esc(it.sede)}">
+          <i class="fa-regular fa-trash-can"></i>
+        </button>
+      </div>`).join('');
   }
 
-})();
+  actualizarTotales();
+
+  // Refresca botones "Agregar" en las cards (por código + sede)
+  document.querySelectorAll('.btn-add-card').forEach(btn => {
+    const cod = btn.dataset.add;
+    const sed = btn.dataset.sede;
+    if(!cod) return;
+    const en = CARRITO.find(x => x.codigo === cod && (!sed || x.sede === sed));
+    btn.classList.toggle('added', !!en);
+    btn.innerHTML = en
+      ? '<i class="fa-solid fa-check"></i> En carrito'
+      : '<i class="fa-solid fa-plus"></i> Agregar';
+  });
+}
+
+function abrirCarrito(){
+  const panel = $('cartPanel'); const ov = $('cartOverlay');
+  if(panel) panel.classList.add('open');
+  if(ov) ov.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarCarrito(){
+  const panel = $('cartPanel'); const ov = $('cartOverlay');
+  if(panel) panel.classList.remove('open');
+  if(ov) ov.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   WHATSAPP
+   ============================================================ */
+function enviarWhatsApp(){
+  if(!CARRITO.length){ toast('Agrega productos primero'); return; }
+
+  const clienteEl = $('clienteNombre');
+  const cliente = (clienteEl ? clienteEl.value.trim() : '') || 'Cliente';
+  const { subtotal, envio, total } = calcularTotales();
+
+  const lineas = CARRITO.map(x =>
+    `• ${x.cantidad}x ${x.descripcion.substring(0,50)} — S/ ${fmt2(x.precio_publico * x.cantidad)}`
+  ).join('\n');
+
+  const texto =
+    `¡Hola ServiComp+! 👋\n\n` +
+    `Soy *${cliente}* y quiero cotizar:\n\n` +
+    `*Productos:*\n${lineas}\n\n` +
+    `*Subtotal:* S/ ${fmt2(subtotal)}\n` +
+    `*Envío:* S/ ${fmt2(envio)}\n` +
+    `*TOTAL:* S/ ${fmt2(total)}\n\n` +
+    `¿Me confirman disponibilidad y tiempo de entrega?`;
+
+  window.open('https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(texto), '_blank');
+}
+
+/* ============================================================
+   PDF
+   ============================================================ */
+function exportarPDF(){
+  if(!CARRITO.length){ toast('Agrega productos primero'); return; }
+
+  if(typeof Swal === 'undefined' || typeof html2pdf === 'undefined'){
+    alert('Librerías PDF no cargadas');
+    return;
+  }
+
+  const clienteEl = $('clienteNombre');
+  const cliente = (clienteEl ? clienteEl.value.trim() : '') || 'Cliente';
+  const { subtotal, envio, total } = calcularTotales();
+  const fecha = new Date().toLocaleDateString('es-PE');
+  const hora  = new Date().toLocaleTimeString('es-PE', { hour:'2-digit', minute:'2-digit' });
+
+  const filas = CARRITO.map(x => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #eef2f6;font-size:12px;font-family:monospace;color:#0f2b47;font-weight:700;">${esc(x.codigo)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eef2f6;font-size:12px;color:#334155;">${esc(x.descripcion)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eef2f6;text-align:center;font-weight:600;">${x.cantidad}</td>
+      <td style="padding:8px;border-bottom:1px solid #eef2f6;text-align:right;font-family:monospace;">S/ ${fmt2(x.precio_publico)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eef2f6;text-align:right;font-weight:700;font-family:monospace;color:#0f2b47;">S/ ${fmt2(x.precio_publico * x.cantidad)}</td>
+    </tr>`).join('');
+
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div style="padding:40px;font-family:Inter,sans-serif;max-width:820px;margin:0 auto;background:#fff;color:#0f172a;">
+      <div style="display:flex;justify-content:space-between;border-bottom:3px solid #0f2b47;padding-bottom:20px;margin-bottom:24px;">
+        <div>
+          <h2 style="font-size:24px;font-weight:900;color:#0f2b47;margin:0;letter-spacing:-.02em;">ServiComp<span style="color:#ef4444;">+</span></h2>
+          <p style="color:#64748b;font-weight:500;font-size:12px;margin:6px 0 0;text-transform:uppercase;letter-spacing:.05em;">Soluciones Informáticas</p>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.1em;font-weight:800;">Cotización</div>
+          <div style="font-size:14px;font-weight:700;color:#0f2b47;margin-top:4px;">${fecha} · ${hora}</div>
+        </div>
+      </div>
+
+      <div style="background:#f8fafc;padding:14px 18px;border-radius:8px;margin-bottom:24px;border:1px solid #eef2f6;">
+        <div style="font-size:10px;color:#64748b;text-transform:uppercase;font-weight:800;">Cliente</div>
+        <div style="font-size:15px;font-weight:700;color:#0f172a;">${esc(cliente)}</div>
+      </div>
+
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="background:#f8fafc;">
+            <th style="padding:10px;text-align:left;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:800;">Código</th>
+            <th style="padding:10px;text-align:left;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:800;">Producto</th>
+            <th style="padding:10px;text-align:center;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:800;">Cant</th>
+            <th style="padding:10px;text-align:right;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:800;">P/U</th>
+            <th style="padding:10px;text-align:right;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:800;">Total</th>
+          </tr>
+        </thead>
+        <tbody>${filas}</tbody>
+      </table>
+
+      <div style="margin-top:28px;text-align:right;">
+        <div style="font-size:13px;color:#475569;padding:4px 0;font-weight:500;">Subtotal: <b style="color:#0f2b47;">S/ ${fmt2(subtotal)}</b></div>
+        <div style="font-size:13px;color:#475569;padding:4px 0;font-weight:500;">Envío: <b style="color:#0f2b47;">S/ ${fmt2(envio)}</b></div>
+        <div style="font-size:22px;font-weight:900;color:#0f2b47;padding-top:12px;border-top:2px solid #e2e8f0;letter-spacing:-.02em;">TOTAL: S/ ${fmt2(total)}</div>
+      </div>
+
+      <div style="margin-top:40px;padding-top:20px;border-top:1px dashed #cbd5e1;font-size:11px;color:#94a3b8;text-align:center;">
+        ¡Gracias por tu preferencia! · WhatsApp: +51 973 952 322
+      </div>
+    </div>`;
+
+  Swal.fire({
+    title: 'Generando PDF...',
+    text: 'Espera un momento',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
+
+  html2pdf()
+    .set({
+      margin: 0.4,
+      filename: 'Cotizacion_ServiComp_' + Date.now() + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    })
+    .from(div)
+    .save()
+    .then(() => Swal.close())
+    .catch(e => {
+      Swal.close();
+      Swal.fire('Error', 'No se pudo generar el PDF: ' + e.message, 'error');
+    });
+}
+
+/* ============================================================
+   BIND CARRITO
+   ============================================================ */
+function bindCarrito(){
+  const fab = $('fabCart');       if(fab) fab.addEventListener('click', abrirCarrito);
+  const cc  = $('cartCloseBtn');  if(cc) cc.addEventListener('click', cerrarCarrito);
+  const ov  = $('cartOverlay');   if(ov) ov.addEventListener('click', cerrarCarrito);
+  const bv  = $('btnVaciar');     if(bv) bv.addEventListener('click', vaciarCarrito);
+  const bw  = $('btnWhatsApp');   if(bw) bw.addEventListener('click', enviarWhatsApp);
+  const bp  = $('btnPDF');        if(bp) bp.addEventListener('click', exportarPDF);
+  const bpr = $('btnPrint');      if(bpr) bpr.addEventListener('click', () => window.print());
+  const env = $('envioInput');    if(env) env.addEventListener('input', actualizarTotales);
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape') cerrarCarrito();
+  });
+
+  document.body.addEventListener('click', e => {
+    const t = e.target;
+
+    const add = t.closest('[data-add]');
+    if(add){ agregarAlCarrito(add.dataset.add, add.dataset.sede); return; }
+
+    const dec = t.closest('[data-qty-dec]');
+    if(dec){ cambiarCantidad(dec.dataset.qtyDec, -1, dec.dataset.sede); return; }
+
+    const inc = t.closest('[data-qty-inc]');
+    if(inc){ cambiarCantidad(inc.dataset.qtyInc, 1, inc.dataset.sede); return; }
+
+    const rem = t.closest('[data-remove]');
+    if(rem){ eliminarDelCarrito(rem.dataset.remove, rem.dataset.sede); return; }
+  });
+}
