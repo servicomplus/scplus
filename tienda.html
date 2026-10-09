@@ -116,12 +116,27 @@
           </div>
         </div>
 
-        <button type="button" class="btn-clear" id="btnClear">
-          <i class="fa-solid fa-eraser"></i> Limpiar
-        </button>
-      </div>
+      </div><!-- /.filters -->
+    </div><!-- /.cmd -->
+
+    <!-- ============================================================ -->
+    <!-- CHIPS RÁPIDOS: NUEVOS · OFERTAS · LIMPIAR                     -->
+    <!-- ============================================================ -->
+    <div class="quick-chips">
+      <button type="button" class="btn-toggle" id="toggleNuevos">
+        <i class="fa-solid fa-star"></i> Nuevos
+      </button>
+
+      <button type="button" class="btn-toggle" id="toggleOfertas">
+        <i class="fa-solid fa-tags"></i> Ofertas
+      </button>
+
+      <button type="button" class="btn-clear" id="btnClear">
+        <i class="fa-solid fa-eraser"></i> Limpiar
+      </button>
     </div>
 
+    <!-- Resultados -->
     <div class="results">
       <div class="count"><b id="count">0</b> productos disponibles <span id="excluidos" style="display:none;color:var(--ink-soft);font-size:11px"></span></div>
       <div class="meta">
@@ -134,8 +149,8 @@
 
     <div class="grid" id="grid"></div>
     <div class="pagination" id="pagination"></div>
-  </div>
-</div>
+  </div><!-- /#app -->
+</div><!-- /.container -->
 
 <!-- ============================================================ -->
 <!-- CARRITO: OVERLAY + PANEL                                      -->
@@ -230,7 +245,7 @@
 <script src="js/main.js"></script>
 
 <!-- Script tienda -->
-<script src="js/tienda.js?v=11"></script>
+<script src="js/tienda.js?v=12"></script>
 
 </body>
 </html>
