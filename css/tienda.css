@@ -495,9 +495,9 @@ h1{font-size:28px;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}
    ============================================================ */
 .store-title{
   display:flex;
-  align-items:center;
+  flex-direction:column;   /* 👈 Esto apila los elementos en columna */
+  align-items:flex-start;  /* 👈 Alinea a la izquierda */
   gap:12px;
-  flex-wrap:wrap;
   margin-bottom:6px;
 }
 
