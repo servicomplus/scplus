@@ -319,7 +319,8 @@ function cargarCatalogo(){
       TODOS = results.data
         .filter(p => p && p.CODIGO && String(p.CODIGO).trim() !== '')
         .filter(p => !esCategoriaExcluida(p.CATEGORIA))
-        .filter(p => !esMarcaExcluida(p.MARCA))
+         .filter(p => !esMarcaExcluida(p.MARCA))
+         .filter(p => (Number(p.PRECIO_PUBLICO) || Number(p.PRECIO_PEN) || 0) > 0)  // 👈 NUEVO
         .map(p => ({
           codigo: String(p.CODIGO).trim(),
           nombre: (p.DESCRIPCION_CORTA || p.DESCRIPCION_LARGA || 'Sin descripción').trim().toUpperCase(),
