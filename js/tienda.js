@@ -8,6 +8,19 @@ const CSV_THUMB_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZ
 const CSV_URL_FINAL   = CSV_URL   + '&_=' + Date.now();
 const CSV_THUMB_FINAL = CSV_THUMB_URL + '&_=' + Date.now();
 
+/* ============================================================
+   CSVs DE REPORTES (Nuevos y Ofertas)
+   ============================================================ */
+const CSV_NUEVOS_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=936196408&single=true&output=csv';
+const CSV_OFERTAS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=1940346287&single=true&output=csv';
+
+const CSV_NUEVOS_FINAL  = CSV_NUEVOS_URL  + '&_=' + Date.now();
+const CSV_OFERTAS_FINAL = CSV_OFERTAS_URL + '&_=' + Date.now();
+
+/* Sets globales de códigos */
+const SET_NUEVOS  = new Set();
+const SET_OFERTAS = new Set();
+
 const PER_PAGE = 24;
 const ORDEN_DEFAULT = 'precio_asc';
 const SEDE_DEFAULT = 'LIMA';
@@ -108,7 +121,14 @@ let TODOS = [];
 let FILTRADOS = [];
 let PAGINA = 1;
 
-const FILTROS = { sede: new Set([SEDE_DEFAULT]), cat: new Set(), marca: new Set() };
+const FILTROS = { 
+  sede: new Set([SEDE_DEFAULT]), 
+  cat: new Set(), 
+  marca: new Set(),
+  soloNuevos: false,
+  soloOfertas: false
+};
+
 let ORDEN = ORDEN_DEFAULT;
 let EXCLUIDOS_TOTAL = 0;
 
@@ -251,6 +271,40 @@ function cargarThumbnails(){
 }
 
 /* ============================================================
+   CARGA DE REPORTES (Nuevos / Ofertas)
+   ============================================================ */
+function cargarReportes(){
+  const parsear = (url, setDestino, nombre) => {
+    return new Promise((resolve) => {
+      if(!url) return resolve();
+      Papa.parse(url, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: h => String(h || '').trim().toUpperCase(),
+        complete: function(results){
+          results.data.forEach(row => {
+            const codigo = String(row['CODIGO'] || row['CÓDIGO'] || '').trim();
+            if(codigo) setDestino.add(codigo);
+          });
+          console.log(`📊 ${nombre} cargados: ${setDestino.size}`);
+          resolve();
+        },
+        error: function(err){
+          console.warn(`⚠️ Error al cargar ${nombre}:`, err);
+          resolve();
+        }
+      });
+    });
+  };
+
+  return Promise.all([
+    parsear(CSV_NUEVOS_FINAL,  SET_NUEVOS,  'Productos Nuevos'),
+    parsear(CSV_OFERTAS_FINAL, SET_OFERTAS, 'Productos en Oferta')
+  ]);
+}
+
+/* ============================================================
    CARGA CATÁLOGO
    ============================================================ */
 function cargarCatalogo(){
@@ -306,7 +360,12 @@ function cargarCatalogo(){
   cargarCarritoDeStorage();
   pintarCarrito();
   bindCarrito();
-  await cargarThumbnails();
+
+  await Promise.all([
+    cargarThumbnails(),
+    cargarReportes()
+  ]);
+
   cargarCatalogo();
 })();
 
@@ -324,12 +383,46 @@ function inicializar(){
   $('fecha').textContent = primera.fecha || new Date().toLocaleDateString('es-PE');
   $('tc').textContent = primera.tc ? Number(primera.tc).toFixed(2) : '—';
 
-  const elExc = document.getElementById('excluidos');
- 
   $('search').addEventListener('input', () => { PAGINA = 1; filtrar(); });
   $('btnClear').addEventListener('click', limpiarFiltros);
 
   configurarDropdowns();
+
+  /* Toggle Nuevos */
+  const tgNuevos = $('toggleNuevos');
+  if(tgNuevos){
+    tgNuevos.addEventListener('click', () => {
+      FILTROS.soloNuevos = !FILTROS.soloNuevos;
+      tgNuevos.classList.toggle('active', FILTROS.soloNuevos);
+      if(FILTROS.soloNuevos){
+        FILTROS.soloOfertas = false;
+        $('toggleOfertas')?.classList.remove('active');
+      }
+      PAGINA = 1;
+      filtrar();
+    });
+    if(SET_NUEVOS.size > 0){
+      tgNuevos.innerHTML = `<i class="fa-solid fa-star"></i> Nuevos (${SET_NUEVOS.size})`;
+    }
+  }
+
+  /* Toggle Ofertas */
+  const tgOfertas = $('toggleOfertas');
+  if(tgOfertas){
+    tgOfertas.addEventListener('click', () => {
+      FILTROS.soloOfertas = !FILTROS.soloOfertas;
+      tgOfertas.classList.toggle('active', FILTROS.soloOfertas);
+      if(FILTROS.soloOfertas){
+        FILTROS.soloNuevos = false;
+        $('toggleNuevos')?.classList.remove('active');
+      }
+      PAGINA = 1;
+      filtrar();
+    });
+    if(SET_OFERTAS.size > 0){
+      tgOfertas.innerHTML = `<i class="fa-solid fa-tags"></i> Ofertas (${SET_OFERTAS.size})`;
+    }
+  }
 
   $('loader').style.display = 'none';
   $('app').style.display = 'block';
@@ -492,10 +585,17 @@ function limpiarFiltros(){
   FILTROS.sede.clear();
   FILTROS.cat.clear();
   FILTROS.marca.clear();
+  FILTROS.soloNuevos  = false;
+  FILTROS.soloOfertas = false;
   $('search').value = '';
   PAGINA = 1;
 
   document.querySelectorAll('.dd-list input[type="checkbox"]').forEach(c => c.checked = false);
+
+  const tgN = $('toggleNuevos');
+  const tgO = $('toggleOfertas');
+  if(tgN) tgN.classList.remove('active');
+  if(tgO) tgO.classList.remove('active');
 
   actualizarLabelDropdown('sede', 'Todas las sedes');
   actualizarLabelDropdown('cat', 'Todas las categorías');
@@ -518,6 +618,10 @@ function filtrar(){
       const texto = `${p.nombre} ${p.nombreLargo} ${p.codigo} ${p.marca} ${p.sku} ${p.categoria} ${p.modelo}`.toLowerCase();
       if(!texto.includes(q)) return false;
     }
+
+    if(FILTROS.soloNuevos && !SET_NUEVOS.has(p.codigo)) return false;
+    if(FILTROS.soloOfertas && !SET_OFERTAS.has(p.codigo)) return false;
+
     return true;
   });
 
@@ -559,6 +663,10 @@ function render(){
     const tieneFoto = !!p.imagen;
     const enCarrito = CARRITO.find(x => x.codigo === p.codigo && x.sede === p.sede);
 
+    /* ✅ FIX: badges calculados aquí, no en cargarCatalogo() */
+    const esNuevo  = SET_NUEVOS.has(p.codigo);
+    const esOferta = SET_OFERTAS.has(p.codigo);
+
     let stockPill = '';
     if(p.stock === 0){
       stockPill = `<span class="stock-pill agotado">Agotado</span>`;
@@ -587,6 +695,8 @@ function render(){
              aria-label="Ver ${p.nombre}">
           <div class="pattern"></div>
           ${imgHTML}
+          ${esNuevo ? `<span class="badge-card badge-nuevo"><i class="fa-solid fa-star"></i> NUEVO</span>` : ''}
+          ${esOferta ? `<span class="badge-card badge-oferta"><i class="fa-solid fa-tags"></i> OFERTA</span>` : ''}
           <i class="fa-solid ${icono} icon"></i>
           <div class="content">
             <span class="brand">${p.marca.substring(0,10)}</span>
@@ -729,7 +839,6 @@ function agregarAlCarrito(codigo, sede){
          || TODOS.find(x => x.codigo === codigo);
   if(!p) return;
 
-  // Evitar mezcla de sedes: preguntar y vaciar
   const sedeEnCarrito = CARRITO.length ? CARRITO[0].sede : null;
   if(sedeEnCarrito && p.sede !== sedeEnCarrito){
     const ok = confirm(
@@ -842,7 +951,6 @@ function pintarCarrito(){
 
   actualizarTotales();
 
-  // Refresca botones "Agregar" en las cards (por código + sede)
   document.querySelectorAll('.btn-add-card').forEach(btn => {
     const cod = btn.dataset.add;
     const sed = btn.dataset.sede;
