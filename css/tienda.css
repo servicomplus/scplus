@@ -554,3 +554,140 @@ h1{font-size:28px;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}
   .live-badge{ font-size:10px; padding:3px 8px; }
   .live-dot{ width:6px; height:6px; }
 }
+
+/* ============================================================
+   TOGGLES NUEVOS / OFERTAS
+   ============================================================ */
+.btn-toggle{
+  background:#fff;
+  border:1px solid var(--line);
+  padding:8px 14px;
+  border-radius:var(--r-sm);
+  font:inherit;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  color:var(--ink-soft);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition:all .2s;
+}
+.btn-toggle:hover{
+  border-color:var(--brand);
+  color:var(--brand);
+}
+.btn-toggle.active{
+  background:var(--brand);
+  color:#fff;
+  border-color:var(--brand);
+}
+#toggleNuevos.active{
+  background:#16a34a;
+  border-color:#16a34a;
+}
+#toggleOfertas.active{
+  background:#ef4444;
+  border-color:#ef4444;
+}
+
+/* ============================================================
+   BADGES EN LAS CARDS
+   ============================================================ */
+.badge-card{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:5;
+  font-size:9.5px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  padding:4px 8px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  color:#fff;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+.badge-nuevo{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+}
+.badge-oferta{
+  background:linear-gradient(135deg,#f97316,#ef4444);
+  animation:pulse-oferta 2s ease-in-out infinite;
+}
+
+@keyframes pulse-oferta{
+  0%,100%{ box-shadow:0 4px 10px rgba(239,68,68,.3); }
+  50%    { box-shadow:0 4px 18px rgba(239,68,68,.6); }
+}
+
+/* Si hay dos badges, apílalos */
+.badge-card + .badge-card{
+  top:42px;
+}
+/* ============================================================
+   QUICK CHIPS: NUEVOS · OFERTAS · LIMPIAR (centrados)
+   ============================================================ */
+.quick-chips{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:-8px 0 20px;   /* acerca un poco al .cmd */
+}
+
+/* Botones un poco más grandes porque ahora son protagonistas */
+.quick-chips .btn-toggle,
+.quick-chips .btn-clear{
+  padding:10px 18px;
+  font-size:13px;
+  border-radius:999px;    /* forma de pill */
+  box-shadow:0 2px 8px rgba(15,43,71,.06);
+}
+
+.quick-chips .btn-toggle i,
+.quick-chips .btn-clear i{
+  font-size:12px;
+}
+
+/* Hover más notorio */
+.quick-chips .btn-toggle:hover,
+.quick-chips .btn-clear:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 14px rgba(15,43,71,.12);
+}
+
+/* Nuevos activo → verde */
+#toggleNuevos.active{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  border-color:#16a34a;
+  color:#fff;
+  box-shadow:0 6px 16px rgba(22,163,74,.35);
+}
+
+/* Ofertas activo → rojo/naranja */
+#toggleOfertas.active{
+  background:linear-gradient(135deg,#f97316,#ef4444);
+  border-color:#ef4444;
+  color:#fff;
+  box-shadow:0 6px 16px rgba(239,68,68,.35);
+}
+
+/* Responsive */
+@media(max-width:640px){
+  .quick-chips{
+    gap:8px;
+    margin:-4px 0 16px;
+  }
+  .quick-chips .btn-toggle,
+  .quick-chips .btn-clear{
+    padding:9px 14px;
+    font-size:12px;
+    flex:1 1 auto;
+    justify-content:center;
+  }
+}
