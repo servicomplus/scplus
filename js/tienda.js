@@ -445,9 +445,7 @@ function inicializar(){
       PAGINA = 1;
       filtrar();
     });
-    if(SET_NUEVOS.size > 0){
-      tgNuevos.innerHTML = `<i class="fa-solid fa-star"></i> Nuevos (${SET_NUEVOS.size})`;
-    }
+
   }
 
   /* Toggle Ofertas */
@@ -463,9 +461,6 @@ function inicializar(){
       PAGINA = 1;
       filtrar();
     });
-    if(SET_OFERTAS.size > 0){
-      tgOfertas.innerHTML = `<i class="fa-solid fa-tags"></i> Ofertas (${SET_OFERTAS.size})`;
-    }
   }
 
   $('loader').style.display = 'none';
