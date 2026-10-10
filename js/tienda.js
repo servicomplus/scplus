@@ -381,7 +381,7 @@ function cargarCatalogo(){
           imagen: getImagen(p),
           urlModal: (p.url_modal || '').trim(),
           fecha: p.FECHA_ACTUALIZACION || '',
-          tc: Number(p.TC_AJUSTADO) || 0
+          tc: Number(p.TC_REAL) || 0
         }));
 
       EXCLUIDOS_TOTAL = totalOriginal - TODOS.length;
