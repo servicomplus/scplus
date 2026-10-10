@@ -9,13 +9,15 @@ const CSV_URL_FINAL   = CSV_URL   + '&_=' + Date.now();
 const CSV_THUMB_FINAL = CSV_THUMB_URL + '&_=' + Date.now();
 
 /* ============================================================
-   CSVs DE REPORTES (Nuevos y Ofertas)
+   CSVs DE REPORTES
+   - Reportes_Nuevos  → columna TIPO    = "NUEVO"
+   - Reportes_Precios → columna SUBTIPO = "PRECIO_BAJA_FUERTE" | "PRECIO_BAJA"
    ============================================================ */
-const CSV_NUEVOS_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=936196408&single=true&output=csv';
-const CSV_OFERTAS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=1940346287&single=true&output=csv';
+const CSV_REPORTES_NUEVOS_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=936196408&single=true&output=csv';
+const CSV_REPORTES_PRECIOS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT--WIefZyyedvTvaFRwXz_1aT0WvqmJbqt7rm1y0Lz-PWkT10IEF1kbbuDxjfpMG9wctAh4_SxzLVe/pub?gid=1940346287&single=true&output=csv';
 
-const CSV_NUEVOS_FINAL  = CSV_NUEVOS_URL  + '&_=' + Date.now();
-const CSV_OFERTAS_FINAL = CSV_OFERTAS_URL + '&_=' + Date.now();
+const CSV_REPORTES_NUEVOS_FINAL  = CSV_REPORTES_NUEVOS_URL  + '&_=' + Date.now();
+const CSV_REPORTES_PRECIOS_FINAL = CSV_REPORTES_PRECIOS_URL + '&_=' + Date.now();
 
 /* Sets globales de códigos */
 const SET_NUEVOS  = new Set();
@@ -271,27 +273,50 @@ function cargarThumbnails(){
 }
 
 /* ============================================================
-   CARGA DE REPORTES (Nuevos / Ofertas)
+   CARGA DE REPORTES (Reportes_Nuevos / Reportes_Precios)
+   ------------------------------------------------------------
+   - Reportes_Nuevos  → solo filas con TIPO    === "NUEVO"
+   - Reportes_Precios → solo filas con SUBTIPO === "PRECIO_BAJA_FUERTE"
+                                                 o "PRECIO_BAJA"
    ============================================================ */
 function cargarReportes(){
-  const parsear = (url, setDestino, nombre) => {
+
+  /* Normaliza texto: trim + mayúsculas + sin tildes */
+  const normTxt = s => String(s || '')
+    .trim()
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  const parsear = (url, setDestino, nombreHoja, filtroFn) => {
     return new Promise((resolve) => {
       if(!url) return resolve();
+
       Papa.parse(url, {
         download: true,
         header: true,
         skipEmptyLines: true,
         transformHeader: h => String(h || '').trim().toUpperCase(),
         complete: function(results){
+          let leidos = 0, agregados = 0;
+
           results.data.forEach(row => {
             const codigo = String(row['CODIGO'] || row['CÓDIGO'] || '').trim();
-            if(codigo) setDestino.add(codigo);
+            if(!codigo) return;
+            leidos++;
+
+            // Filtro por columna específica (TIPO / SUBTIPO)
+            if(typeof filtroFn === 'function' && !filtroFn(row)) return;
+
+            setDestino.add(codigo);
+            agregados++;
           });
-          console.log(`📊 ${nombre} cargados: ${setDestino.size}`);
+
+          console.log(`📊 [${nombreHoja}] leídos: ${leidos} · agregados: ${agregados}`);
           resolve();
         },
         error: function(err){
-          console.warn(`⚠️ Error al cargar ${nombre}:`, err);
+          console.warn(`⚠️ Error al cargar [${nombreHoja}]:`, err);
           resolve();
         }
       });
@@ -299,8 +324,25 @@ function cargarReportes(){
   };
 
   return Promise.all([
-    parsear(CSV_NUEVOS_FINAL,  SET_NUEVOS,  'Productos Nuevos'),
-    parsear(CSV_OFERTAS_FINAL, SET_OFERTAS, 'Productos en Oferta')
+
+    /* ---------- Reportes_Nuevos → TIPO = "NUEVO" ---------- */
+    parsear(
+      CSV_REPORTES_NUEVOS_FINAL,
+      SET_NUEVOS,
+      'Reportes_Nuevos',
+      row => normTxt(row['TIPO']) === 'NUEVO'
+    ),
+
+    /* ---------- Reportes_Precios → SUBTIPO = PRECIO_BAJA_FUERTE | PRECIO_BAJA ---------- */
+    parsear(
+      CSV_REPORTES_PRECIOS_FINAL,
+      SET_OFERTAS,
+      'Reportes_Precios',
+      row => {
+        const s = normTxt(row['SUBTIPO']);
+        return s === 'PRECIO_BAJA_FUERTE' || s === 'PRECIO_BAJA';
+      }
+    )
   ]);
 }
 
@@ -319,10 +361,9 @@ function cargarCatalogo(){
       TODOS = results.data
         .filter(p => p && p.CODIGO && String(p.CODIGO).trim() !== '')
         .filter(p => !esCategoriaExcluida(p.CATEGORIA))
-         .filter(p => !esMarcaExcluida(p.MARCA))
-         .filter(p => (Number(p.PRECIO_PUBLICO) || Number(p.PRECIO_PEN) || 0) > 0)  // 👈 NUEVO
-         .filter(p => (Number(p.STOCK) || 0) > 0)  // 👈 NUEVO: oculta agotados
-
+        .filter(p => !esMarcaExcluida(p.MARCA))
+        .filter(p => (Number(p.PRECIO_PUBLICO) || Number(p.PRECIO_PEN) || 0) > 0)
+        .filter(p => (Number(p.STOCK) || 0) > 0)
         .map(p => ({
           codigo: String(p.CODIGO).trim(),
           nombre: (p.DESCRIPCION_CORTA || p.DESCRIPCION_LARGA || 'Sin descripción').trim().toUpperCase(),
@@ -666,7 +707,6 @@ function render(){
     const tieneFoto = !!p.imagen;
     const enCarrito = CARRITO.find(x => x.codigo === p.codigo && x.sede === p.sede);
 
-    /* ✅ FIX: badges calculados aquí, no en cargarCatalogo() */
     const esNuevo  = SET_NUEVOS.has(p.codigo);
     const esOferta = SET_OFERTAS.has(p.codigo);
 
