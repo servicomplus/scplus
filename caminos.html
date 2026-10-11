@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="54° Caminos del Inca 2026 · Pilotos, ganadores, ruta y tiempos en vivo">
+  <title>Caminos del Inca · 54° Edición 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/caminos.css">
+</head>
+<body>
+
+  <!-- ===================== HERO ÉPICO ===================== -->
+  <header class="hero">
+    <div class="hero-sky"></div>
+    <div class="hero-sun"></div>
+    <div class="hero-particles" id="particles"></div>
+
+    <svg class="hero-mountains layer-1" viewBox="0 0 1440 400" preserveAspectRatio="none">
+      <path d="M0,400 L0,220 L180,140 L320,200 L480,90 L620,180 L780,60 L950,170 L1100,100 L1280,190 L1440,120 L1440,400 Z" fill="#0d0808"/>
+    </svg>
+    <svg class="hero-mountains layer-2" viewBox="0 0 1440 400" preserveAspectRatio="none">
+      <path d="M0,400 L0,280 L150,210 L300,270 L450,180 L600,260 L750,150 L900,240 L1050,180 L1200,260 L1350,200 L1440,250 L1440,400 Z" fill="#080505"/>
+    </svg>
+    <svg class="hero-mountains layer-3" viewBox="0 0 1440 400" preserveAspectRatio="none">
+      <path d="M0,400 L0,340 L200,290 L400,330 L600,270 L800,320 L1000,280 L1200,330 L1440,300 L1440,400 Z" fill="#040202"/>
+    </svg>
+
+    <svg class="hero-path" viewBox="0 0 1440 500" preserveAspectRatio="none">
+      <path id="incaPath"
+            d="M720,500 Q680,440 620,400 Q560,360 600,320 Q640,280 580,240 Q520,200 560,160 Q600,120 540,80 Q500,50 520,20"
+            stroke="url(#goldGradient)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <defs>
+        <linearGradient id="goldGradient" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="#ff4500" stop-opacity="0.2"/>
+          <stop offset="50%" stop-color="#d4af37" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#f5d76e" stop-opacity="1"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <div class="hero-finish-line"></div>
+
+    <div class="hero-content">
+      <span class="hero-tag">
+        <span class="tag-dot"></span>
+        54° Edición · 2026
+      </span>
+
+      <h1 class="hero-title">
+        <span class="title-line-1">Caminos</span>
+        <span class="title-line-2">del Inca</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Lima · Huancayo · Ayacucho · Cusco · Puno · Arequipa
+      </p>
+
+      <div class="hero-cta-wrap">
+        <a href="#pilotos" class="cta-primary" data-scroll="pilotos">
+          <span class="cta-shine"></span>
+          Ver Pilotos Inscritos
+        </a>
+        <a href="#ganadores" class="cta-secondary" data-scroll="ganadores">
+          🏆 Histórico de Ganadores
+        </a>
+      </div>
+
+      <div class="spotlight-card">
+        <div class="spotlight-label">
+          <span class="pulse-dot"></span>
+          En el spotlight
+        </div>
+        <div class="spotlight-content">
+          <div class="spotlight-nro">44</div>
+          <div class="spotlight-info">
+            <div class="spotlight-name">Eduardo Castro Yangali</div>
+            <div class="spotlight-meta">Ford Fiesta · RC3 · Lima</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span class="scroll-text">Explorar</span>
+    </div>
+  </header>
+
+  <!-- ===================== BADGES ===================== -->
+  <section class="badges-section" id="badges">
+    <div class="badges-grid">
+
+      <article class="badge" data-panel="pilotos">
+        <div class="badge-icon">🏁</div>
+        <h3 class="badge-name">Pilotos</h3>
+        <p class="badge-desc">100 tripulaciones inscritas</p>
+        <span class="badge-cta">Explorar →</span>
+      </article>
+
+      <article class="badge" data-panel="ganadores">
+        <div class="badge-icon">🏆</div>
+        <h3 class="badge-name">Ganadores</h3>
+        <p class="badge-desc">Histórico completo 1966 – 2026</p>
+        <span class="badge-cta">Ver campeones →</span>
+      </article>
+
+      <a class="badge badge-link"
+         href="https://www.automovilclubperuano.com/cdi-2026"
+         target="_blank" rel="noopener">
+        <div class="badge-icon">🗺️</div>
+        <h3 class="badge-name">Ruta</h3>
+        <p class="badge-desc">8 regiones · 6 etapas</p>
+        <span class="badge-cta">Ver mapa →</span>
+      </a>
+
+      <a class="badge badge-link"
+         href="https://www.automovilclubperuano.com/cdi-2026/cdi-2026-tiempos-en-vivo"
+         target="_blank" rel="noopener">
+        <div class="badge-icon">⏱️</div>
+        <h3 class="badge-name">Tiempos en Vivo</h3>
+        <p class="badge-desc">Clasificación oficial ACP</p>
+        <span class="badge-cta">Ver tiempos →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ===================== PANEL PILOTOS ===================== -->
+  <section id="panel-pilotos" class="panel">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <h2>🏁 Pilotos Inscritos</h2>
+        <button class="panel-close" data-close="pilotos" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="filtros-wrap">
+        <div class="filtros-title">Buscador Inteligente</div>
+        <div class="filtros">
+          <input type="text" id="busqueda" class="filtro-input"
+                 placeholder="🔍  Buscar por N° de auto, piloto, copiloto, vehículo o localidad...">
+          <select id="filtroClase" class="filtro-select">
+            <option value="">Todas las clases</option>
+          </select>
+          <select id="filtroLocalidad" class="filtro-select">
+            <option value="">Todas las localidades</option>
+          </select>
+
+          <!-- 🔥 NUEVO: Filtro por N° de Auto -->
+          <select id="filtroNro" class="filtro-select">
+            <option value="">Todos los N° de auto</option>
+          </select>
+
+          <select id="ordenar" class="filtro-select">
+            <option value="orden">Ordenar por N°</option>
+            <option value="piloto">Piloto (A-Z)</option>
+            <option value="clase">Clase</option>
+            <option value="localidad">Localidad</option>
+          </select>
+          <button id="limpiarFiltros" class="btn-limpiar">✕ Limpiar</button>
+        </div>
+      </div>
+
+      <div class="contador">
+        <span class="contador-texto">
+          <span class="contador-pulso"></span>
+          <strong id="contadorResultados">0</strong> pilotos encontrados
+        </span>
+        <span class="contador-texto" id="estadoCarga">Cargando datos del Sheet...</span>
+      </div>
+
+      <div class="tabla-container">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Piloto</th>
+              <th>Copiloto</th>
+              <th>Vehículo</th>
+              <th>Localidad</th>
+              <th>Clase</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody">
+            <tr><td colspan="6" class="loader">
+              <div class="loader-spinner"></div>
+              <div class="loader-text">Cargando pilotos...</div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PANEL GANADORES ===================== -->
+  <section id="panel-ganadores" class="panel">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <h2>🏆 Histórico de Ganadores</h2>
+        <button class="panel-close" data-close="ganadores" aria-label="Cerrar">✕</button>
+      </div>
+
+      <!-- STATS RÁPIDAS -->
+      <div class="stats-ganadores">
+        <div class="stat-ganador">
+          <span class="stat-g-value" id="statRecord">7</span>
+          <span class="stat-g-label">Récord de títulos<br><small>Henry Bradley</small></span>
+        </div>
+        <div class="stat-ganador">
+          <span class="stat-g-value" id="statEdiciones">55</span>
+          <span class="stat-g-label">Ediciones disputadas</span>
+        </div>
+        <div class="stat-ganador">
+          <span class="stat-g-value" id="statMarcas">12+</span>
+          <span class="stat-g-label">Marcas ganadoras</span>
+        </div>
+        <div class="stat-ganador">
+          <span class="stat-g-value" id="statMitsubishi">14</span>
+          <span class="stat-g-label">Victorias de Mitsubishi</span>
+        </div>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="filtros-wrap">
+        <div class="filtros-title">Buscador del Histórico</div>
+        <div class="filtros">
+          <input type="text" id="busquedaGanadores" class="filtro-input"
+                 placeholder="🔍  Buscar piloto, copiloto, auto o nota...">
+          <select id="filtroPiloto" class="filtro-select">
+            <option value="">Todos los pilotos</option>
+          </select>
+          <select id="filtroAuto" class="filtro-select">
+            <option value="">Todas las marcas</option>
+          </select>
+          <select id="filtroDecada" class="filtro-select">
+            <option value="">Todas las décadas</option>
+            <option value="1960">1960s</option>
+            <option value="1970">1970s</option>
+            <option value="1980">1980s</option>
+            <option value="1990">1990s</option>
+            <option value="2000">2000s</option>
+            <option value="2010">2010s</option>
+            <option value="2020">2020s</option>
+          </select>
+          <select id="ordenarGanadores" class="filtro-select">
+            <option value="anio_desc">Año (más reciente)</option>
+            <option value="anio_asc">Año (más antiguo)</option>
+            <option value="piloto">Piloto (A-Z)</option>
+            <option value="auto">Auto (A-Z)</option>
+          </select>
+          <button id="limpiarGanadores" class="btn-limpiar">✕ Limpiar</button>
+        </div>
+      </div>
+
+      <!-- CONTADOR -->
+      <div class="contador">
+        <span class="contador-texto">
+          <span class="contador-pulso"></span>
+          <strong id="contadorGanadores">0</strong> ediciones encontradas
+        </span>
+        <span class="contador-texto" id="estadoGanadores">Histórico cargado</span>
+      </div>
+
+      <!-- TABLA -->
+      <div class="tabla-container">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Año</th>
+              <th>Piloto</th>
+              <th>Copiloto</th>
+              <th>Auto</th>
+              <th>Nota / Hito</th>
+            </tr>
+          </thead>
+          <tbody id="tablaGanadores"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WIDGET COPILOTO ===================== -->
+  <div class="copiloto-widget">
+
+    <button class="copiloto-bubble" id="copilotoBubble" aria-label="Abrir Copiloto">
+      <span class="copiloto-bubble-icon">🏎️</span>
+      <span class="copiloto-bubble-pulse"></span>
+    </button>
+
+    <!-- Panel del chat -->
+    <div class="copiloto-panel" id="copilotoPanel">
+      <div class="copiloto-header">
+        <div class="copiloto-header-info">
+          <div class="copiloto-avatar">
+            <span>🏎️</span>
+          </div>
+          <div>
+            <div class="copiloto-name">Copiloto</div>
+            <div class="copiloto-status">
+              <span class="copiloto-dot"></span>
+              En línea
+            </div>
+          </div>
+        </div>
+        <button class="copiloto-close" id="copilotoClose" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="copiloto-messages" id="copilotoMessages">
+        <div class="copiloto-msg copiloto-msg-bot">
+          ¡Hola! Soy tu <strong>Copiloto</strong> de los Caminos del Inca.
+          Pregúntame lo que quieras sobre pilotos, historia, la ruta o anécdotas del rally.
+        </div>
+        <div class="copiloto-chips">
+          <button class="copiloto-chip" data-prompt="Dame una sugerencia sobre los Caminos del Inca">🏁 Sugerencia</button>
+          <button class="copiloto-chip" data-prompt="Cuéntame una anécdota sobre Henry Bradley">🏆 Bradley</button>
+          <button class="copiloto-chip" data-prompt="Háblame del Qhapaq Ñan histórico">🏛️ Qhapaq Ñan</button>
+          <button class="copiloto-chip" data-prompt="Cuéntame sobre la ruta Lima a Arequipa">🗺️ Ruta</button>
+        </div>
+      </div>
+
+      <div class="copiloto-input-wrap">
+        <input
+          type="text"
+          id="copilotoInput"
+          class="copiloto-input"
+          placeholder="Escribe tu pregunta..."
+          autocomplete="off">
+        <button class="copiloto-send" id="copilotoSend" aria-label="Enviar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/caminos.js"></script>
+</body>
+</html>
