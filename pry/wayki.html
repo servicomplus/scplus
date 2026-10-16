@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Crédito Microempresa - Caja Cusco</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --bg: #f5f7fa; --card: #ffffff; --text: #1a202c; --text-muted: #718096;
+    --border: #e2e8f0; --primary: #c8102e; --primary-dark: #a00d24;
+    --accent: #2d3748; --success: #38a169; --warning: #dd6b20;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  [data-theme="dark"] {
+    --bg: #0f1419; --card: #1a202c; --text: #f7fafc; --text-muted: #a0aec0;
+    --border: #2d3748; --primary: #e63946; --primary-dark: #c8102e;
+    --accent: #e2e8f0; --success: #48bb78; --warning: #ed8936;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 20px; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  h1 { font-size: 1.5rem; font-weight: 700; }
+  h1 span { color: var(--primary); }
+  .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+  .theme-toggle { background: var(--card); border: 1px solid var(--border); border-radius: 50px; padding: 8px 16px; cursor: pointer; font-size: 0.9rem; color: var(--text); box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px; }
+  .theme-toggle:hover { border-color: var(--primary); }
+  .panel { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid var(--border); }
+  .controls { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end; }
+  @media (max-width: 720px) { .controls { grid-template-columns: 1fr; } }
+  .control-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  select, input[type="number"] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 0.95rem; font-family: inherit; }
+  select:focus, input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+  .btn-calc { background: var(--primary); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: inherit; height: 42px; }
+  .btn-calc:hover { background: var(--primary-dark); }
+  .switch-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #cbd5e0; border-radius: 26px; transition: .3s; }
+  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .3s; }
+  input:checked + .slider { background: var(--primary); }
+  input:checked + .slider:before { transform: translateX(24px); }
+  .switch-label { font-size: 0.9rem; font-weight: 600; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .kpi { background: var(--card); border-radius: 12px; padding: 18px; box-shadow: var(--shadow); border: 1px solid var(--border); border-left: 4px solid var(--primary); }
+  .kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 8px; }
+  .kpi-value { font-size: 1.6rem; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .kpi-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .kpi-delta { font-size: 0.75rem; margin-top: 6px; padding: 2px 8px; border-radius: 6px; display: inline-block; font-weight: 600; }
+  .delta-pos { background: rgba(56,161,105,0.15); color: var(--success); }
+  .delta-neg { background: rgba(221,107,32,0.15); color: var(--warning); }
+  .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media (max-width: 720px) { .charts { grid-template-columns: 1fr; } }
+  .chart-box { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .chart-box h3 { font-size: 0.95rem; margin-bottom: 16px; color: var(--text); }
+  .chart-container { position: relative; height: 260px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 10px 8px; text-align: right; border-bottom: 1px solid var(--border); }
+  th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; background: var(--bg); }
+  td:first-child, th:first-child { text-align: center; }
+  tr:hover td { background: var(--bg); }
+  .total-row td { font-weight: 700; background: var(--bg); border-top: 2px solid var(--primary); }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; margin-left: 8px; }
+  .badge-exact { background: rgba(56,161,105,0.15); color: var(--success); }
+  .badge-est { background: rgba(221,107,32,0.15); color: var(--warning); }
+  .badge-na { background: rgba(113,128,150,0.15); color: var(--text-muted); }
+  .recomendaciones { list-style: none; }
+  .recomendaciones li { padding: 12px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; border-left: 3px solid var(--primary); line-height: 1.5; }
+  .recomendaciones li strong { color: var(--primary); }
+  .validation { font-size: 0.8rem; color: var(--text-muted); padding: 12px; background: var(--bg); border-radius: 8px; margin-top: 16px; line-height: 1.6; }
+  .validation strong { color: var(--text); }
+  h2.section-title { font-size: 1.1rem; margin-bottom: 16px; color: var(--text); }
+  .na-box { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 1rem; }
+  .na-box .na-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div>
+      <h1>Simulador de Crédito <span>Microempresa</span></h1>
+      <div class="subtitle">Caja Cusco · TEA escalonada según monto · Comparativa con/sin desgravamen</div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <span id="themeIcon">🌙</span>
+      <span id="themeText">Modo oscuro</span>
+    </button>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="control-group">
+        <label>Monto del préstamo (S/)</label>
+        <select id="montoSelect" onchange="onMontoChange()">
+          <option value="500">S/ 500</option>
+          <option value="1000">S/ 1,000</option>
+          <option value="2000">S/ 2,000</option>
+          <option value="2900">S/ 2,900</option>
+          <option value="3500">S/ 3,500</option>
+          <option value="4000">S/ 4,000</option>
+          <option value="5000" selected>S/ 5,000</option>
+          <option value="6000">S/ 6,000</option>
+          <option value="8000">S/ 8,000</option>
+          <option value="10000">S/ 10,000</option>
+          <option value="custom">💡 Otro monto (personalizado)</option>
+        </select>
+      </div>
+      <div class="control-group" id="customMontoGroup" style="display:none;">
+        <label>Monto personalizado (S/500 – S/10,000)</label>
+        <input type="number" id="customMonto" min="500" max="10000" step="100" value="4500" oninput="onCustomInput()">
+      </div>
+      <div class="control-group">
+        <label>Plazo</label>
+        <select id="plazoSelect" onchange="calcular()">
+          <option value="3">3 meses</option>
+          <option value="4">4 meses</option>
+          <option value="5">5 meses</option>
+          <option value="6" selected>6 meses</option>
+          <option value="9">9 meses</option>
+          <option value="10">10 meses</option>
+          <option value="12">12 meses</option>
+        </select>
+      </div>
+      <button class="btn-calc" onclick="calcular()">Calcular</button>
+    </div>
+
+    <div class="switch-row">
+      <label class="switch">
+        <input type="checkbox" id="desgravToggle" checked onchange="calcular()">
+        <span class="slider"></span>
+      </label>
+      <span class="switch-label" id="toggleLabel">✓ Con seguro de desgravamen</span>
+      <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: auto;">
+        Comparando automáticamente ambos escenarios
+      </span>
+    </div>
+  </div>
+
+  <div id="resultados">
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Cuota mensual</div>
+        <div class="kpi-value" id="kpiCuota">S/ 0.00</div>
+        <div class="kpi-sub" id="kpiCuotaSub">—</div>
+        <div id="deltaCuota"></div>
+      </div>
+      <div class="kpi" style="border-left-color: var(--warning);">
+        <div class="kpi-label">Interés total</div>
+        <div class="kpi-value" id="kpiInteres">S/ 0.00</div>
+        <div class="kpi-sub" id="kpiInteresSub">—</div>
+      </div>
+      <div class="kpi" style="border-left-color: var(--accent);">
+        <div class="kpi-label">Desgravamen total</div>
+        <div class="kpi-value" id="kpiDesg">S/ 0.00</div>
+        <div class="kpi-sub" id="kpiDesgSub">—</div>
+      </div>
+      <div class="kpi" style="border-left-color: var(--success);">
+        <div class="kpi-label">Total a pagar</div>
+        <div class="kpi-value" id="kpiTotal">S/ 0.00</div>
+        <div class="kpi-sub" id="kpiTotalSub">—</div>
+        <div id="deltaTotal"></div>
+      </div>
+    </div>
+
+    <div class="charts">
+      <div class="chart-box">
+        <h3>Composición del pago total</h3>
+        <div class="chart-container"><canvas id="pieChart"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>Total a pagar según plazo (con vs sin seguro)</h3>
+        <div class="chart-container"><canvas id="barChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="section-title">📋 Tabla de amortización <span id="badgeTipo"></span></h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Cuota</th>
+              <th>Capital</th>
+              <th>Interés</th>
+              <th>Desgrav.</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody"></tbody>
+          <tfoot id="tablaFoot"></tfoot>
+        </table>
+      </div>
+      <div class="validation" id="validationBox"></div>
+    </div>
+
+    <div class="panel">
+      <h2 class="section-title">💡 Recomendaciones</h2>
+      <ul class="recomendaciones" id="recomendaciones"></ul>
+    </div>
+  </div>
+
+  <div id="noDisponible" style="display:none;">
+    <div class="panel">
+      <div class="na-box">
+        <div class="na-icon">🚫</div>
+        <strong>Plazo no disponible</strong>
+        <p style="margin-top:8px;">El banco no ofrece este monto para el plazo seleccionado. Prueba con otro plazo.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ====== DATOS EXACTOS DE CAJA CUSCO ======
+// Cuotas CON seguro de desgravamen (0 = no disponible)
+const CUOTAS_CON_DESG = {
+  500:   {3:176.50, 4:134.31, 5:108.97, 6:92.09, 9:0, 10:0, 12:0, tea: 0.3655, teaSin: 0.5111},
+  1000:  {3:351.75, 4:267.45, 5:216.75, 6:183.07, 9:126.94, 10:115.74, 12:98.97, tea: 0.3370, teaSin: 0.4764},
+  2000:  {3:703.50, 4:584.89, 5:433.58, 6:366.13, 9:253.87, 10:231.47, 12:197.94, tea: 0.3370, teaSin: 0.4764},
+  2900:  {3:1020.12, 4:775.59, 5:628.69, 6:530.89, 9:368.11, 10:335.64, 12:287.01, tea: 0.3370, teaSin: 0.4764},
+  3500:  {3:1226.81, 4:931.93, 5:754.79, 6:636.85, 9:440.51, 10:401.32, 12:342.64, tea: 0.3091, teaSin: 0.3929},
+  4000:  {3:1402.05, 4:1065.11, 5:862.61, 6:727.82, 9:503.43, 10:458.65, 12:391.58, tea: 0.3091, teaSin: 0.3929},
+  5000:  {3:1750.48, 4:1329.41, 5:1076.43, 6:907.93, 9:627.50, 10:571.53, 12:487.70, tea: 0.2999, teaSin: 0.3465},
+  6000:  {3:2097.16, 4:1591.83, 5:1288.25, 6:1086.11, 9:749.54, 10:682.38, 12:581.78, tea: 0.2999, teaSin: 0.3465},
+  8000:  {3:2796.18, 4:2122.47, 5:1717.66, 6:1448.13, 9:999.39, 10:909.84, 12:775.71, tea: 0.2999, teaSin: 0.3465},
+  10000: {3:0, 4:0, 5:0, 6:1800.33, 9:1239.77, 10:0, 12:960.16, tea: 0.2557, teaSin: 0.3076}
+};
+
+const MONTOS_KNOWN = [500, 1000, 2000, 2900, 3500, 4000, 5000, 6000, 8000, 10000];
+
+let pieChart = null, barChart = null;
+
+// ====== TEMA ======
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+  document.getElementById('themeText').textContent = isDark ? 'Modo oscuro' : 'Modo claro';
+  calcular();
+}
+
+// ====== UTILIDADES ======
+function fmt(n) { return 'S/ ' + n.toLocaleString('es-PE', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+function fmtPct(n) { return (n*100).toFixed(2) + '%'; }
+function teaToTem(tea) { return Math.pow(1 + tea, 1/12) - 1; }
+
+// ====== TEA INTERPOLADA (con y sin desgravamen) ======
+function getTEAs(monto) {
+  if (CUOTAS_CON_DESG[monto]) return { con: CUOTAS_CON_DESG[monto].tea, sin: CUOTAS_CON_DESG[monto].teaSin };
+  // Interpolar entre vecinos
+  let lo = MONTOS_KNOWN[0], hi = MONTOS_KNOWN[MONTOS_KNOWN.length-1];
+  for (let i = 0; i < MONTOS_KNOWN.length - 1; i++) {
+    if (monto >= MONTOS_KNOWN[i] && monto <= MONTOS_KNOWN[i+1]) {
+      lo = MONTOS_KNOWN[i]; hi = MONTOS_KNOWN[i+1]; break;
+    }
+  }
+  if (monto <= MONTOS_KNOWN[0]) return { con: CUOTAS_CON_DESG[500].tea, sin: CUOTAS_CON_DESG[500].teaSin };
+  if (monto >= MONTOS_KNOWN[MONTOS_KNOWN.length-1]) return { con: CUOTAS_CON_DESG[10000].tea, sin: CUOTAS_CON_DESG[10000].teaSin };
+  const r = (monto - lo) / (hi - lo);
+  const tConLo = CUOTAS_CON_DESG[lo].tea, tConHi = CUOTAS_CON_DESG[hi].tea;
+  const tSinLo = CUOTAS_CON_DESG[lo].teaSin, tSinHi = CUOTAS_CON_DESG[hi].teaSin;
+  return {
+    con: tConLo + r * (tConHi - tConLo),
+    sin: tSinLo + r * (tSinHi - tSinLo)
+  };
+}
+
+// ====== DISPONIBILIDAD ======
+function plazoDisponible(monto, plazo) {
+  // Si es monto exacto, revisar dato directo
+  if (CUOTAS_CON_DESG[monto]) return CUOTAS_CON_DESG[monto][plazo] > 0;
+  // Montos interpolados: disponible si ambos vecinos lo tienen (o al menos uno)
+  let lo = MONTOS_KNOWN[0], hi = MONTOS_KNOWN[MONTOS_KNOWN.length-1];
+  for (let i = 0; i < MONTOS_KNOWN.length - 1; i++) {
+    if (monto >= MONTOS_KNOWN[i] && monto <= MONTOS_KNOWN[i+1]) {
+      lo = MONTOS_KNOWN[i]; hi = MONTOS_KNOWN[i+1]; break;
+    }
+  }
+  return CUOTAS_CON_DESG[lo][plazo] > 0 && CUOTAS_CON_DESG[hi][plazo] > 0;
+}
+
+// ====== CUOTA CON DESGRAVAMEN ======
+function cuotaConDesg(monto, plazo) {
+  if (CUOTAS_CON_DESG[monto] && CUOTAS_CON_DESG[monto][plazo] > 0) return CUOTAS_CON_DESG[monto][plazo];
+  // Interpolar entre vecinos que tengan ese plazo
+  const vecinos = MONTOS_KNOWN.filter(m => CUOTAS_CON_DESG[m][plazo] > 0).sort((a,b) => a-b);
+  if (monto <= vecinos[0]) return CUOTAS_CON_DESG[vecinos[0]][plazo] * (monto / vecinos[0]);
+  if (monto >= vecinos[vecinos.length-1]) {
+    // Fórmula francesa con TEA interpolada
+    const tea = getTEAs(monto).con;
+    const tem = teaToTem(tea);
+    return monto * tem / (1 - Math.pow(1 + tem, -plazo));
+  }
+  for (let i = 0; i < vecinos.length - 1; i++) {
+    if (monto >= vecinos[i] && monto <= vecinos[i+1]) {
+      const c1 = CUOTAS_CON_DESG[vecinos[i]][plazo];
+      const c2 = CUOTAS_CON_DESG[vecinos[i+1]][plazo];
+      const r = (monto - vecinos[i]) / (vecinos[i+1] - vecinos[i]);
+      return c1 + r * (c2 - c1);
+    }
+  }
+  const tea = getTEAs(monto).con;
+  const tem = teaToTem(tea);
+  return monto * tem / (1 - Math.pow(1 + tem, -plazo));
+}
+
+// ====== CUOTA SIN DESGRAVAMEN (fórmula francesa con TEA-sin) ======
+function cuotaSinDesg(monto, plazo) {
+  const tea = getTEAs(monto).sin;
+  const tem = teaToTem(tea);
+  return monto * tem / (1 - Math.pow(1 + tem, -plazo));
+}
+
+// ====== AMORTIZACIÓN ======
+function generarAmortizacion(monto, plazo, cuotaMensual, tea, conDesg) {
+  const tem = teaToTem(tea);
+  const cuotaTeorica = monto * tem / (1 - Math.pow(1 + tem, -plazo));
+  const factorAjuste = cuotaMensual / cuotaTeorica;
+  let saldo = monto;
+  const filas = [];
+
+  // Tasa de desgravamen: la calibramos para que el desgravamen total sea coherente
+  // Con TEM desgravamen referencial Caja Cusco (~0.065%-0.0916% según producto)
+  const tasaDesg = 0.000916;
+
+  for (let i = 1; i <= plazo; i++) {
+    const interes = saldo * tem * factorAjuste;
+    const desgrav = conDesg ? saldo * tasaDesg : 0;
+    let capital = cuotaMensual - interes - desgrav;
+    if (i === plazo) capital = saldo;
+    saldo = Math.max(0, saldo - capital);
+    filas.push({
+      n: i,
+      cuota: i === plazo ? capital + interes + desgrav : cuotaMensual,
+      capital, interes, desgrav, saldo
+    });
+  }
+  return filas;
+}
+
+// ====== UI ======
+function onMontoChange() {
+  const val = document.getElementById('montoSelect').value;
+  document.getElementById('customMontoGroup').style.display = val === 'custom' ? 'block' : 'none';
+  calcular();
+}
+function onCustomInput() {
+  const el = document.getElementById('customMonto');
+  let v = parseFloat(el.value) || 500;
+  if (v < 500) el.value = 500;
+  if (v > 10000) el.value = 10000;
+  calcular();
+}
+
+// ====== CÁLCULO PRINCIPAL ======
+function calcular() {
+  const selVal = document.getElementById('montoSelect').value;
+  const plazo = parseInt(document.getElementById('plazoSelect').value);
+  const conDesg = document.getElementById('desgravToggle').checked;
+
+  document.getElementById('toggleLabel').textContent = conDesg
+    ? '✓ Con seguro de desgravamen'
+    : '✗ Sin seguro de desgravamen';
+
+  let monto, esExacto;
+  if (selVal === 'custom') {
+    monto = parseFloat(document.getElementById('customMonto').value) || 4500;
+    esExacto = false;
+  } else {
+    monto = parseInt(selVal);
+    esExacto = !!(CUOTAS_CON_DESG[monto] && CUOTAS_CON_DESG[monto][plazo] > 0);
+  }
+
+  // Verificar disponibilidad
+  if (!plazoDisponible(monto, plazo)) {
+    document.getElementById('resultados').style.display = 'none';
+    document.getElementById('noDisponible').style.display = 'block';
+    return;
+  }
+  document.getElementById('resultados').style.display = 'block';
+  document.getElementById('noDisponible').style.display = 'none';
+
+  const teas = getTEAs(monto);
+  const teaActual = conDesg ? teas.con : teas.sin;
+  const cuotaActual = conDesg ? cuotaConDesg(monto, plazo) : cuotaSinDesg(monto, plazo);
+  const cuotaOpuesta = conDesg ? cuotaSinDesg(monto, plazo) : cuotaConDesg(monto, plazo);
+  const totalActual = cuotaActual * plazo;
+  const totalOpuesta = cuotaOpuesta * plazo;
+
+  const filas = generarAmortizacion(monto, plazo, cuotaActual, teaActual, conDesg);
+
+  const totalPagado = cuotaActual * plazo;
+  const totalDesgrav = filas.reduce((s,f) => s + Math.max(0, f.desgrav), 0);
+  const totalInteres = totalPagado - monto - (conDesg ? totalDesgrav : 0);
+
+  document.getElementById('kpiCuota').textContent = fmt(cuotaActual);
+  document.getElementById('kpiCuotaSub').textContent = `${plazo} cuotas · TEA ${fmtPct(teaActual)}`;
+  document.getElementById('kpiInteres').textContent = fmt(totalInteres);
+  document.getElementById('kpiInteresSub').textContent = fmtPct(totalInteres/monto) + ' del capital';
+  document.getElementById('kpiDesg').textContent = conDesg ? fmt(totalDesgrav) : 'S/ 0.00';
+  document.getElementById('kpiDesgSub').textContent = conDesg ? 'Incluido en cuota' : 'No aplica';
+  document.getElementById('kpiTotal').textContent = fmt(totalPagado);
+  document.getElementById('kpiTotalSub').textContent = `Capital ${fmt(monto)} + costos`;
+
+  const deltaCuota = cuotaOpuesta - cuotaActual;
+  const deltaTotal = totalOpuesta - totalActual;
+  document.getElementById('deltaCuota').innerHTML = `<span class="kpi-delta ${deltaCuota > 0 ? 'delta-neg' : 'delta-pos'}">${deltaCuota > 0 ? '↑' : '↓'} ${fmt(Math.abs(deltaCuota))} vs ${conDesg ? 'sin' : 'con'} seguro</span>`;
+  document.getElementById('deltaTotal').innerHTML = `<span class="kpi-delta ${deltaTotal > 0 ? 'delta-neg' : 'delta-pos'}">${deltaTotal > 0 ? '↑' : '↓'} ${fmt(Math.abs(deltaTotal))} vs ${conDesg ? 'sin' : 'con'} seguro</span>`;
+
+  document.getElementById('badgeTipo').innerHTML = esExacto
+    ? '<span class="badge badge-exact">✓ Cuota exacta Caja Cusco</span>'
+    : '<span class="badge badge-est">⚠ Estimado (interpolación)</span>';
+
+  const tbody = document.getElementById('tablaBody');
+  tbody.innerHTML = filas.map(f => `
+    <tr>
+      <td>${f.n}</td>
+      <td>${fmt(f.cuota)}</td>
+      <td>${fmt(Math.max(0, f.capital))}</td>
+      <td>${fmt(Math.max(0, f.interes))}</td>
+      <td>${conDesg ? fmt(Math.max(0, f.desgrav)) : '—'}</td>
+      <td>${fmt(Math.max(0, f.saldo))}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('tablaFoot').innerHTML = `
+    <tr class="total-row">
+      <td>—</td>
+      <td>${fmt(totalPagado)}</td>
+      <td>${fmt(monto)}</td>
+      <td>${fmt(totalInteres)}</td>
+      <td>${conDesg ? fmt(totalDesgrav) : '—'}</td>
+      <td>S/ 0.00</td>
+    </tr>
+  `;
+
+  document.getElementById('validationBox').innerHTML = `
+    <strong>🔍 Validación:</strong>
+    TEA ${conDesg ? 'con' : 'sin'} desgravamen: <strong>${fmtPct(teaActual)}</strong> ·
+    TEA ${conDesg ? 'sin' : 'con'} desgravamen: <strong>${fmtPct(conDesg ? teas.sin : teas.con)}</strong><br>
+    <strong>Interés total = (cuota × plazo) − capital − desgravamen = ${fmt(totalPagado)} − ${fmt(monto)} − ${fmt(totalDesgrav)} = ${fmt(totalInteres)}</strong><br>
+    <em>${esExacto
+      ? 'Cuota exacta de Caja Cusco. Desglose capital/interés/desgravamen aproximado con la TEA oficial del rango.'
+      : 'Cuota estimada por interpolación entre montos exactos con TEA escalonada.'}</em>
+  `;
+
+  generarRecomendaciones(monto, plazo, cuotaActual, conDesg, esExacto, totalInteres, teas);
+  dibujarGraficos(monto, plazo, totalInteres, totalDesgrav, conDesg);
+}
+
+// ====== RECOMENDACIONES ======
+function generarRecomendaciones(monto, plazo, cuota, conDesg, esExacto, interesPuro, teas) {
+  const recs = [];
+  const plazos = [3,4,5,6,9,10,12].filter(p => plazoDisponible(monto, p));
+
+  const totalesCon = {};
+  plazos.forEach(p => { totalesCon[p] = cuotaConDesg(monto, p) * p; });
+
+  let mejorTotal = Infinity, mejorPlazo = null;
+  Object.entries(totalesCon).forEach(([p, t]) => { if (t < mejorTotal) { mejorTotal = t; mejorPlazo = p; } });
+
+  recs.push(`Para <strong>S/ ${monto.toLocaleString()}</strong>, el plazo más económico es <strong>${mejorPlazo} meses</strong> (total ${fmt(mejorTotal)}).`);
+
+  const totalConActual = cuotaConDesg(monto, plazo) * plazo;
+  const totalSinActual = cuotaSinDesg(monto, plazo) * plazo;
+  const dif = totalSinActual - totalConActual;
+
+  if (Math.abs(dif) > 0.5) {
+    if (dif > 0) recs.push(`💡 Activar el seguro te <strong>ahorra ${fmt(dif)}</strong> en total (TEA baja de ${fmtPct(teas.sin)} a ${fmtPct(teas.con)}).`);
+    else recs.push(`⚠️ Desactivar el seguro te <strong>ahorra ${fmt(Math.abs(dif))}</strong>, pero quedas sin cobertura.`);
+  }
+
+  recs.push(`📊 TEA aplicada: <strong>${fmtPct(conDesg ? teas.con : teas.sin)}</strong> · Interés puro total: <strong>${fmt(interesPuro)}</strong> (${((interesPuro/monto)*100).toFixed(2)}% del capital).`);
+
+  if (!esExacto) recs.push(`💡 Monto <strong>estimado</strong>. Para cuota exacta: S/500, 1k, 2k, 2.9k, 3.5k, 4k, 5k, 6k, 8k o 10k.`);
+
+  document.getElementById('recomendaciones').innerHTML = recs.map(r => `<li>${r}</li>`).join('');
+}
+
+// ====== GRÁFICOS ======
+function dibujarGraficos(monto, plazo, interes, desgrav, conDesg) {
+  const style = getComputedStyle(document.documentElement);
+  const textColor = style.getPropertyValue('--text').trim();
+  const mutedColor = style.getPropertyValue('--text-muted').trim();
+  const gridColor = style.getPropertyValue('--border').trim();
+
+  if (pieChart) pieChart.destroy();
+  const pieData = conDesg ? [monto, interes, desgrav] : [monto, interes];
+  const pieLabels = conDesg ? ['Capital', 'Interés', 'Desgravamen'] : ['Capital', 'Interés'];
+  const pieColors = conDesg ? ['#c8102e', '#dd6b20', '#2d3748'] : ['#c8102e', '#dd6b20'];
+
+  pieChart = new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: { labels: pieLabels, datasets: [{ data: pieData, backgroundColor: pieColors, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: textColor, font: {size: 12} } },
+        tooltip: { callbacks: { label: c => c.label + ': ' + fmt(c.parsed) } }
+      }
+    }
+  });
+
+  const plazos = [3,4,5,6,9,10,12].filter(p => plazoDisponible(monto, p));
+  const totalesCon = plazos.map(p => cuotaConDesg(monto, p) * p);
+  const totalesSin = plazos.map(p => cuotaSinDesg(monto, p) * p);
+
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: plazos.map(p => p + 'm'),
+      datasets: [
+        { label: 'Con seguro', data: totalesCon, backgroundColor: '#c8102e', borderRadius: 4 },
+        { label: 'Sin seguro', data: totalesSin, backgroundColor: '#a0aec0', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: textColor, font: {size: 11} } },
+        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y) } }
+      },
+      scales: {
+        y: { ticks: { color: mutedColor, callback: v => 'S/' + v }, grid: { color: gridColor } },
+        x: { ticks: { color: mutedColor }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ====== INICIALIZAR ======
+calcular();
+</script>
+</body>
+</html>
