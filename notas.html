@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notas Efímeras · 1 hora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Kalam:wght@300;400;700&family=Special+Elite&family=Gochi+Hand&family=Shadows+Into+Light&family=Patrick+Hand&family=Homemade+Apple&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/notas.css">
+</head>
+<body>
+
+  <!-- ==================== PANTALLA 1: USUARIOS ==================== -->
+  <div class="hoja" id="vistaUsuarios">
+    <div class="esquina"></div>
+    <h1 class="titulo">📝 Notas Efímeras</h1>
+    <p class="subtitulo">Todo se borra en 1 hora. Elige un usuario o crea uno.</p>
+
+    <div class="usuarios-grid" id="listaUsuarios"></div>
+
+    <div class="barra-inferior">
+      <div class="tag-info">⏳ Todo dura 1 hora</div>
+      <button class="btn-sound" id="btnSound" title="Activar/desactivar sonido">🔇 Sonido</button>
+    </div>
+  </div>
+
+  <!-- ==================== PANTALLA 2: NOTAS ==================== -->
+  <div class="hoja" id="vistaNotas" style="display:none">
+    <div class="esquina"></div>
+
+    <div class="header-usuario">
+      <div class="avatar" id="avatarUsuario">?</div>
+      <div class="info-usuario">
+        <h2 class="nombre" id="nombreUsuario">—</h2>
+        <div class="estado">
+          <span class="dot" id="dotEstado"></span>
+          <span id="estadoTexto">Activo · expira en 1h</span>
+        </div>
+      </div>
+      <button class="btn-sound" id="btnSound2" title="Sonido">🔇</button>
+      <button class="btn-salir" id="btnSalir">🚪 Salir</button>
+    </div>
+
+    <div class="barra-herramientas">
+      <button class="btn-tool" id="btnFuente" title="Cambiar tipografía">🖋️</button>
+      <input type="text" id="inputNota" maxlength="100" placeholder="Escribe una nota..." autocomplete="off">
+      <button class="btn-tool" id="btnEmoji" title="Insertar emoji">🙂</button>
+      <button class="btn-enviar" id="btnAgregar" title="Publicar (Ctrl+Enter)">
+        <span class="icono">➤</span>
+        <span class="loader-btn"></span>
+      </button>
+    </div>
+
+    <div class="contador" id="contador">0 / 100</div>
+
+    <div id="lista"></div>
+  </div>
+
+  <!-- ==================== MODAL ==================== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2 id="modalTitulo">Ingresar</h2>
+      <p class="hint" id="modalHint"></p>
+
+      <div class="campo" id="campoNombre" style="display:none">
+        <label for="modalNombre">Nombre</label>
+        <input type="text" id="modalNombre" maxlength="20" autocomplete="off">
+      </div>
+
+      <div class="campo">
+        <label for="modalClave">Clave</label>
+        <input type="password" id="modalClave" autocomplete="off">
+        <button type="button" class="toggle-clave" id="toggleClave" title="Mostrar clave">👁️</button>
+      </div>
+
+      <div class="campo" id="campoConfirmar" style="display:none">
+        <label for="modalConfirmar">Confirmar clave</label>
+        <input type="password" id="modalConfirmar" autocomplete="off">
+      </div>
+
+      <div class="error" id="modalError"></div>
+
+      <div class="acciones">
+        <button class="btn-salir" id="modalCancelar">Cancelar</button>
+        <button class="btn-publicar" id="modalAceptar">
+          <span class="icono">✓</span>
+          <span class="loader-btn"></span>
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PANELES FLOTANTES ==================== -->
+  <div class="panel-fuentes" id="panelFuentes">
+    <button data-fuente="Caveat" style="font-family:'Caveat', cursive;">Caveat · Manuscrita</button>
+    <button data-fuente="Gochi Hand" style="font-family:'Gochi Hand', cursive;">Gochi Hand · Relajada</button>
+    <button data-fuente="Kalam" style="font-family:'Kalam', sans-serif;">Kalam · Legible</button>
+    <button data-fuente="Patrick Hand" style="font-family:'Patrick Hand', cursive;">Patrick Hand · Escolar</button>
+    <button data-fuente="Shadows Into Light" style="font-family:'Shadows Into Light', cursive;">Shadows · Elegante</button>
+    <button data-fuente="Homemade Apple" style="font-family:'Homemade Apple', cursive;">Homemade · Cursiva</button>
+    <button data-fuente="Special Elite" style="font-family:'Special Elite', monospace;">Special Elite · Máquina</button>
+  </div>
+
+  <div class="panel-emojis" id="panelEmojis"></div>
+
+  <!-- ==================== LOADER GLOBAL ==================== -->
+  <div class="loader-overlay" id="loaderOverlay">
+    <div class="reloj">
+      <div class="marco"></div>
+      <div class="arena">
+        <div class="bulbo arriba"></div>
+        <div class="hilo"></div>
+        <div class="bulbo abajo"></div>
+      </div>
+      <div class="loader-texto" id="loaderTexto">cargando</div>
+    </div>
+  </div>
+
+  <div class="aviso-expira" id="avisoExpira"></div>
+  <div class="toast" id="toast"></div>
+
+ <footer class="footer-marca">
+  <span class="footer-texto">Diseñado por</span>
+  <span class="footer-marca-btn" id="btnMarca" role="button" tabindex="0" title="Contáctanos por WhatsApp">
+    Servicomp
+  </span>
+  <span class="footer-texto">· 2026</span>
+</footer>
+
+
+
+  <script src="js/notas.js"></script>
+</body>
+</html>
