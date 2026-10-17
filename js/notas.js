@@ -672,7 +672,6 @@ $('btnAgregar').addEventListener('click', agregarNota);
     window.open(url, '_blank', 'noopener,noreferrer');
   });
 
-  // Accesibilidad teclado (por si es button pero por si acaso)
   btn.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
