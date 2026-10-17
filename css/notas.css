@@ -259,6 +259,10 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   background: #e0f5e0;
 }
 
+/* ========== ÍCONO / TEXTO EN BOTONES ========== */
+.btn-icono { display: none; }
+.btn-texto { display: inline; }
+
 .btn-tool {
   background: transparent;
   border: 2px dashed rgba(26,58,143,.4);
@@ -904,94 +908,6 @@ input[type="password"] {
 }
 .aviso-expira.show { transform: translateX(-50%) rotate(-1deg) translateY(0); }
 
-/* ========== RESPONSIVE ========== */
-@media (max-width: 600px) {
-  body { padding: 20px 10px 40px; }
-
-  .hoja {
-    padding: 28px 20px 36px 54px;
-    transform: none;
-  }
-  .hoja::after { left: 16px; }
-  .hoja::before { left: 42px; }
-  .hoja:hover { transform: none; }
-
-  .titulo { font-size: 2rem; }
-  .subtitulo { font-size: .9rem; }
-
-  .info-usuario .nombre { font-size: 1.6rem; }
-  .avatar { width: 46px; height: 46px; font-size: 1.7rem; }
-  .nota-texto { font-size: 1.3rem; }
-
-  .barra-herramientas {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .barra-herramientas input[type="text"] {
-    order: -1;
-    flex-basis: 100%;
-    margin-bottom: 4px;
-    font-size: 1.4rem;
-  }
-  .btn-tool {
-    width: 42px; height: 42px;
-    font-size: 1.1rem;
-  }
-  .btn-enviar {
-    width: 44px; height: 44px;
-    margin-left: auto;
-  }
-
-  .panel-emojis {
-    width: calc(100vw - 20px);
-    grid-template-columns: repeat(7, 1fr);
-    padding: 10px;
-  }
-  .panel-emojis button {
-    width: 34px; height: 34px;
-    font-size: 1.2rem;
-  }
-  .panel-fuentes {
-    width: calc(100vw - 20px);
-    padding: 6px;
-  }
-
-  .modal { padding: 24px 20px; }
-  .modal h2 { font-size: 1.8rem; }
-
-  .btn-salir {
-    padding: 6px 12px;
-    font-size: .9rem;
-  }
-}
-
-@media (max-width: 400px) {
-  .hoja { padding: 22px 16px 30px 46px; }
-  .hoja::before { left: 34px; }
-  .hoja::after { left: 12px; }
-  .titulo { font-size: 1.7rem; }
-  .subtitulo { font-size: .85rem; }
-
-  .info-usuario .nombre { font-size: 1.35rem; }
-  .avatar { width: 40px; height: 40px; font-size: 1.4rem; }
-  .nota-texto { font-size: 1.15rem; line-height: 28px; }
-
-  .btn-tool { width: 38px; height: 38px; font-size: 1rem; }
-  .btn-enviar { width: 40px; height: 40px; font-size: 1.2rem; }
-
-  .usuarios-grid { grid-template-columns: 1fr; }
-  .btn-usuario { font-size: 1.3rem; padding: 12px 10px; }
-  .btn-crear { font-size: 1.3rem; padding: 14px; }
-
-  .panel-emojis { grid-template-columns: repeat(6, 1fr); }
-  .panel-emojis button {
-    width: 32px; height: 32px;
-    font-size: 1.1rem;
-  }
-
-  .info-usuario .estado { font-size: .6rem; }
-}
-
 /* ============================================================
    FOOTER MARCA (minimalista)
    ============================================================ */
@@ -1004,11 +920,11 @@ input[type="password"] {
   flex-wrap: wrap;
   font-family: 'Special Elite', monospace;
   font-size: .72rem;
-  color: rgba(254, 252, 245, .55);   /* texto "Diseñado por" y "· 2026" */
+  color: rgba(254, 252, 245, .55);
   letter-spacing: 1px;
   text-transform: uppercase;
   user-select: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, .5);  /* ← ayuda sobre fondo oscuro */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
 }
 
 .footer-texto {
@@ -1020,7 +936,7 @@ input[type="password"] {
   font-family: 'Special Elite', monospace;
   font-size: .72rem;
   font-weight: 400;
-  color: rgba(254, 252, 245, .85);   /* ← "Servicomp" más brillante */
+  color: rgba(254, 252, 245, .85);
   cursor: pointer;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -1059,7 +975,147 @@ input[type="password"] {
   box-shadow: none;
 }
 
+/* ========== RESPONSIVE ========== */
+@media (max-width: 600px) {
+  body { padding: 20px 10px 40px; }
+
+  .hoja {
+    padding: 28px 20px 36px 54px;
+    transform: none;
+  }
+  .hoja::after { left: 16px; }
+  .hoja::before { left: 42px; }
+  .hoja:hover { transform: none; }
+
+  .titulo { font-size: 2rem; }
+  .subtitulo { font-size: .9rem; }
+
+  /* ===== HEADER USUARIO PRO ===== */
+  .header-usuario {
+    gap: 10px;
+    padding-bottom: 12px;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1.5rem;
+    box-shadow: 2px 2px 0 var(--tinta-oscura), inset 0 2px 4px rgba(255,255,255,.3);
+  }
+
+  .info-usuario {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .info-usuario .nombre {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .info-usuario .estado {
+    font-size: .65rem;
+    gap: 4px;
+  }
+
+  /* Botones circulares compactos */
+  .btn-sound,
+  .btn-salir {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    font-size: 1.1rem;
+    transform: none;
+    box-shadow: 2px 2px 0 currentColor;
+    flex-shrink: 0;
+  }
+
+  .btn-sound:hover:not(:disabled),
+  .btn-salir:hover:not(:disabled) {
+    transform: scale(1.08);
+    box-shadow: 3px 3px 0 currentColor;
+  }
+
+  .btn-icono { display: inline !important; font-size: 1.1rem; }
+  .btn-texto { display: none !important; }
+
+  /* ===== Barra herramientas ===== */
+  .barra-herramientas {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .barra-herramientas input[type="text"] {
+    order: -1;
+    flex-basis: 100%;
+    margin-bottom: 4px;
+    font-size: 1.4rem;
+  }
+  .btn-tool {
+    width: 42px; height: 42px;
+    font-size: 1.1rem;
+  }
+  .btn-enviar {
+    width: 44px; height: 44px;
+    margin-left: auto;
+  }
+
+  .panel-emojis {
+    width: calc(100vw - 20px);
+    grid-template-columns: repeat(7, 1fr);
+    padding: 10px;
+  }
+  .panel-emojis button {
+    width: 34px; height: 34px;
+    font-size: 1.2rem;
+  }
+  .panel-fuentes {
+    width: calc(100vw - 20px);
+    padding: 6px;
+  }
+
+  .modal { padding: 24px 20px; }
+  .modal h2 { font-size: 1.8rem; }
+
+  .nota-texto { font-size: 1.3rem; }
+}
+
 @media (max-width: 400px) {
+  .hoja { padding: 22px 16px 30px 46px; }
+  .hoja::before { left: 34px; }
+  .hoja::after { left: 12px; }
+  .titulo { font-size: 1.7rem; }
+  .subtitulo { font-size: .85rem; }
+
+  .avatar { width: 38px; height: 38px; font-size: 1.35rem; }
+  .info-usuario .nombre { font-size: 1.3rem; }
+  .info-usuario .estado { font-size: .6rem; }
+
+  .btn-sound, .btn-salir {
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+  }
+  .btn-icono { font-size: 1rem; }
+
+  .nota-texto { font-size: 1.15rem; line-height: 28px; }
+
+  .btn-tool { width: 38px; height: 38px; font-size: 1rem; }
+  .btn-enviar { width: 40px; height: 40px; font-size: 1.2rem; }
+
+  .usuarios-grid { grid-template-columns: 1fr; }
+  .btn-usuario { font-size: 1.3rem; padding: 12px 10px; }
+  .btn-crear { font-size: 1.3rem; padding: 14px; }
+
+  .panel-emojis { grid-template-columns: repeat(6, 1fr); }
+  .panel-emojis button {
+    width: 32px; height: 32px;
+    font-size: 1.1rem;
+  }
+
   .footer-marca { font-size: .62rem; gap: 4px; }
   .footer-marca-btn { font-size: .62rem; }
 }
