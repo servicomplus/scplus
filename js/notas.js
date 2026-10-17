@@ -152,7 +152,8 @@ function reproducirSonido(tipo = 'escribir') {
 function actualizarBotonesSonido() {
   [$('btnSound'), $('btnSound2')].forEach(b => {
     if (!b) return;
-    b.textContent = sonidoActivo ? '🔊 Sonido' : '🔇 Sonido';
+    const icono = b.querySelector('.btn-icono');
+    if (icono) icono.textContent = sonidoActivo ? '🔊' : '🔇';
     b.classList.toggle('on', sonidoActivo);
   });
 }
@@ -654,7 +655,6 @@ document.addEventListener('keydown', e => {
 });
 $('btnAgregar').addEventListener('click', agregarNota);
 
-
 // ============================================================
 // FOOTER · Botón marca → WhatsApp
 // ============================================================
@@ -670,6 +670,14 @@ $('btnAgregar').addEventListener('click', agregarNota);
     const texto = encodeURIComponent(MENSAJE);
     const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${texto}`;
     window.open(url, '_blank', 'noopener,noreferrer');
+  });
+
+  // Accesibilidad teclado (por si es button pero por si acaso)
+  btn.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btn.click();
+    }
   });
 })();
 
