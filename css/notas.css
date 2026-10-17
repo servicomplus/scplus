@@ -232,36 +232,69 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
 .btn-publicar { background: var(--tinta); color: var(--papel); box-shadow: 2px 2px 0 var(--tinta-oscura); }
 .btn-publicar:hover:not(:disabled) { box-shadow: 3px 3px 0 var(--tinta-oscura); }
-.btn-salir {
-  background: #f0ede0;
-  border-color: #7a6a4a;
-  color: #7a6a4a;
-  box-shadow: 2px 2px 0 #7a6a4a;
-  font-family: 'Gochi Hand', cursive;
-  font-size: 1rem;
-}
 
-.btn-sound {
+/* ========== BOTÓN GHOST (ícono circular) ========== */
+.btn-ghost {
+  width: 42px;
+  height: 42px;
+  padding: 0;
   background: transparent;
-  border: 2px dashed #7a6a4a;
   color: #7a6a4a;
+  border: 1.5px solid rgba(122, 106, 74, .3);
+  border-radius: 50%;
   box-shadow: none;
-  padding: 6px 12px;
-  font-size: .9rem;
-  transform: rotate(-.3deg);
-  border-radius: 20px;
+  transform: none;
+  transition: color .2s, border-color .2s, background .2s, transform .2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
-.btn-sound:hover:not(:disabled) { background: #f0ede0; box-shadow: none; }
-.btn-sound.on {
-  border-style: solid;
-  border-color: var(--verde);
+.btn-ghost:hover:not(:disabled) {
+  color: var(--tinta);
+  border-color: rgba(26, 58, 143, .6);
+  background: rgba(227, 236, 255, .5);
+  transform: scale(1.08);
+  box-shadow: none;
+}
+.btn-ghost:active:not(:disabled) {
+  transform: scale(.95);
+  background: rgba(227, 236, 255, .8);
+  box-shadow: none;
+}
+.btn-ghost:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+.btn-ghost.on {
   color: var(--verde);
-  background: #e0f5e0;
+  border-color: rgba(26, 107, 26, .55);
+  background: rgba(224, 245, 224, .55);
+}
+.btn-ghost.on:hover:not(:disabled) {
+  background: rgba(224, 245, 224, .85);
+  border-color: var(--verde);
 }
 
-/* ========== ÍCONO / TEXTO EN BOTONES ========== */
-.btn-icono { display: none; }
-.btn-texto { display: inline; }
+/* Íconos visibles, texto oculto */
+.btn-ghost .btn-icono { display: inline !important; font-size: 1.2rem; line-height: 1; }
+.btn-ghost .btn-texto { display: none !important; }
+
+/* Excepción: botón Cancelar del modal mantiene texto */
+.modal .acciones .btn-ghost {
+  width: auto;
+  height: auto;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: .9rem;
+  font-family: 'Kalam', sans-serif;
+  font-weight: 700;
+  gap: 6px;
+}
+.modal .acciones .btn-ghost .btn-icono { display: none !important; }
+.modal .acciones .btn-ghost .btn-texto { display: inline !important; }
 
 .btn-tool {
   background: transparent;
@@ -926,11 +959,7 @@ input[type="password"] {
   user-select: none;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
 }
-
-.footer-texto {
-  opacity: 1;
-}
-
+.footer-texto { opacity: 1; }
 .footer-marca-btn {
   all: unset;
   font-family: 'Special Elite', monospace;
@@ -951,7 +980,6 @@ input[type="password"] {
   box-shadow: none;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
 }
-
 .footer-marca-btn:hover {
   color: #fefcf5;
   letter-spacing: 1.5px;
@@ -960,7 +988,6 @@ input[type="password"] {
   box-shadow: none;
   transform: none;
 }
-
 .footer-marca-btn:active {
   color: #25d366;
   background: transparent;
@@ -968,7 +995,6 @@ input[type="password"] {
   box-shadow: none;
   transform: none;
 }
-
 .footer-marca-btn:focus {
   outline: none;
   border: none;
@@ -990,58 +1016,28 @@ input[type="password"] {
   .titulo { font-size: 2rem; }
   .subtitulo { font-size: .9rem; }
 
-  /* ===== HEADER USUARIO PRO ===== */
+  /* ===== HEADER USUARIO ===== */
   .header-usuario {
-    gap: 10px;
+    gap: 8px;
     padding-bottom: 12px;
     flex-wrap: nowrap;
     align-items: center;
   }
-
   .avatar {
     width: 42px;
     height: 42px;
     font-size: 1.5rem;
     box-shadow: 2px 2px 0 var(--tinta-oscura), inset 0 2px 4px rgba(255,255,255,.3);
   }
-
-  .info-usuario {
-    flex: 1;
-    min-width: 0;
-  }
-
+  .info-usuario { flex: 1; min-width: 0; }
   .info-usuario .nombre {
     font-size: 1.5rem;
     margin-bottom: 0;
   }
-
   .info-usuario .estado {
     font-size: .65rem;
     gap: 4px;
   }
-
-  /* Botones circulares compactos */
-  .btn-sound,
-  .btn-salir {
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    border-radius: 50%;
-    justify-content: center;
-    font-size: 1.1rem;
-    transform: none;
-    box-shadow: 2px 2px 0 currentColor;
-    flex-shrink: 0;
-  }
-
-  .btn-sound:hover:not(:disabled),
-  .btn-salir:hover:not(:disabled) {
-    transform: scale(1.08);
-    box-shadow: 3px 3px 0 currentColor;
-  }
-
-  .btn-icono { display: inline !important; font-size: 1.1rem; }
-  .btn-texto { display: none !important; }
 
   /* ===== Barra herramientas ===== */
   .barra-herramientas {
@@ -1094,12 +1090,11 @@ input[type="password"] {
   .info-usuario .nombre { font-size: 1.3rem; }
   .info-usuario .estado { font-size: .6rem; }
 
-  .btn-sound, .btn-salir {
-    width: 34px;
-    height: 34px;
-    font-size: 1rem;
+  .btn-ghost {
+    width: 36px;
+    height: 36px;
   }
-  .btn-icono { font-size: 1rem; }
+  .btn-ghost .btn-icono { font-size: 1rem; }
 
   .nota-texto { font-size: 1.15rem; line-height: 28px; }
 
