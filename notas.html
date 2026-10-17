@@ -21,7 +21,10 @@
 
     <div class="barra-inferior">
       <div class="tag-info">⏳ Todo dura 1 hora</div>
-      <button class="btn-sound" id="btnSound" title="Activar/desactivar sonido">🔇 Sonido</button>
+      <button class="btn-sound" id="btnSound" title="Activar/desactivar sonido">
+        <span class="btn-icono">🔇</span>
+        <span class="btn-texto">Sonido</span>
+      </button>
     </div>
   </div>
 
@@ -38,8 +41,14 @@
           <span id="estadoTexto">Activo · expira en 1h</span>
         </div>
       </div>
-      <button class="btn-sound" id="btnSound2" title="Sonido">🔇</button>
-      <button class="btn-salir" id="btnSalir">🚪 Salir</button>
+      <button class="btn-sound" id="btnSound2" title="Sonido">
+        <span class="btn-icono">🔇</span>
+        <span class="btn-texto">Sonido</span>
+      </button>
+      <button class="btn-salir" id="btnSalir" title="Salir">
+        <span class="btn-icono">🚪</span>
+        <span class="btn-texto">Salir</span>
+      </button>
     </div>
 
     <div class="barra-herramientas">
@@ -121,15 +130,12 @@
   <div class="aviso-expira" id="avisoExpira"></div>
   <div class="toast" id="toast"></div>
 
- <footer class="footer-marca">
-  <span class="footer-texto">Diseñado por</span>
-  <span class="footer-marca-btn" id="btnMarca" role="button" tabindex="0" title="Contáctanos por WhatsApp">
-    Servicomp
-  </span>
-  <span class="footer-texto">· 2026</span>
-</footer>
-
-
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer-marca">
+    <span class="footer-texto">Diseñado por</span>
+    <button class="footer-marca-btn" id="btnMarca" title="Contáctanos por WhatsApp">Servicomp</button>
+    <span class="footer-texto">· 2026</span>
+  </footer>
 
   <script src="js/notas.js"></script>
 </body>
